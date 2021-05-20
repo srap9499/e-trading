@@ -1,0 +1,6 @@
+# npm modules / packages
+node_modules
+
+# Environment variables
+.env
+
