@@ -5,6 +5,10 @@ const path = require('path');
 require('dotenv').config();
 // import express framework
 const express = require('express');
+const cookieParser = require('cookie-parser');
+
+// Import routes
+const authRouter = require('./routes/auth.routes');
 
 // Sequelize connection
 const { sequelize } = require('./config/db-connection.config');
@@ -21,12 +25,15 @@ app.set('views', 'views');
 // express middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res, next) => {
     res.json({ "status": 200, "success": true, "message": "Hello Welcome to E-trading development!" });
 });
 
+// Routes
+app.use('/auth', authRouter);
 
 sequelize.sync({ force: false, logging: false })
     .then(result => {

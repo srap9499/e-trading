@@ -1,0 +1,22 @@
+    <%- include('./includes/head.ejs') %>
+    </head>
+    <body>
+        <div id="signin-form" class="auth-form">
+            <form action="/auth/signIn" method="POST">
+                <h2 class="text-center">Sign In</h2>
+                <div class="form-group">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email ID" required=true>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" class="form-control" id="password" name="password" placeholder="Password" required=true>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block" id="signin">Sign In</button>
+                </div>
+                <p>Don't have account? <a href="/auth/signUp">Sign Up</a></p>
+            </form>
+        </div>
+        
+    <%- include('./includes/tail.ejs') %>
