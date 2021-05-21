@@ -27,9 +27,9 @@ const User = sequelize.define("User", {
         allowNull: false,
     },
     status: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM('active', 'pending'),
         allowNull: false,
-        defaultValue: 'active'
+        defaultValue: 'pending'
     },
     accessToken: {
         type: Sequelize.STRING,

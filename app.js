@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 
 // Import routes
 const authRouter = require('./routes/auth.routes');
+const homeRouter = require('./routes/home.routes');
 
 // Sequelize connection
 const { sequelize } = require('./config/db-connection.config');
@@ -34,6 +35,7 @@ app.get('/', (req, res, next) => {
 
 // Routes
 app.use('/auth', authRouter);
+app.use('/home', homeRouter);
 
 sequelize.sync({ force: false, logging: false })
     .then(result => {

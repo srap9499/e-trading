@@ -32,7 +32,7 @@ exports.postSignUp = async (req, res, next) => {
     const user = await User.create(userData)
         .then(user => {
             if (user) {
-                return res.status(200).send(user);
+                return res.status(200).redirect('/auth/signIn');
             }
             res.status(400).send("No user created!");
         })
@@ -53,7 +53,8 @@ exports.postSignIn = async (req, res, next) => {
     }
     const user = await User.findOne({where: { email }});
     if (!user) {
-        return res.status(404).send(`Invalid Email ID: ${email}`);
+        // return res.status(404).json(`Invalid Email ID: ${email}`);
+        return res.status(404).redirect('/auth/signIn');
     }
     const isMatch = compareSync(password, user.password);
     if (!isMatch) {
@@ -65,8 +66,8 @@ exports.postSignIn = async (req, res, next) => {
     }
     const token = generateToken(userData, 2*60);     // jwt authorization
     res.cookie('jwt_token', token, {maxAge: 2*60*1000, httpOnly: true});
-    console.log(token);
     user.accessToken = token;
     await user.save();
-    res.status(200).send({ Message: "OK! Sign In successful!", "Token": token });
+    // res.status(200).send({ Message: "OK! Sign In successful!", "Token": token });
+    res.redirect('/home');
 };
