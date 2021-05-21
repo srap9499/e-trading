@@ -37,6 +37,10 @@ app.get('/', (req, res, next) => {
 app.use('/auth', authRouter);
 app.use('/home', homeRouter);
 
+app.get('/*', (req, res, next) => {
+    return res.redirect('/home');
+});
+
 sequelize.sync({ force: false, logging: false })
     .then(result => {
         app.listen(PORT, () => {

@@ -7,7 +7,7 @@ const {
 } = require('bcryptjs');
 
 const { generateToken } = require('../helpers/auth.helper');
-
+const { sendVerifyEmail } = require('../helpers/mail.helper');
 const { User } = require('../models/user.model');
 
 
@@ -32,6 +32,7 @@ exports.postSignUp = async (req, res, next) => {
     const user = await User.create(userData)
         .then(user => {
             if (user) {
+                sendVerifyEmail({ userName: user.userName, email: user.email }, "A0TpqS");
                 return res.status(200).redirect('/auth/signIn');
             }
             res.status(400).send("No user created!");
