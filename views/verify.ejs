@@ -1,0 +1,22 @@
+<%- include('./includes/head.ejs') %>
+</head>
+<body>
+    <div id="verify-form" class="auth-form">
+        <form action="/auth/verify" method="POST">
+            <h2 class="text-center">Verify Account</h2>
+            <p>Verify account using OTP sent to your email address.</p>
+            <div class="form-group">
+                <input type="text" class="form-control" hidden=true id="id" name="id" value="<%= userId %>">
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required=true>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block" id="verify">Verify</button>
+            </div>
+        </form>
+    </div>
+    
+<%- include('./includes/tail.ejs') %>
