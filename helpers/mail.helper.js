@@ -17,7 +17,7 @@ exports.sendVerifyEmail = (user, otp) => {
         to: user.email,
         subject: "Please verify email to Activate your account!",
         html: `<h1>Welcome ${user.userName}</h1>
-        <p>We are glad to see registering on E-Trading. Plaese activate your account by verifying your email address</p>
+        <p>We are glad to see you registering on E-Trading. Plaese activate your account by verifying your email address</p>
         <br><br>
         <p>Your OTP for verification: ${otp}</p>`
     };
