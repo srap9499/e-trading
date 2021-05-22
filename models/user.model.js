@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 // Sequelize connection
 const { sequelize } = require('../config/db-connection.config');
 
-const User = sequelize.define("User", {
+const User = sequelize.define("user", {
     userName: {
         type: Sequelize.STRING(25),
         allowNull: false,

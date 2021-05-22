@@ -1,5 +1,7 @@
 'use strict';
 
+// import environment variables
+require('dotenv').config();
 // import functions from bcryptjs module for password hashing
 const {
     hashSync,
@@ -9,8 +11,10 @@ const {
 const { generateToken } = require('../helpers/auth.helper');
 const cryptoRandomString = require('crypto-random-string');
 const { sendVerifyEmail } = require('../helpers/mail.helper');
+const { sequelize } = require('../config/db-connection.config');
 const { User } = require('../models/user.model');
 const { Code } = require('../models/code.model');
+const { Wallet } = require('../models/wallet.model');
 
 
 // Render Sign Up page
@@ -29,9 +33,10 @@ exports.postSignUp = async (req, res, next) => {
     userData = {
         userName,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        wallet: {}
     };
-    const user = await User.create(userData)
+    const user = await User.create(userData, { include: { model: Wallet } })
         .then(user => {
             if (user) {
                 const otp = cryptoRandomString(6);
@@ -61,15 +66,25 @@ exports.postVerify = async (req, res, next) => {
     if (!otp) {
         res.status(400).redirect('/auth/verify/' + id);
     }
-    const user = await User.findByPk(id);
-    const verified = await Code.findOne({where: { email: user.email, otp }});
-    if (verified) {
-        user.status = 'active';
-        await user.save();
-        await Code.destroy({ where: { email: user.email } });
-        return res.redirect('/auth/signIn');
+    const verifyTransaction = await sequelize.transaction();
+    try {
+        const user = await User.findOne({ where: { id }, include: Wallet });
+        const verified = await Code.findOne({where: { email: user.email, otp }});
+        if (verified) {
+            user.status = 'active';
+            user.wallet.amount = process.env.N_BONUS_AMOUNT || 500;
+            await user.wallet.save({transaction: verifyTransaction});
+            await user.save({transaction: verifyTransaction});
+            await Code.destroy({ where: { email: user.email }, transaction: verifyTransaction });
+            await verifyTransaction.commit();
+            return res.redirect('/auth/signIn');
+        }
+        res.status(400).redirect('/auth/verify/' + id);
+    } catch(err) {
+        await verifyTransaction.rollback();
+        console.log(err.message);
+        res.status(500).redirect('/auth/verify/' + id);
     }
-    res.status(400).redirect('/auth/verify/' + id);
 };
 
 exports.getSignIn = async (req, res, next) => {
