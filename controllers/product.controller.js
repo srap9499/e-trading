@@ -22,3 +22,16 @@ exports.postAddProduct = async (req, res, next) => {
         return res.status(500).send("Something went wrong!");
     }
 };
+
+// all products
+exports.getAllProducts = async (req, res, next) => {
+    try {
+        const products = await Product.findAll({
+            attributes: ['name', 'quantity', 'price']
+        });
+        return res.status(200).send(products);
+    } catch(err) {
+        console.log(err);
+        return res.status(500).send("Something went wrong!");
+    }
+};
