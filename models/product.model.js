@@ -10,8 +10,8 @@ const Product = sequelize.define('product', {
         allowNull: false,
         unique: true,
         validate: {
-            is: /^[A-Za-z0-9_\-]{2, 50}$/,
-            notNull: true
+            len: [2, 50],
+            notNull: true,
         }
     },
     quantity: {
@@ -23,7 +23,7 @@ const Product = sequelize.define('product', {
         }
     },
     price: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.DECIMAL(20, 2),
         allowNull: false,
         defaultValue: 0
     }
