@@ -112,8 +112,8 @@ exports.postSignIn = async (req, res, next) => {
         userName: user.userName,
         email: user.email
     }
-    const token = generateToken(userData, 2*60);     // jwt authorization
-    res.cookie('jwt_token', token, {maxAge: 2*60*1000, httpOnly: true});
+    const token = generateToken(userData, 60*60);     // jwt authorization
+    res.cookie('jwt_token', token, {maxAge: 60*60*1000, httpOnly: true});
     user.accessToken = token;
     await user.save();
     // res.status(200).send({ Message: "OK! Sign In successful!", "Token": token });
