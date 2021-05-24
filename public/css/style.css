@@ -41,3 +41,9 @@
     background-color: #cdcdcd;
     border: 1px solid brown;
 }
+
+
+.left-heading h3 {
+    margin-bottom: 30px;
+    color: brown;
+}
