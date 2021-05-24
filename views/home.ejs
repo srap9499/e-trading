@@ -5,7 +5,7 @@
         <h2><a href="">Welcome <%= user.userName %></a></h2>
 
         <div class="container">
-            <% if(!products) { %>
+            <% if(!products.length) { %>
                 <div class="row justify-content-center">
                     <div class="col-sm-12 col-md-12">
                         <p>No Products Available!</p>
