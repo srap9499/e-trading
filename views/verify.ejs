@@ -3,14 +3,19 @@
 <body>
     <div id="verify-form" class="auth-form">
         <form action="/auth/verify" method="POST">
+            <% if (message) { %>
+                <div class="alert alert-<%= message.type === 'success' ? 'success' : 'danger' %>" role="alert">
+                    <%= message.body %>
+                </div>
+                <% } %>
             <h2 class="text-center">Verify Account</h2>
             <p>Verify account using OTP sent to your email address.</p>
             <div class="form-group">
-                <input type="text" class="form-control" hidden=true id="id" name="id" value="<%= userId %>">
+                <input type="text" class="form-control" hidden=true id="id" name="id" value="<%= formData.id %>">
             </div>
 
             <div class="form-group">
-                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required=true>
+                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required=true value="<%= formData.otp %>">
             </div>
 
             <div class="form-group">

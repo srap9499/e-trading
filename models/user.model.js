@@ -7,19 +7,21 @@ const { sequelize } = require('../config/db-connection.config');
 
 const User = sequelize.define("user", {
     userName: {
-        type: Sequelize.STRING(25),
+        type: Sequelize.STRING(64),
         allowNull: false,
         validate: {
-            is: /^[A-Za-z0-9]+$/,
-            notNull: true
+            isAlphanumeric: { msg: "User Name should be a valid alpha-numeric!"},
+            len: {min: 2, max: 64, msg: "User Name length should between 2 and 64"
+            },
         }
     },
     email: {
         type: Sequelize.STRING(50),
         allowNull: false,
-        unique: true,
+        unique: { msg: "Email already exists!"},
         validate: {
-            isEmail: true,
+            isEmail: {msg: "Email should be a valid Email Id!"},
+            len: { min:0, max: 50, msg: "Email is to long!"}
         }
     },
     password: {
