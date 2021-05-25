@@ -48,7 +48,7 @@
                                     </a>
                                   </li>
                                   <% for (let pageNum=0; pageNum<totalPages; pageNum++) { %>
-                                  <li class="page-item"><a class="page-link <%= currentPage==pageNum ? 'active' : '' %>" href="/home/?size=<%= size%>&page=<%= pageNum%>"><%= pageNum+1%></a></li>
+                                  <li class="page-item <%= currentPage==pageNum ? 'active' : '' %>"><a class="page-link" href="/home/?size=<%= size%>&page=<%= pageNum%>"><%= pageNum+1%></a></li>
                                   <% } %>
                                   <li class="page-item">
                                     <a class="page-link" href="/home/?size=<%= size%>&page=<%= (currentPage < totalPages-1) ? (currentPage+1) : (totalPages-1) %>" aria-label="Next">
