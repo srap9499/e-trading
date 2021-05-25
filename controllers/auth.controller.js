@@ -40,7 +40,6 @@ exports.postSignUp = async (req, res, next) => {
         abortEarly: false
     });
     if (validateResult.error) {
-        // return res.status(400).send(joiErrorFormatter(validateResult.error));
         return res.status(400).render('signUp', {
             message: {
                 type: "error",
@@ -73,6 +72,17 @@ exports.postSignUp = async (req, res, next) => {
         }
         res.status(400).send("No user created!");
     } catch (e) {
+        if (e.name === 'SequelizeValidationError') {
+            return res.status(400).render('signUp', {
+                message: {
+                    type: "error",
+                    body: "Validation Errors"
+                },
+                errors: sequelizeErrorFormatter(e),
+                formData: req.body,
+                title: "Sign Up"
+            });
+        }
         res.status(400).send(sequelizeErrorFormatter(e));
     }
 };

@@ -41,4 +41,16 @@ const User = sequelize.define("user", {
     paranoid: true
 });
 
+User.addHook('beforeCreate', 'avoidDuplicateEmail', async (user) => {
+    const alreadyExists = await User.findOne({ where: { email: user.email } });
+    if (alreadyExists) {
+        throw new Sequelize.ValidationError("error", [
+            {
+                message: "Email Id already Exists!",
+                path: "email"
+            }
+        ]);
+    }
+});
+
 exports.User = User;

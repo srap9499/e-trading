@@ -15,7 +15,7 @@ const sequelizeErrorFormatter = (rowErrors) => {
         errors[e.path] = e.message;
     });
     
-    return rowErrors;
+    return errors;
 }
 
 module.exports = {
