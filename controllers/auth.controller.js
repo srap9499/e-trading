@@ -149,16 +149,30 @@ exports.postSignIn = async (req, res, next) => {
     }
     const user = await User.findOne({ where: { email } });
     if (!user) {
-        // return res.status(404).json(`Invalid Email ID: ${email}`);
-        return res.status(404).redirect('/auth/signIn');
+        return res.status(400).render('signIn', {
+            message: {
+                type: "error",
+                body: "Invalid User!"
+            },
+            errors: { email: "User does not exists!"},
+            formData: req.body,
+            title: "Sign In"
+        });
     }
     if (user.status == 'pending') {
         return res.redirect('/auth/verify/' + user.id);
     }
     const isMatch = compareSync(password, user.password);
     if (!isMatch) {
-        return res.status(400).send('Invalid Email ID or Password!');
-    }
+        return res.status(400).render('signIn', {
+            message: {
+                type: "error",
+                body: "Invalid Email ID or Password!"
+            },
+            errors: {},
+            formData: req.body,
+            title: "Sign In"
+        });    }
     const userData = {
         userName: user.userName,
         email: user.email
