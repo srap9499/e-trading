@@ -9,13 +9,6 @@ const {
 } = require('bcryptjs');
 
 const {
-    signUpSchema,
-    verifySchema,
-    signInSchema
-} = require('../helpers/validate.helper');
-
-const {
-    joiErrorFormatter,
     sequelizeErrorFormatter
 } = require('../helpers/error-formatter.helper');
 
@@ -36,20 +29,6 @@ exports.getSignUp = async (req, res, next) => {
 // POST Sign Up
 exports.postSignUp = async (req, res, next) => {
     const { userName, email, password } = req.body;
-    const validateResult = signUpSchema.validate(req.body, {
-        abortEarly: false
-    });
-    if (validateResult.error) {
-        return res.status(400).render('signUp', {
-            message: {
-                type: "error",
-                body: "Validation Errors"
-            },
-            errors: joiErrorFormatter(validateResult.error),
-            formData: req.body,
-            title: "Sign Up"
-        });
-    }
     try {
         let userData;
         const hashedPassword = hashSync(password, 12);
@@ -95,25 +74,11 @@ exports.getVerify = async (req, res, next) => {
 
 exports.postVerify = async (req, res, next) => {
     const { id, otp } = req.body;
-    const validateResult = verifySchema.validate(req.body, {
-        abortEarly: false
-    });
-    if (validateResult.error) {
-        return res.status(400).render('verify', {
-            message: {
-                type: "error",
-                body: "Validation Error"
-            },
-            errors: joiErrorFormatter(validateResult.error),
-            formData: req.body,
-            title: "Verify Account"
-        });
-    }
-    const verifyTransaction = await sequelize.transaction();
     try {
         const user = await User.findOne({ where: { id }, include: Wallet });
         const verified = await Code.findOne({ where: { email: user.email, otp } });
         if (verified) {
+            const verifyTransaction = await sequelize.transaction();
             user.status = 'active';
             user.wallet.amount = process.env.N_BONUS_AMOUNT || 500;
             await user.wallet.save({ transaction: verifyTransaction });
@@ -143,20 +108,6 @@ exports.getSignIn = async (req, res, next) => {
 
 exports.postSignIn = async (req, res, next) => {
     const { email, password } = req.body;
-    const validateResult = signInSchema.validate(req.body, {
-        abortEarly: false
-    });
-    if (validateResult.error) {
-        return res.status(400).render('signIn', {
-            message: {
-                type: "error",
-                body: "Validation Errors"
-            },
-            errors: joiErrorFormatter(validateResult.error),
-            formData: req.body,
-            title: "Sign In"
-        });
-    }
     const user = await User.findOne({ where: { email } });
     if (!user) {
         return res.status(400).render('signIn', {
