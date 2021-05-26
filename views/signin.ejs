@@ -4,8 +4,8 @@
     <body>
         <div id="signin-form" class="auth-form">
             <form action="/auth/signIn" method="POST">
-                <% if (message) { %>
-                    <div class="alert alert-<%= message.type === 'success' ? 'success' : 'danger' %>" role="alert">
+                <% if (message && message.body) { %>
+                    <div class="alert alert-<%= (message.type === 'success') ? 'success' : 'danger' %>" role="alert">
                         <%= message.body %>
                     </div>
                     <% } %>
@@ -13,7 +13,7 @@
                 <div class="form-group">
                     <input type="email"
                         class="form-control <%= (message.type === 'error') ? errors.email ? 'is-invalid' : '' : ''%>"
-                        id="email" name="email" placeholder="Email ID" value="<%= formData.email %>">
+                        id="email" name="email" placeholder="Email ID" value="<%= formData.email??'' %>">
                     <% if (message.type==='error' && errors.email) { %>
                         <div class="invalid-feedback">
                             <%= errors.email %>
@@ -24,7 +24,7 @@
                 <div class="form-group">
                     <input type="text"
                         class="form-control <%= (message.type === 'error') ? errors.password ? 'is-invalid' : '' : ''%>"
-                        id="password" name="password" placeholder="Password" value="<%= formData.password %>">
+                        id="password" name="password" placeholder="Password" value="<%= formData.password??'' %>">
                     <% if(message.type==='error' && errors.password) { %>
                         <div class="invalid-feedback">
                             <%= errors.password %>

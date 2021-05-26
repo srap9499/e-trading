@@ -30,7 +30,7 @@ const { Wallet } = require('../models/wallet.model');
 
 // Render Sign Up page
 exports.getSignUp = async (req, res, next) => {
-    res.render('signup', { message: { type: "success"}, formData: {}, title: "Sign Up" });
+    res.render('signup', { message: {}, formData: {}, title: "Sign Up" });
 };
 
 // POST Sign Up
@@ -90,7 +90,7 @@ exports.postSignUp = async (req, res, next) => {
 exports.getVerify = async (req, res, next) => {
     const { id } = req.params;
     const title = "Verify Account"
-    return res.render('verify', { message: { type: "success" }, formData: { id }, title});
+    return res.render('verify', { message: {}, formData: { id }, title});
 };
 
 exports.postVerify = async (req, res, next) => {
