@@ -47,7 +47,8 @@ User.addHook('beforeCreate', 'avoidDuplicateEmail', async (user) => {
         throw new Sequelize.ValidationError("error", [
             {
                 message: "Email Id already Exists!",
-                path: "email"
+                path: "email",
+                name: "SequelizeValidationError"
             }
         ]);
     }

@@ -15,6 +15,9 @@ const productRouter = require('./routes/product.routes');
 // Sequelize connection
 const { sequelize } = require('./config/db-connection.config');
 
+// import custom error middleware
+const { error } = require('./middlewares/error.middleware');
+
 // Create express server app
 const app = express();
 // configure server port number
@@ -39,9 +42,11 @@ app.use('/auth', authRouter);
 app.use('/home', homeRouter);
 app.use('/product', productRouter);
 
-app.get('/*', (req, res, next) => {
+app.use('/*', (req, res, next) => {
     return res.redirect('/home');
 });
+
+app.use(error);
 
 sequelize.sync({ force: false, logging: false })
     .then(result => {

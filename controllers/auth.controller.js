@@ -8,10 +8,6 @@ const {
     compareSync
 } = require('bcryptjs');
 
-const {
-    sequelizeErrorFormatter
-} = require('../helpers/error-formatter.helper');
-
 const { generateToken } = require('../helpers/auth.helper');
 const cryptoRandomString = require('crypto-random-string');
 const { sendVerifyEmail } = require('../helpers/mail.helper');
@@ -51,18 +47,7 @@ exports.postSignUp = async (req, res, next) => {
         }
         res.status(400).send("No user created!");
     } catch (e) {
-        if (e.name === 'SequelizeValidationError') {
-            return res.status(400).render('signUp', {
-                message: {
-                    type: "error",
-                    body: "Validation Errors"
-                },
-                errors: sequelizeErrorFormatter(e),
-                formData: req.body,
-                title: "Sign Up"
-            });
-        }
-        res.status(400).send(sequelizeErrorFormatter(e));
+        next({ error: e, view: "signIn", title: "Sign Up"});
     }
 };
 
