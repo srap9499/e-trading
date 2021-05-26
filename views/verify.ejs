@@ -2,26 +2,30 @@
 </head>
 <body>
     <div id="verify-form" class="auth-form">
-        <form action="/auth/verify" method="POST">
-            <% if (message && message.body) { %>
-                <div class="alert alert-<%= (message.type === 'success') ? 'success' : 'danger' %>" role="alert">
-                    <%= message.body %>
+        <div class="container">
+            <form action="/auth/verify" method="POST">
+                <div class="row">
+                    <% if (message && message.body) { %>
+                        <div class="col-sm-12 col-md-12 alert alert-<%= (message.type === 'success') ? 'success' : 'danger' %>" role="alert">
+                            <%= message.body %>
+                        </div>
+                        <% } %>
+                    <h2 class="text-center">Verify Account</h2>
+                    <p>Verify account using OTP sent to your email address.</p>
+                    <div class="col-sm-12 col-md-12 form-group">
+                        <input type="text" class="form-control" hidden=true id="id" name="id" value="<%= formData.id %>">
+                    </div>
+        
+                    <div class="col-sm-12 col-md-12 form-group">
+                        <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required=true value="<%= formData.otp??'' %>">
+                    </div>
+        
+                    <div class="col-sm-12 col-md-12 form-group">
+                        <button type="submit" class="btn btn-primary btn-block" id="verify">Verify</button>
+                    </div>
                 </div>
-                <% } %>
-            <h2 class="text-center">Verify Account</h2>
-            <p>Verify account using OTP sent to your email address.</p>
-            <div class="form-group">
-                <input type="text" class="form-control" hidden=true id="id" name="id" value="<%= formData.id %>">
-            </div>
-
-            <div class="form-group">
-                <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required=true value="<%= formData.otp??'' %>">
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block" id="verify">Verify</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
     
 <%- include('./includes/tail.ejs') %>

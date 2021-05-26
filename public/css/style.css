@@ -1,5 +1,5 @@
 .auth-form form {
-    width: 50%;
+    width: 90%;
     padding: 50px;
     border: 1px solid brown;
     border-radius: 3px;
@@ -14,7 +14,7 @@
     margin-bottom: 50px;
 }
 .auth-form form p {
-    font-size: 18px;
+    font-size: 18px !important;
 }
 .auth-form form p a {
     color: brown;
@@ -25,7 +25,7 @@
 }
 .auth-form form .form-group .form-control {
     height: 50px;
-    font-size: 22px;
+    font-size: 22px !important;
 }
 
 .btn-primary {
