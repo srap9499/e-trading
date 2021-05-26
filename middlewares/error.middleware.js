@@ -15,4 +15,14 @@ exports.error = ({ error, view, title="E-Trading"}, req, res, next) => {
             title
         });
     }
+    
+    return res.status(500).render(view, {
+        message: {
+            type: "error",
+            body: "Something went wrong!"
+        },
+        errors: {},
+        formData: req.body,
+        title
+    });
 };

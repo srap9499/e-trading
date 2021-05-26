@@ -10,7 +10,7 @@ const {
 
 const { generateToken } = require('../helpers/auth.helper');
 const cryptoRandomString = require('crypto-random-string');
-const { sendVerifyEmail } = require('../helpers/mail.helper');
+const { sendVerifyEmail, sendSignUpNotificationMail } = require('../helpers/mail.helper');
 const { sequelize } = require('../config/db-connection.config');
 const { User } = require('../models/user.model');
 const { Code } = require('../models/code.model');
@@ -44,6 +44,7 @@ exports.postSignUp = async (req, res, next) => {
                 otp
             },{ transaction: signUpTransaction });
             sendVerifyEmail({ userName: user.userName, email: user.email }, otp);
+            sendSignUpNotificationMail({userName: user.userName, email: user.email }, process.env.N_BONUS_AMOUNT || 500);
             await signUpTransaction.commit();
             return res.redirect('/auth/verify/' + user.id);
         }
