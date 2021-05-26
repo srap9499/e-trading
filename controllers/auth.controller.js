@@ -25,6 +25,7 @@ exports.getSignUp = async (req, res, next) => {
 // POST Sign Up
 exports.postSignUp = async (req, res, next) => {
     const { userName, email, password } = req.body;
+    const signUpTransaction = await sequelize.transaction();
     try {
         let userData;
         const hashedPassword = hashSync(password, 12);
@@ -34,20 +35,23 @@ exports.postSignUp = async (req, res, next) => {
             password: hashedPassword,
             wallet: {}
         };
-        const user = await User.create(userData, { include: { model: Wallet } })
+        const user = await User.create(userData, { include: { model: Wallet }, transaction: signUpTransaction })
         if (user) {
             const otp = cryptoRandomString(6);
             console.log('otp::::::::: ', otp);
             await Code.create({
                 email: user.email,
                 otp
-            });
+            },{ transaction: signUpTransaction });
             sendVerifyEmail({ userName: user.userName, email: user.email }, otp);
+            await signUpTransaction.commit();
             return res.redirect('/auth/verify/' + user.id);
         }
+        await signUpTransaction.commit();
         res.status(400).send("No user created!");
     } catch (e) {
-        next({ error: e, view: "signIn", title: "Sign Up"});
+        await signUpTransaction.rollback();
+        next({ error: e, view: "signUp", title: "Sign Up"});
     }
 };
 
