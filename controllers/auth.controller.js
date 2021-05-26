@@ -49,7 +49,7 @@ exports.postSignUp = async (req, res, next) => {
             return res.redirect('/auth/verify/' + user.id);
         }
         await signUpTransaction.commit();
-        res.status(400).send("No user created!");
+        return res.status(400).send("No user created!");
     } catch (e) {
         await signUpTransaction.rollback();
         next({ error: e, view: "signUp", title: "Sign Up"});
