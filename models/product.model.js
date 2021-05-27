@@ -3,6 +3,8 @@
 const Sequelize = require('sequelize');
 
 const { sequelize } = require('../config/db-connection.config');
+const { Brand } = require('./brand.model');
+const { Category, Subcategory } = require('./categories.model');
 
 const Product = sequelize.define('product', {
     name: {
@@ -30,5 +32,20 @@ const Product = sequelize.define('product', {
 }, {
     paranoid: true  
 });
+
+Brand.hasMany(Product, {
+    onDelete: 'CASCADE'
+});
+Product.belongsTo(Brand);
+
+Category.hasMany(Product, {
+    onDelete: 'SET NULL'
+});
+Product.belongsTo(Category);
+
+Subcategory.hasMany(Product, {
+    onDelete: 'SET NULL'
+});
+Product.belongsTo(Subcategory);
 
 module.exports = { Product };
