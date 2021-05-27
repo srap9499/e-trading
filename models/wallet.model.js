@@ -19,4 +19,4 @@ User.hasOne(Wallet, {
 });
 Wallet.belongsTo(User);
 
-exports.Wallet = Wallet;
+module.exports = { Wallet };

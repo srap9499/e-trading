@@ -54,4 +54,4 @@ User.addHook('beforeCreate', 'avoidDuplicateEmail', async (user) => {
     }
 });
 
-exports.User = User;
+module.exports = { User };

@@ -21,4 +21,4 @@ const Code = sequelize.define('code', {
     timestamps: false
 });
 
-exports.Code = Code;
+module.exports= { Code };
