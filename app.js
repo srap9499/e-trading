@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 
 // Import routes
 const authRouter = require('./routes/auth.routes');
+const userRouter = require('./routes/user.routes');
 const homeRouter = require('./routes/home.routes');
 const productRouter = require('./routes/product.routes');
 
@@ -39,6 +40,7 @@ app.get('/', (req, res, next) => {
 
 // Routes
 app.use('/auth', authRouter);
+app.use('/user', userRouter);
 app.use('/home', homeRouter);
 app.use('/product', productRouter);
 

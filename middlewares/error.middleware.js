@@ -4,7 +4,7 @@ const e = require("express");
 const { sequelizeErrorFormatter } = require("../helpers/error-formatter.helper");
 
 exports.error = ({ error, view, title="E-Trading"}, req, res, next) => {
-    if (error.name === 'SequelizeValidationError') {
+    if (error.name && error.name === 'SequelizeValidationError') {
         return res.status(400).render(view, {
             message: {
                 type: "error",

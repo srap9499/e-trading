@@ -1,0 +1,81 @@
+<%- include('./includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <h2><a href="">Welcome <%= user.userName %></a></h2>
+        <section id="my-cart">
+            <div class="content-box-md">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="left-heading">
+                                <h2>My Cart</h2>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="cart-desc">
+                                <h4>Total <%= totalItems %> items in cart!</h4>
+                            </div>
+                        </div>
+                        <% if (!cartItems.length) { %>
+                            <div class="col-sm-12 col-md-12 justify-content-center">
+                                <p>Nothing to display here...</p>
+                            </div>
+                        <% } else { %>
+                            <% for (const item of cartItems) { %>
+                                <div class="col-sm-12 col-md-4">
+                                    <div class="cart-items">
+                                        <img src="/images/1.jpg" alt="product" class="img-responsive">
+                                        <div class="cart-product">
+                                            <div class="product-head">
+                                                <h5><%= item.product.name %></h5>
+                                                <% if (item.product.brand.name) { %>
+                                                    <h6>By <%= item.product.brand.name %></h6>
+                                                <% } %>
+                                            </div>
+                                            <ul class="product-details">
+                                                <li><% if (item.product.category && item.product.category.category) { %><p class="detail-title"><span><%= item.product.category.category %></span></p><% } %><% if (item.product.subcategory && item.product.subcategory.subcategory) { %><p class="detail-title"><span><%= item.product.subcategory.subcategory %></span></p><% } %></li>
+                                                <li><p class="detail-title">Price: &#8377;</p><span><%= item.product.price %></span></li>
+                                                <li><p class="detail-title">Total Quantity Left:</p><span><%= item.product.quantity %></span></li>
+                                                <li><p class="detail-title">Quantity in Cart:</p><span><%= item.quantity %></span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                        <% } %>
+                        <div class="col-sm-12 col-md-12">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="Cart Pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="/user/mycart/?size=<%= size%>&page=<%= (currentPage>0) ? (currentPage-1) : 0 %>"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <% for (let pageNum=0; pageNum<totalPages; pageNum++) { %>
+                        <li class="page-item <%= currentPage==pageNum ? 'active' : '' %>"><a
+                                class="page-link"
+                                href="/user/mycart/?size=<%= size%>&page=<%= pageNum%>">
+                                <%= pageNum+1%>
+                            </a></li>
+                    <% } %>
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="/user/mycart/?size=<%= size%>&page=<%= (currentPage < totalPages-1) ? (currentPage+1) : (totalPages-1) %>"
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+
+        <%- include('./includes/tail.ejs') %>
