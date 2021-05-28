@@ -2,7 +2,7 @@
 
 
 exports.getProductPagination = ({ page, size }) => {
-    const limit = size ? +size : 5;
+    const limit = size ? +size : 6;
     const offset = page ? page * limit : 0;
 
     return { limit, offset };
@@ -18,7 +18,7 @@ exports.getProductPaginationData = ({ data, page, limit }) => {
 };
 
 exports.getCartPagination = ({ page, size }) => {
-    const limit = size ? +size : 5;
+    const limit = size ? +size : 3;
     const offset = page ? page * limit : 0;
 
     return { limit, offset };
