@@ -51,12 +51,14 @@
     color: brown;
 }
 
-/* My Cart */
+/* Home / My Cart */
+.product-desc h4,
 .cart-desc h4 {
     margin-bottom: 30px;
     color:brown;
 }
 
+.product-items,
 .cart-items {
     width: 100%;
     margin-top: 30px;
@@ -64,9 +66,11 @@
     border-radius: 3px;
 }
 
+.product-items img,
 .cart-items img {
     width: 100%;
 }
+.product-items .list-product,
 .cart-items .cart-product {
     height: 300px;
     padding: 25px;
