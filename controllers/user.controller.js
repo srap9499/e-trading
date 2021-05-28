@@ -1,11 +1,19 @@
 'use strict';
 
+const { 
+    getCartPagination, 
+    getCartPaginationData, 
+    getCouponPagination, 
+    getCouponPaginationData
+} = require("../helpers/pagination.helper");
+
+const { Op } = require('sequelize');
 const { Cart } = require("../models/cart.model");
 const { User } = require("../models/user.model");
 const { Product } = require('../models/product.model');
-const { getCartPagination, getCartPaginationData } = require("../helpers/pagination.helper");
 const { Brand } = require("../models/brand.model");
 const { Category, Subcategory } = require("../models/categories.model");
+const { Coupon } = require('../models/coupon.model');
 
 
 exports.getMyCart = async (req, res, next) => {
@@ -54,5 +62,38 @@ exports.getMyCart = async (req, res, next) => {
     } catch (e) {
         next(e);
         // next({error: e, view: "cart", title});
+    }
+};
+
+exports.getMyCoupons = async (req, res, next) => {
+    const { userData } = req;
+    const title = "My Coupons";
+    const { page, size } = req.query;
+    try {
+        const { limit, offset } = getCouponPagination({ page, size });
+        const user = await User.findOne({
+            logging: false,
+            attributes: [ "id", "userName", "email" ],
+            where: {
+                email: userData.email
+            }
+        });
+        const data = await Coupon.findAndCountAll({
+            logging: false,
+            attributes: [ "name", "code", "type", "value", "notAfter" ],
+            where: {
+                userId: user.id,
+                status: "unused",
+                notAfter: {
+                    [Op.gte]: new Date()
+                }
+            },
+        });
+        let renderData = getCouponPaginationData({ data, page, limit });
+        renderData.title = title;
+        renderData.user = user;
+        return res.status(200).render('coupon', renderData);
+    } catch (e) {
+        console.log(e);
     }
 };

@@ -8,4 +8,6 @@ const router = Router();
 
 router.get('/mycart', authenticate, User.getMyCart);
 
+router.get('/mycoupons', authenticate, User.getMyCoupons);
+
 module.exports = router;

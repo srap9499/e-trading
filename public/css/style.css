@@ -51,13 +51,15 @@
     color: brown;
 }
 
-/* Home / My Cart */
+/* Home / My Cart / My Coupons */
+.coupons-desc h4,
 .product-desc h4,
 .cart-desc h4 {
     margin-bottom: 30px;
     color:brown;
 }
 
+.coupon-items,
 .product-items,
 .cart-items {
     width: 100%;
@@ -70,13 +72,24 @@
 .cart-items img {
     width: 100%;
 }
+
+.coupon-items .list-coupon,
 .product-items .list-product,
 .cart-items .cart-product {
     height: 300px;
     padding: 25px;
 }
+
 .product-head {
     height: 52px;
+}
+.coupon-items .list-coupon h5 {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+    color: brown;
+    margin: 0 0 10px 0;
+    padding: 0;
+    display: inline-block;
 }
 .product-head h5 {
     font-family: "Open Sans", sans-serif;

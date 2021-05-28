@@ -1,0 +1,76 @@
+<%- include('./includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <h2><a href="">Welcome <%= user.userName %></a></h2>
+        <section id="my-coupons">
+            <div class="content-box-md">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="left-heading">
+                                <h2>My Coupons</h2>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="cart-desc">
+                                <h4>Total <%= totalItems %> discount coupons!</h4>
+                            </div>
+                        </div>
+                        <% if (!coupons.length) { %>
+                            <div class="col-sm-12 col-md-12 justify-content-center">
+                                <p>Nothing to display here...</p>
+                            </div>
+                        <% } else { %>
+                            <% for (const coupon of coupons) { %>
+                                <div class="col-sm-12 col-md-3">
+                                    <div class="coupon-items">
+                                        <div class="list-coupon text-center">
+                                            <h5><%= coupon.name %></h5>
+                                            <h6><%= coupon.code %></h6>
+                                            <% if ( coupon.type === 'dynamic') { %>
+                                                <h6>Use the coupon code above & get <%= coupon.value %> % off on your orders</h6>
+                                            <% } else { %>
+                                                <h6>Use the coupon code above & get flat <%= coupon.value %> &#8377; off on your orders</h6>
+                                            <% } %>
+                                            <h6> Expires at<br><%= coupon.notAfter %></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                        <% } %>
+                        <div class="col-sm-12 col-md-12">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="Cart Pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="/user/mycoupons/?size=<%= size%>&page=<%= (currentPage>0) ? (currentPage-1) : 0 %>"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <% for (let pageNum=0; pageNum<totalPages; pageNum++) { %>
+                        <li class="page-item <%= currentPage==pageNum ? 'active' : '' %>"><a
+                                class="page-link"
+                                href="/user/mycoupons/?size=<%= size%>&page=<%= pageNum%>">
+                                <%= pageNum+1%>
+                            </a></li>
+                    <% } %>
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="/user/mycoupons/?size=<%= size%>&page=<%= (currentPage < totalPages-1) ? (currentPage+1) : (totalPages-1) %>"
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+
+        <%- include('./includes/tail.ejs') %>
