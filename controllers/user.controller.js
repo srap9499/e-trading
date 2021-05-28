@@ -15,11 +15,11 @@ exports.getMyCart = async (req, res, next) => {
     try {
         const { limit, offset } = getCartPagination({ page, size });
         const user = await User.findOne({
+            logging: false,
             attributes: [ "id", "userName", "email" ],
             where: {
                 email: userData.email
             },
-            logging: false
         });
         const data = await Cart.findAndCountAll({
             logging: false,
