@@ -15,6 +15,8 @@ const { sequelize } = require('../config/db-connection.config');
 const { User } = require('../models/user.model');
 const { Code } = require('../models/code.model');
 const { Wallet } = require('../models/wallet.model');
+const { Coupon } = require('../models/coupon.model');
+const { dateAfterWeeks } = require('../helpers/date.helper');
 
 
 // Render Sign Up page
@@ -64,19 +66,28 @@ exports.getVerify = async (req, res, next) => {
 
 exports.postVerify = async (req, res, next) => {
     const { id, otp } = req.body;
+    const verifyTransaction = await sequelize.transaction();
     try {
-        const user = await User.findOne({ where: { id }, include: Wallet });
-        const verified = await Code.findOne({ where: { email: user.email, otp } });
+        const user = await User.findOne({ logging: false, where: { id }, include: Wallet });
+        const verified = await Code.findOne({ logging: false, where: { email: user.email, otp } });
         if (verified) {
-            const verifyTransaction = await sequelize.transaction();
             user.status = 'active';
             user.wallet.amount = process.env.N_BONUS_AMOUNT || 500;
-            await user.wallet.save({ transaction: verifyTransaction });
-            await user.save({ transaction: verifyTransaction });
-            await Code.destroy({ where: { email: user.email }, transaction: verifyTransaction });
+            const coupon = await Coupon.create({
+                name: "Buy One Get One Free",
+                code: cryptoRandomString(6),
+                type: "dynamic",
+                value: 50,
+                notAfter: dateAfterWeeks(2)
+            },{ logging: false, transaction: verifyTransaction });
+            await user.wallet.save({ logging: false, transaction: verifyTransaction });
+            await user.addCoupon(coupon, { logging: false, transaction: verifyTransaction });
+            await user.save({ logging: false, transaction: verifyTransaction });
+            await Code.destroy({ logging: false, where: { email: user.email }, transaction: verifyTransaction });
             await verifyTransaction.commit();
             return res.redirect('/auth/signIn');
         }
+        await verifyTransaction.commit();
         return res.status(400).render('verify', {
             message: {
                 type: "error",
