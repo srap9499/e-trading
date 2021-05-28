@@ -32,3 +32,19 @@ exports.getCartPaginationData = ({ data, page, limit }) => {
 
     return { totalItems, cartItems, totalPages, currentPage, size };
 };
+
+exports.getCouponPagination = ({ page, size }) => {
+    const limit = size ? +size : 4;
+    const offset = page ? page * limit : 0;
+
+    return { limit, offset };
+};
+
+exports.getCouponPaginationData = ({ data, page, limit }) => {
+    const { count: totalItems, rows: coupons } = data;
+    const currentPage = page ? +page : 0;
+    const totalPages = Math.ceil( totalItems / limit );
+    const size = limit;
+
+    return { totalItems, coupons, totalPages, currentPage, size };
+};
