@@ -30,7 +30,7 @@
                                         <div class="cart-product">
                                             <div class="product-head">
                                                 <h5><%= item.product.name %></h5>
-                                                <% if (item.product.brand.name) { %>
+                                                <% if (item.product.brand && item.product.brand.name) { %>
                                                     <h6>By <%= item.product.brand.name %></h6>
                                                 <% } %>
                                             </div>
