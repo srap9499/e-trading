@@ -9,8 +9,9 @@ const cookieParser = require('cookie-parser');
 
 // Import routes
 const authRouter = require('./routes/auth.routes');
-const userRouter = require('./routes/user.routes');
 const homeRouter = require('./routes/home.routes');
+const userRouter = require('./routes/user.routes');
+const cartRouter = require('./routes/cart.routes');
 const productRouter = require('./routes/product.routes');
 
 // Sequelize connection
@@ -18,6 +19,8 @@ const { sequelize } = require('./config/db-connection.config');
 
 // import custom error middleware
 const { error } = require('./middlewares/error.middleware');
+// import authentication middleware
+const { authenticate } = require('./middlewares/auth.middleware');
 
 // Create express server app
 const app = express();
@@ -40,8 +43,9 @@ app.get('/', (req, res, next) => {
 
 // Routes
 app.use('/auth', authRouter);
-app.use('/user', userRouter);
 app.use('/home', homeRouter);
+app.use('/user', userRouter);
+app.use('/cart', authenticate, cartRouter);
 app.use('/product', productRouter);
 
 app.use('/*', (req, res, next) => {
