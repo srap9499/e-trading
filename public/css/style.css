@@ -73,10 +73,12 @@
     width: 100%;
 }
 
-.coupon-items .list-coupon,
 .product-items .list-product,
 .cart-items .cart-product {
     height: 300px;
+    padding: 25px;
+}
+.coupon-items .list-coupon {
     padding: 25px;
 }
 
@@ -90,6 +92,12 @@
     margin: 0 0 10px 0;
     padding: 0;
     display: inline-block;
+}
+.shade-md {
+    color: #adadad;
+}
+.shade-sm {
+    color: #cdcdcd;
 }
 .product-head h5 {
     font-family: "Open Sans", sans-serif;

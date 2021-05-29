@@ -26,15 +26,15 @@
                             <% for (const coupon of coupons) { %>
                                 <div class="col-sm-12 col-md-3">
                                     <div class="coupon-items">
-                                        <div class="list-coupon text-center">
+                                        <div class="list-coupon text-center justify-content-middle">
                                             <h5><%= coupon.name %></h5>
-                                            <h6><%= coupon.code %></h6>
+                                            <h6 class="shade-md"><%= coupon.code %></h6>
                                             <% if ( coupon.type === 'dynamic') { %>
                                                 <h6>Use the coupon code above & get <%= coupon.value %> % off on your orders</h6>
                                             <% } else { %>
                                                 <h6>Use the coupon code above & get flat <%= coupon.value %> &#8377; off on your orders</h6>
                                             <% } %>
-                                            <h6> Expires at<br><%= coupon.notAfter %></h6>
+                                            <h6 class="shade-sm"> Expires at<br><%= coupon.notAfter %></h6>
                                         </div>
                                     </div>
                                 </div>
