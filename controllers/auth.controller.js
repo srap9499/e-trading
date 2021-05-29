@@ -136,6 +136,7 @@ exports.postSignIn = async (req, res, next) => {
             title: "Sign In"
         });    }
     const userData = {
+        id: user.id,
         userName: user.userName,
         email: user.email
     }
