@@ -45,37 +45,36 @@
                                 </div>
                             <% } %>
                         <% } %>
-                        <div class="col-sm-12 col-md-12">
-                            
-                        </div>
                     </div>
                 </div>
             </div>
-            <nav aria-label="Cart Pagination">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="/user/mycart/?size=<%= size%>&page=<%= (currentPage>0) ? (currentPage-1) : 0 %>"
-                            aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <% for (let pageNum=0; pageNum<totalPages; pageNum++) { %>
-                        <li class="page-item <%= currentPage==pageNum ? 'active' : '' %>"><a
-                                class="page-link"
-                                href="/user/mycart/?size=<%= size%>&page=<%= pageNum%>">
-                                <%= pageNum+1%>
-                            </a></li>
-                    <% } %>
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="/user/mycart/?size=<%= size%>&page=<%= (currentPage < totalPages-1) ? (currentPage+1) : (totalPages-1) %>"
-                            aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            <% if (totalPages > 0) { %>
+                <nav aria-label="Cart Pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="/user/mycart/?size=<%= size%>&page=<%= (currentPage>0) ? (currentPage-1) : 0 %>"
+                                aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <% for (let pageNum=0; pageNum<totalPages; pageNum++) { %>
+                            <li class="page-item <%= currentPage==pageNum ? 'active' : '' %>"><a
+                                    class="page-link"
+                                    href="/user/mycart/?size=<%= size%>&page=<%= pageNum%>">
+                                    <%= pageNum+1 %>
+                                </a></li>
+                        <% } %>
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="/user/mycart/?size=<%= size%>&page=<%= (currentPage < totalPages-1) ? (currentPage+1) : (totalPages-1) %>"
+                                aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            <% } %>
         </section>
 
         <%- include('./includes/tail.ejs') %>
