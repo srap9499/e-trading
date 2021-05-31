@@ -9,4 +9,6 @@ router.post('/add/:productId', Cart.addToCart);
 
 router.post('/update/:productId', Cart.updateCart);
 
+router.post('/checkout', Cart.checkOut);
+
 module.exports = router;
