@@ -37,8 +37,25 @@
                                                 <li><% if (item.category && item.category.category) { %><p class="detail-title"><span><%= item.category.category %></span></p><% } %><% if (item.subcategory && item.subcategory.subcategory) { %><p class="detail-title"><span><%= item.subcategory.subcategory %></span></p><% } %></li>
                                                 <li><p class="detail-title">Price: &#8377;</p><span><%= item.price %></span></li>
                                                 <li><p class="detail-title">Total Quantity Left:</p><span><%= item.quantity %></span></li>
-                                                <li><p class="detail-title">Quantity :</p><span><%= item.quantity %></span></li>
+                                                <li><p class="detail-title">Quantity:</p></li>
                                             </ul>
+                                            <div>
+                                                <form action="/cart/add/<%= item.id %>" method="POST">
+                                                    <div class="row">
+                                                        <div class="col-sm-6 col-md-6 form-group">
+                                                            <select name="quantity" id="add-quantity" class="form-control">
+                                                                <option value=1 selected hidden>1</option>
+                                                                <% for (let option = 1; option <= item.quantity && option <= 10; option++) { %>
+                                                                    <option value=<%= option %>><%= option %></option>
+                                                                <% } %>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-sm-6 col-md-6 form-group">
+                                                            <button type="submit" class="btn btn-add-to-cart btn-block">Add To Cart</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

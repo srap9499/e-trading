@@ -41,6 +41,17 @@
     background-color: #cdcdcd;
     border: 1px solid brown;
 }
+.btn-add-to-cart {
+    color: brown;
+    background-color: #fffeee;
+    border: 1px solid brown;
+}
+
+.btn-add-to-cart:hover {
+    color: brown;
+    background-color: #cdcdcd;
+    border: 1px solid brown;
+}
 
 .left-heading h2 {
     margin-bottom: 30px;
