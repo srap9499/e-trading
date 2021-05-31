@@ -1,6 +1,13 @@
 'use strict';
 
 const { sequelize } = require("../config/db-connection.config");
+const { User } = require('../models/user.model');
+const { Wallet } = require('../models/wallet.model');
+const { Cart } = require('../models/cart.model');
+const { Product } = require('../models/product.model');
+const { Coupon } = require('../models/coupon.model');
+const { Order, OrderDetail } = require('../models/order.model');
+const { use } = require("../routes/home.routes");
 
 exports.addToCart = async (req, res, next) => {
     const { userData } = req;
@@ -35,4 +42,53 @@ exports.updateCart = async (req, res, next) => {
         console.log(e);
         return res.send(500).send("Something went wrong!");
     }
-}
+};
+
+exports.checkOut = async (req, res, next) => {
+    const { userData } = req;
+    const user = await User.findOne({
+        attributes: ['id', 'userName', 'email'],
+        where: {
+            id: userData.id,
+        }
+    });
+    const cart = await Cart.findAll({
+        where: {
+            userId: user.id
+        },
+        include: {
+            model: Product
+        }
+    });
+    let sum = 0;
+    
+    const detail = await cart.map(i => {
+        sum += i.quantity * i.product.price;
+        return {
+            productId: i.productId,
+            quantity: i.quantity,
+            total: i.quantity * i.product.price
+        }
+    });
+    
+    let data = {
+        userId: user.id,
+        totalAmount: sum,
+        discountedAmount: sum,
+        orderdetails: detail
+    };
+    console.log(data);
+
+    const order = await Order.create(data, {
+        include: {
+            model: OrderDetail
+        }
+    });
+    await Cart.destroy({
+        where: {
+            userId: user.id
+        }
+    });
+
+    return res.send(order);
+};
