@@ -19,3 +19,20 @@ exports.addToCart = async (req, res, next) => {
         return res.status(500).send("Something went wrong!");
     }
 };
+
+exports.updateCart = async (req, res, next) => {
+    const { userData } = req;
+    const userId = userData.id;
+    const { productId } = req.params;
+    const { quantity } = req.body;
+    try {
+        await sequelize.query('CALL update_cart( :userId, :productId, :quantity)', {
+            replacements: { userId, productId, quantity },
+            logging: false
+        });
+        return res.redirect('/user/mycart');
+    } catch(e) {
+        console.log(e);
+        return res.send(500).send("Something went wrong!");
+    }
+}
