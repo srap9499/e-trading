@@ -42,7 +42,7 @@
                                             <div>
                                                 <form action="/cart/add/<%= item.id %>" method="POST">
                                                     <div class="row">
-                                                        <div class="col-sm-6 col-md-6 form-group">
+                                                        <div class="col-6 col-sm-6 col-md-6 form-group">
                                                             <select name="quantity" id="add-quantity" class="form-control">
                                                                 <option value=1 selected hidden>1</option>
                                                                 <% for (let option = 1; option <= item.quantity && option <= 10; option++) { %>
@@ -50,7 +50,7 @@
                                                                 <% } %>
                                                             </select>
                                                         </div>
-                                                        <div class="col-sm-6 col-md-6 form-group">
+                                                        <div class="col-6 col-sm-6 col-md-6 form-group">
                                                             <button type="submit" class="btn btn-add-to-cart btn-block">Add To Cart</button>
                                                         </div>
                                                     </div>

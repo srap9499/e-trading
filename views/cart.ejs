@@ -43,7 +43,7 @@
                                             <div>
                                                 <form action="/cart/update/<%= item.product.id %>" method="POST">
                                                     <div class="row">
-                                                        <div class="col-sm-6 col-md-6 form-group">
+                                                        <div class="col-6 col-sm-6 col-md-6 form-group">
                                                             <select type="submit" name="quantity" id="update-quantity" class="form-control">
                                                                 <option value=<%= item.quantity %> selected hidden><%= item.quantity %></option>
                                                                 <option value=0>0 (Remove)</option>
@@ -52,7 +52,7 @@
                                                                 <% } %>
                                                             </select>
                                                         </div>
-                                                        <div class="col-sm-6 col-md-6 form-group">
+                                                        <div class="col-6 col-sm-6 col-md-6 form-group">
                                                             <button type="submit" class="btn btn-add-to-cart btn-block">Update Cart</button>
                                                         </div>
                                                     </div>
