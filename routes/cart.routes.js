@@ -1,10 +1,12 @@
 'use strict';
 
 const { Router } = require("express");
-const { addToCart } = require("../controllers/cart.controller");
+const Cart = require("../controllers/cart.controller");
 
 const router = Router();
 
-router.post('/add/:productId', addToCart);
+router.post('/add/:productId', Cart.addToCart);
+
+router.post('/update/:productId', Cart.updateCart);
 
 module.exports = router;
