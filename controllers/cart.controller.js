@@ -1,13 +1,13 @@
 'use strict';
 
 const { sequelize } = require("../config/db-connection.config");
+const { Op } = require('sequelize');
 const { User } = require('../models/user.model');
 const { Wallet } = require('../models/wallet.model');
 const { Cart } = require('../models/cart.model');
 const { Product } = require('../models/product.model');
 const { Coupon } = require('../models/coupon.model');
 const { Order, OrderDetail } = require('../models/order.model');
-const { use } = require("../routes/home.routes");
 
 exports.addToCart = async (req, res, next) => {
     const { userData } = req;
@@ -46,49 +46,91 @@ exports.updateCart = async (req, res, next) => {
 
 exports.checkOut = async (req, res, next) => {
     const { userData } = req;
-    const user = await User.findOne({
-        attributes: ['id', 'userName', 'email'],
-        where: {
-            id: userData.id,
+    const userId = userData.id;
+    const { code } = req.body;
+    try {
+        const result = await sequelize.transaction(async (checkOut) => {
+            const user = await User.findOne({
+                logging: false,
+                attributes: [ 'id', 'userName', 'email' ],
+                where: {
+                    id: userId,
+                },
+                include: [
+                    {
+                        model: Wallet,
+                        attributes: ['amount']
+                    },
+                    {
+                        model: Cart,
+                        include: {
+                            model: Product,
+                            attributes: [ 'id', 'quantity', 'price' ]
+                        }
+                    }
+                ]
+            });
+            const coupon = await Coupon.findOne({
+                logging: false,
+                where: {
+                    userId,
+                    code: code??undefined,
+                    status: "unused",
+                    notAfter: {
+                        [Op.gte]: new Date()
+                    }
+                }
+            })
+            let sum = 0;
+        
+            let outOfStock = false;
+            
+            const cartDetail = await user.carts.map(i => {
+                if (i.quantity > i.product.quantity) {
+                    outOfStock = true;
+                }
+                sum += i.quantity * i.product.price;
+                return {
+                    productId: i.productId,
+                    quantity: i.quantity,
+                    total: i.quantity * i.product.price
+                }
+            });
+            
+            let orderData = {
+                userId,
+                totalAmount: sum,
+                discountedAmount: coupon ? coupon.type === "dynamic" ? ( sum - (sum * coupon.value / 100) ) : (sum - coupon.value) : sum,
+                orderdetails: cartDetail,
+                status: outOfStock ? "failed" : undefined,
+                remark: outOfStock ? "Insufficient product quantity!" : undefined
+            };
+        
+            const order = await Order.create(orderData, {
+                logging: false,
+                include: {
+                    model: OrderDetail
+                }
+            }, {
+                transaction: checkOut
+            });
+            await Cart.destroy({
+                logging: false,
+                where: {
+                    userId: user.id
+                }
+            }, {
+                transaction: checkOut
+            });
+            return await order;
+        });
+        if (result.status==="pending") {
+            return res.status(200).send(result);
         }
-    });
-    const cart = await Cart.findAll({
-        where: {
-            userId: user.id
-        },
-        include: {
-            model: Product
+        if (result.status==="failed") {
+            return res.redirect('/user/orderhistory');
         }
-    });
-    let sum = 0;
-    
-    const detail = await cart.map(i => {
-        sum += i.quantity * i.product.price;
-        return {
-            productId: i.productId,
-            quantity: i.quantity,
-            total: i.quantity * i.product.price
-        }
-    });
-    
-    let data = {
-        userId: user.id,
-        totalAmount: sum,
-        discountedAmount: sum,
-        orderdetails: detail
-    };
-    console.log(data);
-
-    const order = await Order.create(data, {
-        include: {
-            model: OrderDetail
-        }
-    });
-    await Cart.destroy({
-        where: {
-            userId: user.id
-        }
-    });
-
-    return res.send(order);
+    } catch (e) {
+        return res.status(500).send(e.message);
+    }
 };
