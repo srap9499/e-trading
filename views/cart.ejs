@@ -13,11 +13,25 @@
                                 <h2>My Cart</h2>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-6">
+                        <div class="col-sm-12 col-md-3">
                             <div class="cart-desc">
                                 <h4>Total <%= totalItems %> items in cart!</h4>
                             </div>
                         </div>
+                        <% if (totalItems > 0) { %>
+                            <div class="col-12 col-sm-12 col-md-3">
+                                <form action="/cart/checkout" method="POST">
+                                    <div class="row">
+                                        <div class="col-6 col-sm-6 col-md-6 form-group">
+                                            <input type="text" class="form-control" name="code" id="code" placeholder="Coupon...">
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-md-6 form-group">
+                                            <button type="submit" class="btn btn-check-out btn-block">Check Out</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        <% } %>
                         <% if (!cartItems.length) { %>
                             <div class="col-sm-12 col-md-12 justify-content-center">
                                 <p>Nothing to display here...</p>
@@ -53,7 +67,7 @@
                                                             </select>
                                                         </div>
                                                         <div class="col-6 col-sm-6 col-md-6 form-group">
-                                                            <button type="submit" class="btn btn-add-to-cart btn-block">Update Cart</button>
+                                                            <button type="submit" class="btn btn-update-cart btn-block">Update Cart</button>
                                                         </div>
                                                     </div>
                                                 </form>

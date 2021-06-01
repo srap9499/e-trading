@@ -41,12 +41,17 @@
     background-color: #cdcdcd;
     border: 1px solid brown;
 }
+
+.btn-check-out,
+.btn-update-cart,
 .btn-add-to-cart {
     color: brown;
     background-color: #fffeee;
     border: 1px solid brown;
 }
 
+.btn-check-out:hover,
+.btn-update-cart:hover,
 .btn-add-to-cart:hover {
     color: brown;
     background-color: #cdcdcd;
