@@ -4,7 +4,9 @@ const {
     getCartPagination, 
     getCartPaginationData, 
     getCouponPagination, 
-    getCouponPaginationData
+    getCouponPaginationData,
+    getOrderHistoryPagination,
+    getOrderHistoryPaginationData
 } = require("../helpers/pagination.helper");
 
 const { Op } = require('sequelize');
@@ -14,6 +16,7 @@ const { Product } = require('../models/product.model');
 const { Brand } = require("../models/brand.model");
 const { Category, Subcategory } = require("../models/categories.model");
 const { Coupon } = require('../models/coupon.model');
+const { Order, OrderDetail } = require("../models/order.model");
 
 
 exports.getMyCart = async (req, res, next) => {
@@ -80,6 +83,8 @@ exports.getMyCoupons = async (req, res, next) => {
         });
         const data = await Coupon.findAndCountAll({
             logging: false,
+            limit,
+            offset,
             attributes: [ "name", "code", "type", "value", "notAfter" ],
             where: {
                 userId: user.id,
@@ -93,6 +98,48 @@ exports.getMyCoupons = async (req, res, next) => {
         renderData.title = title;
         renderData.user = user;
         return res.status(200).render('coupon', renderData);
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+exports.getOrderHistory = async (req, res, next) => {
+    const { id } = req.userData;
+    const title = "Order History";
+    const { page, size } = req.query;
+    try {
+        const { limit, offset } = getOrderHistoryPagination({ page, size });
+        const user = await User.findOne({
+            logging: false,
+            attributes: [ "id", "userName", "email" ],
+            where: {
+                id
+            }
+        });
+        const data = await Order.findAndCountAll({
+            logging: false,
+            limit,
+            offset,
+            order: [
+                ['date', 'DESC']
+            ],
+            where: {
+                userId: id
+            },
+            include: {
+                model: OrderDetail,
+                attributes: [ 'quantity', 'total' ],
+                order: ['id', 'ASC'],
+                include: {
+                    model: Product,
+                    attributes: [ 'id', 'name', 'price' ]
+                }
+            }
+        });
+        let renderData = getOrderHistoryPaginationData({ data, page, limit});
+        renderData.user = user;
+        renderData.title = title;
+        return res.status(200).render('orderhistory', renderData);
     } catch (e) {
         console.log(e);
     }
