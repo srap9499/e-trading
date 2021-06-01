@@ -26,6 +26,11 @@ const Order = sequelize.define('order', {
         type: Sequelize.ENUM("pending", "success", "failed"),
         allowNull: false,
         defaultValue: "pending"
+    },
+    remark: {
+        type: Sequelize.STRING(64),
+        allowNull: true,
+        defaultValue: "Payment pending"
     }
 }, {
     timestamps: false,
