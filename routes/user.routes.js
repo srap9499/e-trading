@@ -10,4 +10,6 @@ router.get('/mycart', authenticate, User.getMyCart);
 
 router.get('/mycoupons', authenticate, User.getMyCoupons);
 
+router.get('/orderhistory', authenticate, User.getOrderHistory);
+
 module.exports = router;
