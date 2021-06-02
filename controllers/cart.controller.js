@@ -47,7 +47,6 @@ exports.updateCart = async (req, res, next) => {
 exports.checkOut = async (req, res, next) => {
     const { userData } = req;
     const userId = userData.id;
-    const { code } = req.body;
     try {
         const result = await sequelize.transaction(async (checkOut) => {
             const user = await User.findOne({
@@ -56,31 +55,14 @@ exports.checkOut = async (req, res, next) => {
                 where: {
                     id: userId,
                 },
-                include: [
-                    {
-                        model: Wallet,
-                        attributes: ['amount']
-                    },
-                    {
-                        model: Cart,
-                        include: {
-                            model: Product,
-                            attributes: [ 'id', 'quantity', 'price' ]
-                        }
-                    }
-                ]
-            });
-            const coupon = await Coupon.findOne({
-                logging: false,
-                where: {
-                    userId,
-                    code: code??undefined,
-                    status: "unused",
-                    notAfter: {
-                        [Op.gte]: new Date()
+                include: {
+                    model: Cart,
+                    include: {
+                        model: Product,
+                        attributes: [ 'id', 'quantity', 'price' ]
                     }
                 }
-            })
+            });
             let sum = 0;
         
             let outOfStock = false;
@@ -100,7 +82,7 @@ exports.checkOut = async (req, res, next) => {
             let orderData = {
                 userId,
                 totalAmount: sum,
-                discountedAmount: coupon ? coupon.type === "dynamic" ? ( sum - (sum * coupon.value / 100) ) : (sum - coupon.value) : sum,
+                discountedAmount: sum,
                 orderdetails: cartDetail,
                 status: outOfStock ? "failed" : undefined,
                 remark: outOfStock ? "Insufficient product quantity!" : undefined

@@ -20,15 +20,8 @@
                         </div>
                         <% if (totalItems > 0) { %>
                             <div class="col-12 col-sm-12 col-md-3">
-                                <form action="/cart/checkout" method="POST">
-                                    <div class="row">
-                                        <div class="col-6 col-sm-6 col-md-6 form-group">
-                                            <input type="text" class="form-control" name="code" id="code" placeholder="Coupon...">
-                                        </div>
-                                        <div class="col-6 col-sm-6 col-md-6 form-group">
-                                            <button type="submit" class="btn btn-check-out btn-block">Check Out</button>
-                                        </div>
-                                    </div>
+                                <form action="/cart/checkout" method="GET">
+                                    <button type="submit" class="btn btn-check-out btn-block">Check Out</button>
                                 </form>
                             </div>
                         <% } %>
