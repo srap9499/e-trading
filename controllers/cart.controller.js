@@ -106,13 +106,33 @@ exports.checkOut = async (req, res, next) => {
             });
             return await order;
         });
-        if (result.status==="pending") {
-            return res.status(200).send(result);
-        }
-        if (result.status==="failed") {
-            return res.redirect('/user/orderhistory');
-        }
+        return res.redirect('/cart/checkout/'+result.id+'/status');
     } catch (e) {
         return res.status(500).send(e.message);
+    }
+};
+
+exports.getOrderStatus = async (req, res, next) => {
+    const title = "Order Status";
+    const { id: userId } = req.userData;
+    const { orderId } = req.params;
+    try {
+        const user = await User.findOne({
+            attributes: [ 'id', 'userName', 'email' ],
+            where: {
+                id: userId,
+            },
+            include: {
+                model: Order,
+                attributes: [ 'id', 'date', 'totalAmount', 'couponId', 'discountedAmount', 'status', 'remark'],
+                limit: 1,
+                where: {
+                    id: orderId
+                }
+            }
+        });
+        return res.status(200).render('orderstatus', { user, title });
+    } catch (e) {
+        console.log(e);
     }
 };

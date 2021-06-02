@@ -11,4 +11,6 @@ router.post('/update/:productId', Cart.updateCart);
 
 router.get('/checkout', Cart.checkOut);
 
+router.get('/checkout/:orderId/status', Cart.getOrderStatus);
+
 module.exports = router;

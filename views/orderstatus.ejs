@@ -1,0 +1,87 @@
+<%- include('./includes/head.ejs') %>
+
+</head>
+<body>
+    <h2><a href="">Welcome <%= user.userName %></a></h2>
+    <section id="order-status">
+        <div class="content-box-md">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="left-heading">
+                            <h2>Order Status</h2>
+                        </div>
+                    </div>
+                </div>
+                <% for (const order of user.orders) { %>
+                    <div class="row">
+                        <div class="col-5 col-sm-4 col-md-4"><h6>Order ID:</h6></div>
+                        <div class="col-7 col-sm-8 col-md-8"><p><%= order.id %></p></div>
+                        <div class="col-5 col-sm-4 col-md-4"><h6>DATE:</h6></div>
+                        <div class="col-7 col-sm-8 col-md-8"><p><%= order.date %></p></div>
+                        <div class="col-5 col-sm-4 col-md-4"><h6>Total Amount (&#8377;):</h6></div>
+                        <div class="col-7 col-sm-8 col-md-8"><p><%= order.totalAmount %></p></div>
+                        <% if (order.couponId) { %>
+                            <div class="col-5 col-sm-4 col-md-4"><h6>Coupon ID:</h6></div>
+                            <div class="col-7 col-sm-8 col-md-8"><p><%= order.couponId %></p></div>
+                        <% } %>
+                        <% if (order.totalAmount != order.discountedAmount) { %>
+                            <div class="col-5 col-sm-4 col-md-4"><h6>Discounted Amount (&#8377;):</h6></div>
+                            <div class="col-7 col-sm-8 col-md-8"><p><%= order.discountedAmount %></p></div>
+                        <% } %>
+                        <div class="col-5 col-sm-4 col-md-4"><h6>Status:</h6></div>
+                        <div class="col-7 col-sm-8 col-md-8"><p><%= order.status %></p></div>
+                        <div class="col-5 col-sm-4 col-md-4"><h6>Remark:</h6></div>
+                        <div class="col-7 col-sm-8 col-md-8"><p><%= order.remark %></p></div>
+                    </div>
+                    <div class="row">
+                        <% if (order.status==='success') { %>
+                            <div class="col-12 col-sm-6 col-md-6">
+                                <form action="/cart/checkout" method="POST">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-6 col-md-6 form-group">
+                                            <button type="submit" class="btn btn-check-out btn-block">Success</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        <% } else if (order.status==='pending') { %>
+                            <div class="col-12 col-sm-4 col-md-4">
+                                <form action="/cart/checkout/<%= order.id %>/payment" method="POST">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-6 col-md-6 form-group">
+                                            <input type="text" class="form-control" name="code" id="code" placeholder="Coupon...">
+                                        </div>
+                                        <div class="col-12 col-sm-6 col-md-6 form-group">
+                                            <button type="submit" class="btn btn-check-out btn-block">Proceed Payment</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-12 col-sm-4 col-md-2">
+                                <form action="/cart/checkout/<%= order.id %>/cancel" method="POST">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-6 col-md-12 form-group">
+                                            <button type="submit" class="btn btn-check-out btn-block">Cancel</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        <% } else if (order.status==='failed') {%>
+                            <div class="col-12 col-sm-6 col-md-6">
+                                <form action="/cart/checkout/<%= order.id %>/retry" method="POST">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-6 col-md-6 form-group">
+                                            <button type="submit" class="btn btn-check-out btn-block">Retry</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+    
+    <%- include('./includes/tail.ejs') %>
