@@ -7,11 +7,6 @@ const { Coupon } = require('./coupon.model');
 const { Product } = require('./product.model');
 
 const Order = sequelize.define('order', {
-    date: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.NOW()
-    },
     totalAmount: {
         type: Sequelize.DECIMAL(20, 2),
         allowNull: false,
@@ -33,8 +28,9 @@ const Order = sequelize.define('order', {
         defaultValue: "Payment pending"
     }
 }, {
-    timestamps: false,
-    updatedAt: true,
+    timestamps: true,
+    createdAt: false,
+    updatedAt: 'date',
     paranoid: true
 });
 
