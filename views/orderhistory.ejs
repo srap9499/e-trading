@@ -29,26 +29,26 @@
                                         <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Order<br>ID</th>
                                         <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">DATE</th>
                                         <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Details</th>
-                                        <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Price</th>
+                                        <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Price(Rs)</th>
                                         <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Quantity</th>
-                                        <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Total</th>
-                                        <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Grand<br>Total</th>
+                                        <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Total(Rs)</th>
+                                        <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Grand<br>Total(Rs)</th>
                                         <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Status</th>
-                                        <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn); max-width: 160px;">Remark</th>
+                                        <th scope="col" class="align-middle text-center" style="transform: rotateZ(0.90turn);">Remark</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <% for (const item of orders) { %>
                                         <tr>
                                             <td class="align-middle" ><%= item.id %></td>
-                                            <td class="align-middle" ><%= item.date.getDate()+'-'+item.date.getMonth()+'-'+item.date.getFullYear() %></td>
-                                            <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.product.name %></p><% } %></td>
+                                            <td class="align-middle" style="max-width: 85px;"><%= item.date.getDate()+'1/1'+(item.date.getMonth()+1)+'/'+item.date.getFullYear() %></td>
+                                            <td class="align-middle" style="min-width: 220px;"><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;">- <%= detail.product.name %></p><% } %></td>
                                             <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.product.price %></p><% } %></td>
                                             <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.quantity %></p><% } %></td>
                                             <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.total %></p><% } %></td>
                                             <td class="align-middle" ><%= item.discountedAmount %></td>
-                                            <td class="align-middle" ><%= item.status %></td>
-                                            <td class="align-middle" style="max-width: 160px;"><%= item.remark %></td>
+                                            <td class="align-middle" style="max-width: 70px;"><%= item.status %></td>
+                                            <td class="align-middle" style="max-width: 140px;"><%= item.remark %></td>
                                         </tr>
                                     <% } %>
                                 </tbody>
