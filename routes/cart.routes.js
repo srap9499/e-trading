@@ -13,4 +13,6 @@ router.get('/checkout', Cart.checkOut);
 
 router.get('/checkout/:orderId/status', Cart.getOrderStatus);
 
+router.post('/checkout/:orderId/payment', Cart.payment);
+
 module.exports = router;

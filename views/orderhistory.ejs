@@ -41,7 +41,7 @@
                                     <% for (const item of orders) { %>
                                         <tr>
                                             <td class="align-middle" ><%= item.id %></td>
-                                            <td class="align-middle" style="max-width: 85px;"><%= item.date.getDate()+'1/1'+(item.date.getMonth()+1)+'/'+item.date.getFullYear() %></td>
+                                            <td class="align-middle" style="max-width: 85px;"><%= item.date.getDate()+'/'+(item.date.getMonth()+1)+'/'+item.date.getFullYear() %></td>
                                             <td class="align-middle" style="min-width: 220px;"><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;">- <%= detail.product.name %></p><% } %></td>
                                             <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.product.price %></p><% } %></td>
                                             <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.quantity %></p><% } %></td>

@@ -118,6 +118,7 @@ exports.getOrderStatus = async (req, res, next) => {
     const { orderId } = req.params;
     try {
         const user = await User.findOne({
+            logging: false,
             attributes: [ 'id', 'userName', 'email' ],
             where: {
                 id: userId,
@@ -132,6 +133,106 @@ exports.getOrderStatus = async (req, res, next) => {
             }
         });
         return res.status(200).render('orderstatus', { user, title });
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+exports.payment = async (req, res, next) => {
+    const {  userData } = req;
+    const userId = userData.id;
+    const { orderId } = req.params;
+    const { code } = req.body;
+    try {
+        const result = await sequelize.transaction(async payTransaction => {
+            const user = await User.findOne({
+                logging: false,
+                attributes: [ 'id', 'userName', 'email' ],
+                where: {
+                    id: userId
+                },
+                include: {
+                    model: Wallet,
+                    attributes: [ 'id', 'amount' ]
+                }
+            }, { transaction: payTransaction });
+            const coupon = await Coupon.findOne({
+                logging: false,
+                where: {
+                    userId,
+                    code: code??undefined,
+                    status: "unused",
+                    notAfter: {
+                        [Op.gte]: new Date()
+                    }
+                }
+            }, { transaction: payTransaction });
+            const order = await Order.findOne({
+                logging: false,
+                where: {
+                    userId,
+                    id: orderId
+                },
+                include: {
+                    model: OrderDetail,
+                    attributes: [ 'quantity' ],
+                    include: {
+                        model: Product,
+                        attributes: [ 'id', 'quantity' ],
+                    }
+                }
+            }, { transaction: payTransaction });
+            let failedFlag = false;
+            let remark = 'Order Placed';
+            for (const detail of order.orderdetails) {
+                if (detail.quantity > detail.product.quantity) {
+                    failedFlag = true;
+                    remark = "Insufficient product quantity!";
+                }
+            }
+            if (!failedFlag && code && !coupon) {
+                failedFlag = true;
+                remark = "Invalid coupon code!";
+            }
+            let amount = order.discountedAmount;
+            if (!failedFlag && coupon) {
+                amount = coupon.type === "dynamic" ? ( amount - (amount * coupon.value / 100) ) : (amount - coupon.value);
+            }
+            console.log("type::::::",typeof user.wallet.amount);
+            console.log(amount);
+            console.log("difference", user.wallet.amount - amount);
+            if (!failedFlag && (user.wallet.amount - amount) < 0) {
+                failedFlag = true;
+                remark = "Insufficient wallet amount!";
+            }
+            const updateOrder = await Order.update({
+                discountedAmount: !failedFlag ? amount : undefined,
+                couponId: !failedFlag && coupon ? coupon.id : undefined,
+                status: !failedFlag ? 'success' : 'failed',
+                remark
+            }, {
+                logging: false,
+                where: {
+                    userId,
+                    id: orderId
+                }
+            }, { transaction: payTransaction });
+            if (!failedFlag) {
+                for (const detail of order.orderdetails) {
+                    detail.product.quantity -= detail.quantity;
+                    await detail.product.save({ transaction: payTransaction });
+                }
+                if (coupon) {
+                    coupon.status = 'used';
+                    await coupon.save({ transaction: payTransaction });
+                }
+                user.wallet.amount -= amount;
+                await user.wallet.save({ transaction: payTransaction });
+            }
+            return await updateOrder;
+            
+        });
+        return res.redirect('/cart/checkout/'+orderId+'/status');
     } catch (e) {
         console.log(e);
     }
