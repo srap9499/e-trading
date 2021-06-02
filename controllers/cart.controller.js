@@ -202,9 +202,6 @@ exports.payment = async (req, res, next) => {
             if (!failedFlag && coupon) {
                 amount = coupon.type === "dynamic" ? ( amount - (amount * coupon.value / 100) ) : (amount - coupon.value);
             }
-            console.log("type::::::",typeof user.wallet.amount);
-            console.log(amount);
-            console.log("difference", user.wallet.amount - amount);
             if (!failedFlag && (user.wallet.amount - amount) < 0) {
                 failedFlag = true;
                 remark = "Insufficient wallet amount!";
