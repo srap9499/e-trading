@@ -241,3 +241,57 @@ exports.payment = async (req, res, next) => {
         console.log(e);
     }
 };
+
+exports.retryOrder = async (req, res, next) => {
+    const {  userData } = req;
+    const userId = userData.id;
+    const { orderId } = req.params;
+    try {
+        const result = await sequelize.transaction(async retryTransaction => {
+            const user = await User.findOne({
+                logging: false,
+                attributes: [ 'id', 'userName', 'email' ],
+                where: {
+                    id: userId
+                }
+            }, { transaction: retryTransaction });
+            const order = await Order.findOne({
+                logging: false,
+                where: {
+                    userId,
+                    id: orderId
+                },
+                include: {
+                    model: OrderDetail,
+                    attributes: [ 'quantity' ],
+                    include: {
+                        model: Product,
+                        attributes: [ 'id', 'quantity' ],
+                    }
+                }
+            }, { transaction: retryTransaction });
+            let failedFlag = false;
+            let remark = 'Payment pending';
+            for (const detail of order.orderdetails) {
+                if (detail.quantity > detail.product.quantity) {
+                    failedFlag = true;
+                    remark = "Insufficient product quantity!";
+                }
+            }
+            const retryOrderResult = await Order.update({
+                status: !failedFlag ? 'pending' : 'failed',
+                remark
+            }, {
+                logging: false,
+                where: {
+                    userId,
+                    id: orderId
+                }
+            }, { transaction: retryTransaction });
+            return await retryOrderResult;
+        });
+        return res.redirect('/cart/checkout/'+orderId+'/status');
+    } catch (e) {
+        return res.redirect('/cart/checkout/'+orderId+'/status');
+    }
+};

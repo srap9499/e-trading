@@ -15,4 +15,6 @@ router.get('/checkout/:orderId/status', Cart.getOrderStatus);
 
 router.post('/checkout/:orderId/payment', Cart.payment);
 
+router.get('/checkout/:orderId/retry', Cart.retryOrder);
+
 module.exports = router;
