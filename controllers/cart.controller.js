@@ -295,3 +295,49 @@ exports.retryOrder = async (req, res, next) => {
         return res.redirect('/cart/checkout/'+orderId+'/status');
     }
 };
+
+exports.cancelOrder = async (req, res, next) => {
+    const {  userData } = req;
+    const userId = userData.id;
+    const { orderId } = req.params;
+    try {
+        const result = await sequelize.transaction(async cancelTransaction => {
+            const user = await User.findOne({
+                logging: false,
+                attributes: [ 'id', 'userName', 'email' ],
+                where: {
+                    id: userId
+                }
+            }, { transaction: cancelTransaction });
+            const order = await Order.findOne({
+                logging: false,
+                where: {
+                    userId,
+                    id: orderId
+                },
+                include: {
+                    model: OrderDetail,
+                    attributes: [ 'quantity' ],
+                    include: {
+                        model: Product,
+                        attributes: [ 'id', 'quantity' ],
+                    }
+                }
+            }, { transaction: cancelTransaction });
+            const cancelOrderResult = await Order.update({
+                status: 'failed',
+                remark: 'Order canceled!'
+            }, {
+                logging: false,
+                where: {
+                    userId,
+                    id: orderId
+                }
+            }, { transaction: cancelTransaction });
+            return await cancelOrderResult;
+        });
+        return res.redirect('/cart/checkout/'+orderId+'/status');
+    } catch (e) {
+        return res.redirect('/cart/checkout/'+orderId+'/status');
+    }
+};
