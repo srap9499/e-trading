@@ -129,6 +129,10 @@ exports.getOrderStatus = async (req, res, next) => {
                 limit: 1,
                 where: {
                     id: orderId
+                },
+                include: {
+                    model: Coupon,
+                    attributes: [ 'name', 'code' ]
                 }
             }
         });

@@ -22,8 +22,8 @@
                         <div class="col-5 col-sm-4 col-md-4"><h6>Total Amount (&#8377;):</h6></div>
                         <div class="col-7 col-sm-8 col-md-8"><p><%= order.totalAmount %></p></div>
                         <% if (order.couponId) { %>
-                            <div class="col-5 col-sm-4 col-md-4"><h6>Coupon ID:</h6></div>
-                            <div class="col-7 col-sm-8 col-md-8"><p><%= order.couponId %></p></div>
+                            <div class="col-5 col-sm-4 col-md-4"><h6>Discount Coupon:</h6></div>
+                            <div class="col-7 col-sm-8 col-md-8"><p><%= order.coupon.name %> (<%= order.coupon.code %>)</p></div>
                         <% } %>
                         <% if (order.totalAmount != order.discountedAmount) { %>
                             <div class="col-5 col-sm-4 col-md-4"><h6>Discounted Amount (&#8377;):</h6></div>
