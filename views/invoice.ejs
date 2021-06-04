@@ -37,6 +37,8 @@ xmlns:o="urn:schemas-microsoft-com:office:office">
                                     <p style="display: table-row-group;">User Name: <%= order.user.userName %></p>
                                     <p style="display: table-row-group;">Email Id: <%= order.user.email %></p>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-12 col-sm-12 col-md-12 grid-table table-responsive" style="margin-top: 30px;">
                                     <table class="table">
                                         <thead>
@@ -61,18 +63,26 @@ xmlns:o="urn:schemas-microsoft-com:office:office">
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-12 col-sm-12 col-md-12 grid-table table-responsive" style="margin-top: 30px;">
                                     <table class="table">
                                         <thead>
                                             <tr>
                                                 <th scope="col" class="align-middle" style="max-width: 50px;">Grand Total</th>
-                                                <th scope="col" class="align-middle">Discounted Amount</th>
+                                                <% if (order.coupon) { %>
+                                                    <th scope="col" class="align-middle">Discount Coupon Used</th>
+                                                    <th scope="col" class="align-middle">Discounted Amount</th>
+                                                <% } %>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td class="align-middle" ><%= order.totalAmount %></td>
-                                                <td class="align-middle" ><%= order.discountedAmount %></td>
+                                                <% if (order.coupon) { %>
+                                                    <td class="align-middle" ><%= order.coupon.name %> (<%= order.coupon.code %>)</td>
+                                                    <td class="align-middle" ><%= order.discountedAmount %></td>
+                                                <% } %>
                                             </tr>
                                         </tbody>
                                     </table>
