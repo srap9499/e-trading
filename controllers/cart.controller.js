@@ -8,6 +8,7 @@ const { Cart } = require('../models/cart.model');
 const { Product } = require('../models/product.model');
 const { Coupon } = require('../models/coupon.model');
 const { Order, OrderDetail } = require('../models/order.model');
+const { invoiceGenerator } = require("../helpers/invoice.helper");
 
 exports.addToCart = async (req, res, next) => {
     const { userData } = req;
@@ -229,6 +230,7 @@ exports.payment = async (req, res, next) => {
                 }
                 user.wallet.amount -= amount;
                 await user.wallet.save({ transaction: payTransaction });
+                next();
             }
             return await updateOrder;
             
@@ -336,5 +338,41 @@ exports.cancelOrder = async (req, res, next) => {
         return res.redirect('/cart/checkout/'+orderId+'/status');
     } catch (e) {
         return res.redirect('/cart/checkout/'+orderId+'/status');
+    }
+};
+
+exports.generateInvoice = async (req, res, next) => {
+    const {  userData } = req;
+    const userId = userData.id;
+    const { orderId } = req.params;
+    try {
+        const order = await Order.findOne({
+            logging: false,
+            where: {
+                userId,
+                id: orderId
+            },
+            include: [
+                {
+                    model: User,
+                    attributes: [ 'id', 'userName', 'email' ]
+                },
+                {
+                    model: OrderDetail,
+                    attributes: [ 'id', 'quantity', 'total', ],
+                    include: {
+                        model: Product,
+                        attributes: ['id', 'name', 'price']
+                    }
+                },
+                {
+                    model: Coupon,
+                    attributes: [ 'id', 'name', 'code' ]
+                }
+            ]
+        });
+        await invoiceGenerator(order);
+    } catch(e) {
+        console.log(e);
     }
 };
