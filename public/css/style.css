@@ -153,3 +153,14 @@ ul.product-details li p.detail-title {
 .content-box-md {
     padding: 60px 0;
 }
+
+
+.red {
+    color: red;
+}
+.blue {
+    color: blue;
+}
+.green {
+    color: green;
+}

@@ -47,7 +47,7 @@
                                             <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.quantity %></p><% } %></td>
                                             <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.total %></p><% } %></td>
                                             <td class="align-middle" ><%= item.discountedAmount %></td>
-                                            <td class="align-middle" style="max-width: 70px;"><a type="button" href="/cart/checkout/<%= item.id %>/status" style="color: <%= item.status==='success' ? 'green' : item.status==='pending' ? 'blue' : 'red' %>;" aria-label="view details & options"><%= item.status %></a></td>
+                                            <td class="align-middle" style="max-width: 70px;"><a type="button" href="/cart/checkout/<%= item.id %>/status" class="<%= item.status ==='success' ? 'green' : item.status==='pending' ? 'blue' : 'red' %>" aria-label="view details & options"><%= item.status %></a></td>
                                             <td class="align-middle" style="max-width: 140px;"><%= item.remark %></td>
                                         </tr>
                                     <% } %>
