@@ -12,6 +12,27 @@ xmlns:o="urn:schemas-microsoft-com:office:office">
             .content-box-md {
                 padding: 30px;
             }
+            .table {
+                border: 1px solid brown;
+            }
+            .table th {
+                border-top: 1px solid brown;
+                border-bottom: 1px solid brown;
+            }
+            .table td {
+                border-top: 1px solid brown;
+            }
+            .my-bottom {
+                border-bottom: 1px solid brown;
+            }
+            .brown {
+                color: brown;
+            }
+            .signature {
+                margin: 30px 0;
+                padding: 30px;
+                border-bottom: 1px solid brown;
+            }
         </style>
     </head>
 
@@ -22,32 +43,31 @@ xmlns:o="urn:schemas-microsoft-com:office:office">
                     <div class="row">
                         <div class="col-9 col-sm-9 col-md-9">
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-md-12" style="border-bottom: 1px solid #adadad; padding: 5px;">
-                                    <h5 class="text-center" style="display: block;">Purchase Invoice</h5>
-                                    <p>Sold By: E-Trading Pvt. Ltd.</p>
+                                <div class="col-12 col-sm-12 col-md-12 my-bottom" style="padding: 5px;">
+                                    <h5 class="text-center brown" style="display: block;">Purchase Invoice</h5>
+                                    <p>Seller's Name: <%= soldBy %></p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-md-12" style="border-bottom: 1px solid #adadad; padding: 5px;">
+                                <div class="col-12 col-sm-12 col-md-12 my-bottom" style="padding: 5px;">
                                     <p style="display: table-row-group;">Order ID: <%= order.id %></p>
                                     <p style="display: table-row-group;">Order Date: <%= order.date %></p>
                                     <p style="display: table-row-group;">Invoice Date: <%= invoiceDate %></p>
                                 </div>
-                                <div class="col-12 col-sm-12 col-md-12" style="border-bottom: 1px solid #adadad; padding: 5px;">
-                                    <p style="display: table-row-group;">User Name: <%= order.user.userName %></p>
+                                <div class="col-12 col-sm-12 col-md-12 my-bottom" style="padding: 5px;">
+                                    <p style="display: table-row-group;">Buyer's Name: <%= order.user.userName %></p>
                                     <p style="display: table-row-group;">Email Id: <%= order.user.email %></p>
                                 </div>
-                            </div>
-                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12"><p>Total Items: <%= order.orderdetails.length %></p></div>
                                 <div class="col-12 col-sm-12 col-md-12 grid-table table-responsive" style="margin-top: 30px;">
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th scope="col" class="align-middle" style="max-width: 50px;">PID</th>
-                                                <th scope="col" class="align-middle">Details</th>
-                                                <th scope="col" class="align-middle" style="max-width: 50px;">Price(Rs)</th>
-                                                <th scope="col" class="align-middle" style="max-width: 50px;">Quantity</th>
-                                                <th scope="col" class="align-middle" style="max-width: 50px;">Total(Rs)</th>
+                                                <th scope="col" class="align-middle brown" style="max-width: 50px;">PID</th>
+                                                <th scope="col" class="align-middle brown">Details</th>
+                                                <th scope="col" class="align-middle brown" style="max-width: 50px;">Price(Rs)</th>
+                                                <th scope="col" class="align-middle brown" style="max-width: 50px;">Quantity</th>
+                                                <th scope="col" class="align-middle brown" style="max-width: 50px;">Total(Rs)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -64,15 +84,40 @@ xmlns:o="urn:schemas-microsoft-com:office:office">
                                     </table>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="page-break-before: always !important;"></div>
+            <div class="content-box-md">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-9 col-sm-9 col-md-9">
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-md-12 grid-table table-responsive" style="margin-top: 30px;">
+                                <div class="col-12 col-sm-12 col-md-12 my-bottom" style="padding: 5px;">
+                                    <h5 class="text-center brown" style="display: block;">Purchase Invoice</h5>
+                                    <p>Seller's Name: <%= soldBy %></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-12 my-bottom" style="padding: 5px;">
+                                    <p style="display: table-row-group;">Order ID: <%= order.id %></p>
+                                    <p style="display: table-row-group;">Order Date: <%= order.date %></p>
+                                    <p style="display: table-row-group;">Invoice Date: <%= invoiceDate %></p>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-12 my-bottom" style="padding: 5px;">
+                                    <p style="display: table-row-group;">Buyer's Name: <%= order.user.userName %></p>
+                                    <p style="display: table-row-group;">Email Id: <%= order.user.email %></p>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-12"><p>Total Items: <%= order.orderdetails.length %></p></div>
+                                <div class="col-12 col-sm-12 col-md-12 grid-table table-responsive" style="margin: 30px auto;">
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th scope="col" class="align-middle" style="max-width: 50px;">Grand Total</th>
+                                                <th scope="col" class="align-middle brown" style="max-width: 50px;">Grand Total</th>
                                                 <% if (order.coupon) { %>
-                                                    <th scope="col" class="align-middle">Discount Coupon Used</th>
-                                                    <th scope="col" class="align-middle">Discounted Amount</th>
+                                                    <th scope="col" class="align-middle brown">Discount Coupon Used</th>
+                                                    <th scope="col" class="align-middle brown">Discounted Amount</th>
                                                 <% } %>
                                             </tr>
                                         </thead>
@@ -86,6 +131,9 @@ xmlns:o="urn:schemas-microsoft-com:office:office">
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-12 brown signature">
+                                    <h6 class="brown">Authorized Signatory</h6>
                                 </div>
                             </div>
                         </div>

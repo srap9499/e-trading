@@ -1,6 +1,7 @@
 'use strict';
 
 require('dotenv').config();
+const path = require('path');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
@@ -65,10 +66,28 @@ exports.sendSignUpNotificationMail = (user, amount) => {
 };
 
 
-// , (err, info) => {
-//     if (err) {
-//         console.log(err.message);
-//     } else {
-//         console.log('Mail sent: ', info.response);
-//     }
-// }
+exports.sendInvoiceMail = (user, orderId) => {
+    const invoicePath = `./public/Invoices/Invoice_${user.id}_${orderId}.pdf`;
+    const invoiceMail = {
+        from: process.env.MAIL_SENDER,
+        to: user.email,
+        subject: "Purchase Invoice",
+        attachments: [
+            {
+                filename: `Invoice_${user.id}_${orderId}.pdf`,
+                path: path.join(__dirname, `../public/Invoices/Invoice_${user.id}_${orderId}.pdf`),
+            }
+        ],
+        "html": `<h1>Hello ${user.userName}</h1>
+        <p>We are glad to have you as valueable customer of E-Trading. Your recent order is placed successfully, Please find your Retail Invoice here with...<br><br>Thank you,
+        - team E-Trading</p>`
+    };
+    transporter.sendMail(invoiceMail, (error, info) => {
+        if (error) {
+            console.log("Email not sent:", error.message);
+            throw error;
+        } else {
+            console.log("Email sent:", info.response);
+        }
+    });
+};

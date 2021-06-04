@@ -9,6 +9,7 @@ const { Product } = require('../models/product.model');
 const { Coupon } = require('../models/coupon.model');
 const { Order, OrderDetail } = require('../models/order.model');
 const { invoiceGenerator } = require("../helpers/invoice.helper");
+const { sendInvoiceMail } = require("../helpers/mail.helper");
 
 exports.addToCart = async (req, res, next) => {
     const { userData } = req;
@@ -232,11 +233,13 @@ exports.payment = async (req, res, next) => {
                 }
                 user.wallet.amount -= amount;
                 await user.wallet.save({ logging: false, transaction: payTransaction });
-                await next();
             }
-            return await updateOrder;
+            return { updateOrder, failedFlag };
             
         });
+        if (result.failedFlag === false) {
+            await next();
+        }
         return res.redirect('/cart/checkout/'+orderId+'/status');
     } catch (e) {
         console.log(e);
@@ -379,7 +382,9 @@ exports.generateInvoice = async (req, res, next) => {
                 }
             ]
         });
-        return await invoiceGenerator(order);
+        await invoiceGenerator(order).then(() => {
+            sendInvoiceMail(userData, orderId);
+        });
     } catch(e) {
         console.log(e);
     }
