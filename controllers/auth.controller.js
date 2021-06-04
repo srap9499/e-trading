@@ -37,14 +37,24 @@ exports.postSignUp = async (req, res, next) => {
             password: hashedPassword,
             wallet: {}
         };
-        const user = await User.create(userData, { include: { model: Wallet }, transaction: signUpTransaction })
+        const user = await User.create(userData, 
+            {
+                logging: false,
+                include: { 
+                    model: Wallet 
+                }, 
+                transaction: signUpTransaction 
+            });
         if (user) {
             const otp = cryptoRandomString(6);
             console.log('otp::::::::: ', otp);
             await Code.create({
                 email: user.email,
                 otp
-            },{ transaction: signUpTransaction });
+            },{ 
+                logging: false, 
+                transaction: signUpTransaction 
+            });
             sendVerifyEmail({ userName: user.userName, email: user.email }, otp);
             sendSignUpNotificationMail({userName: user.userName, email: user.email }, process.env.N_BONUS_AMOUNT || 500);
             await signUpTransaction.commit();
@@ -134,7 +144,8 @@ exports.postSignIn = async (req, res, next) => {
             errors: {},
             formData: req.body,
             title: "Sign In"
-        });    }
+        });    
+    }
     const userData = {
         id: user.id,
         userName: user.userName,
