@@ -93,16 +93,14 @@ exports.checkOut = async (req, res, next) => {
                 logging: false,
                 include: {
                     model: OrderDetail
-                }
-            }, {
+                },
                 transaction: checkOut
             });
             await Cart.destroy({
                 logging: false,
                 where: {
                     userId: user.id
-                }
-            }, {
+                },
                 transaction: checkOut
             });
             return await order;
@@ -159,8 +157,9 @@ exports.payment = async (req, res, next) => {
                 include: {
                     model: Wallet,
                     attributes: [ 'id', 'amount' ]
-                }
-            }, { transaction: payTransaction });
+                },
+                transaction: payTransaction
+            });
             const coupon = await Coupon.findOne({
                 logging: false,
                 where: {
@@ -170,8 +169,9 @@ exports.payment = async (req, res, next) => {
                     notAfter: {
                         [Op.gte]: new Date()
                     }
-                }
-            }, { transaction: payTransaction });
+                },
+                transaction: payTransaction
+            });
             const order = await Order.findOne({
                 logging: false,
                 where: {
@@ -185,8 +185,9 @@ exports.payment = async (req, res, next) => {
                         model: Product,
                         attributes: [ 'id', 'quantity' ],
                     }
-                }
-            }, { transaction: payTransaction });
+                },
+                transaction: payTransaction
+            });
             let failedFlag = false;
             let remark = 'Order Placed';
             for (const detail of order.orderdetails) {
@@ -217,20 +218,21 @@ exports.payment = async (req, res, next) => {
                 where: {
                     userId,
                     id: orderId
-                }
-            }, { transaction: payTransaction });
+                },
+                transaction: payTransaction
+            });
             if (!failedFlag) {
                 for (const detail of order.orderdetails) {
                     detail.product.quantity -= detail.quantity;
-                    await detail.product.save({ transaction: payTransaction });
+                    await detail.product.save({ logging: false, transaction: payTransaction });
                 }
                 if (coupon) {
                     coupon.status = 'used';
-                    await coupon.save({ transaction: payTransaction });
+                    await coupon.save({ logging: false, transaction: payTransaction });
                 }
                 user.wallet.amount -= amount;
-                await user.wallet.save({ transaction: payTransaction });
-                next();
+                await user.wallet.save({ logging: false, transaction: payTransaction });
+                await next();
             }
             return await updateOrder;
             
@@ -252,8 +254,9 @@ exports.retryOrder = async (req, res, next) => {
                 attributes: [ 'id', 'userName', 'email' ],
                 where: {
                     id: userId
-                }
-            }, { transaction: retryTransaction });
+                },
+                transaction: retryTransaction
+            });
             const order = await Order.findOne({
                 logging: false,
                 where: {
@@ -267,8 +270,9 @@ exports.retryOrder = async (req, res, next) => {
                         model: Product,
                         attributes: [ 'id', 'quantity' ],
                     }
-                }
-            }, { transaction: retryTransaction });
+                },
+                transaction: retryTransaction
+            });
             let failedFlag = false;
             let remark = 'Payment pending';
             for (const detail of order.orderdetails) {
@@ -285,8 +289,9 @@ exports.retryOrder = async (req, res, next) => {
                 where: {
                     userId,
                     id: orderId
-                }
-            }, { transaction: retryTransaction });
+                },
+                transaction: retryTransaction
+            });
             return await retryOrderResult;
         });
         return res.redirect('/cart/checkout/'+orderId+'/status');
@@ -306,8 +311,9 @@ exports.cancelOrder = async (req, res, next) => {
                 attributes: [ 'id', 'userName', 'email' ],
                 where: {
                     id: userId
-                }
-            }, { transaction: cancelTransaction });
+                },
+                transaction: cancelTransaction
+            });
             const order = await Order.findOne({
                 logging: false,
                 where: {
@@ -321,8 +327,9 @@ exports.cancelOrder = async (req, res, next) => {
                         model: Product,
                         attributes: [ 'id', 'quantity' ],
                     }
-                }
-            }, { transaction: cancelTransaction });
+                },
+                transaction: cancelTransaction
+            });
             const cancelOrderResult = await Order.update({
                 status: 'failed',
                 remark: 'Order canceled!'
@@ -331,8 +338,9 @@ exports.cancelOrder = async (req, res, next) => {
                 where: {
                     userId,
                     id: orderId
-                }
-            }, { transaction: cancelTransaction });
+                },
+                transaction: cancelTransaction
+            });
             return await cancelOrderResult;
         });
         return res.redirect('/cart/checkout/'+orderId+'/status');
@@ -371,7 +379,7 @@ exports.generateInvoice = async (req, res, next) => {
                 }
             ]
         });
-        await invoiceGenerator(order);
+        return await invoiceGenerator(order);
     } catch(e) {
         console.log(e);
     }
