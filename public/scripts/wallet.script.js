@@ -47,8 +47,11 @@ const displayValidateAlert = async (body) => {
     }
     if (errors && errors.amount) {
         $('#amount').addClass('is-invalid');
+        $('div#amount.invalid-feedback').detach();
+        $(`<div id="amount" class="invalid-feedback"></div>`).insertAfter('input#amount').text(errors.amount);
     } else {
         $('#amount').removeClass('is-invalid');
+        $('div#amount.invalid-feedback').detach();
     }
 };
 
