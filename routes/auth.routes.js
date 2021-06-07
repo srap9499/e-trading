@@ -37,4 +37,6 @@ router.post(
     Auth.postSignIn
 );
 
+router.get('/signOut', Auth.getSignOut);
+
 module.exports = router;

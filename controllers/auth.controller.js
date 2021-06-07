@@ -158,3 +158,18 @@ exports.postSignIn = async (req, res, next) => {
     // res.status(200).send({ Message: "OK! Sign In successful!", "Token": token });
     res.redirect('/home');
 };
+
+exports.getSignOut = async (req, res, next) => {
+    try {
+        res.clearCookie('jwt_token');
+        return res.redirect('/auth/signIn');
+    } catch(e) {
+        console.log(e);
+        return res.status(500).send({
+            message: {
+                type: "error",
+                body: "Something went wrong!"
+            }
+        });
+    }
+};

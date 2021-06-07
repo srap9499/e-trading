@@ -193,14 +193,14 @@ ul.product-details li p.detail-title {
     line-height: 22px;
 }
 
-.btn-logout,
-.btn-login {
-    width: 89px;
+.btn-signout,
+.btn-signin {
+    width: 110px;
     height: 30px;
     padding: 4px 0;
     font-size: 16px;
 }
-.btn-login {
+.btn-signin {
     background-color: #ffffff;
     color: brown;
 }
@@ -256,12 +256,12 @@ ul.navbar-nav > li > a {
     font-size: 16px;
     font-weight: 600;
 }
-ul.navbar-nav > li > a.btn-logout {
+ul.navbar-nav > li > a.btn-signout {
     margin-top: 5px;
     padding: 4px 0;
     color: #ffffff;
 }
-ul.navbar-nav > li > a.btn-login {
+ul.navbar-nav > li > a.btn-signin {
     margin-top: 5px;
     padding: 4px 0;
     background-color: brown;
@@ -273,10 +273,10 @@ ul.navbar-nav > li > a:focus {
     color: brown;
     border-bottom: 3px solid brown;
 }
-ul.navbar-nav > li > a.btn-logout:hover,
-ul.navbar-nav > li > a.btn-logout:focus,
-ul.navbar-nav > li > a.btn-login:hover,
-ul.navbar-nav > li > a.btn-login:focus {
+ul.navbar-nav > li > a.btn-signout:hover,
+ul.navbar-nav > li > a.btn-signout:focus,
+ul.navbar-nav > li > a.btn-signin:hover,
+ul.navbar-nav > li > a.btn-signin:focus {
     background-color: #ffffff;
     border-color: brown;
     color: brown;
@@ -302,12 +302,12 @@ ul.navbar-nav > li > a.btn-login:focus {
     z-index: 2;
 }
 
-ul.navbar-nav > li > a.btn-logout {
+ul.navbar-nav > li > a.btn-signout {
     margin-top: 5px;
     padding: 4px 0;
     color: #ffffff;
 }
-ul.navbar-nav > li > a.btn-login {
+ul.navbar-nav > li > a.btn-signin {
     margin-top: 5px;
     padding: 4px 0;
     background-color: brown;
