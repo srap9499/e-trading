@@ -44,7 +44,8 @@
 
 .btn-check-out,
 .btn-update-cart,
-.btn-add-to-cart {
+.btn-add-to-cart,
+.btn-add-amount {
     color: brown;
     background-color: #fffeee;
     border: 1px solid brown;
@@ -52,7 +53,8 @@
 
 .btn-check-out:hover,
 .btn-update-cart:hover,
-.btn-add-to-cart:hover {
+.btn-add-to-cart:hover,
+.btn-add-amount:hover {
     color: brown;
     background-color: #cdcdcd;
     border: 1px solid brown;
@@ -156,6 +158,9 @@ ul.product-details li p.detail-title {
 
 .content-box-md {
     padding: 60px 0;
+}
+.content-box-md-2 {
+    padding: 60px 0 0 0;
 }
 
 
@@ -329,6 +334,7 @@ ul.navbar-nav > li > a.btn-login {
 #products-list,
 #my-cart,
 #my-coupons,
+#my-wallet,
 #orders-list,
 #order-status {
     margin-top: 100px;

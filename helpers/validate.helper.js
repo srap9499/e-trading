@@ -40,8 +40,15 @@ const verifySchema = Joi.object({
         .required()
 });
 
+const addAmountSchema = Joi.object({
+    amount: Joi.number()
+    .min(0)
+    .required()
+});
+
 module.exports = {
     signUpSchema,
     verifySchema,
-    signInSchema
+    signInSchema,
+    addAmountSchema
 };

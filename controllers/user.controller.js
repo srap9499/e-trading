@@ -12,11 +12,13 @@ const {
 const { Op } = require('sequelize');
 const { Cart } = require("../models/cart.model");
 const { User } = require("../models/user.model");
+const { Wallet } = require('../models/wallet.model');
 const { Product } = require('../models/product.model');
 const { Brand } = require("../models/brand.model");
 const { Category, Subcategory } = require("../models/categories.model");
 const { Coupon } = require('../models/coupon.model');
 const { Order, OrderDetail } = require("../models/order.model");
+const { sequelize } = require("../config/db-connection.config");
 
 
 exports.getMyCart = async (req, res, next) => {
@@ -142,5 +144,72 @@ exports.getOrderHistory = async (req, res, next) => {
         return res.status(200).render('orderhistory', renderData);
     } catch (e) {
         console.log(e);
+    }
+};
+
+exports.getWalletPage = async (req, res, next) => {
+    const { id } = req.userData;
+    const title = "My Wallet";
+    try {
+        const user = await User.findOne({
+            logging: false,
+            attributes: [ 'id', 'userName', 'email' ],
+            where: {
+                id
+            }
+        });
+        return res.status(200).render('wallet', { user, title });
+    } catch(e) {
+        console.log(e);
+    }
+};
+
+exports.getWalletAmount = async (req, res, next) => {
+    const { id: userId } = req.userData;
+    try {
+        const wallet = await Wallet.findOne({
+            attributes: [ 'amount' ],
+            where: {
+                userId
+            }
+        });
+        return res.status(200).send({ wallet });
+    } catch(e) {
+        console.log(e);
+        return res.status(500).send("Something went wrong");
+    }
+};
+
+exports.addAmount = async (req, res, next) => {
+    console.log("I am working here");
+    const { id: userId } = req.userData;
+    const { amount } = req.body;
+    try {
+        const wallet = await sequelize.transaction(async addAmountTransaction => {
+            const wallet = await Wallet.findOne({
+                attributes: [ 'id', 'amount' ],
+                where: {
+                    userId
+                },
+                transaction: addAmountTransaction,
+            });
+            wallet.amount = +(wallet.amount) + +amount;
+            await wallet.save({ transaction: addAmountTransaction });
+            return await wallet;
+        });
+        return res.status(200).send({
+            message: {
+                type: "success",
+                body: "Successfully added amount to wallet!"
+            }
+        });
+    } catch (e) {
+        console.log(e);
+        return res.status(500).send({
+            message: {
+                type: "error",
+                body: "Something went wrong!"
+            }
+        });
     }
 };

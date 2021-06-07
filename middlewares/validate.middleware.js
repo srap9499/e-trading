@@ -22,3 +22,24 @@ exports.validate = (schema , { target="body", view, title="E-Trading"}) => {
         });
     };
 };
+
+
+exports.validateRest = (schema, target="body") => {
+    target = target.toLowerCase();
+    return async (req, res, next) => {
+        const validateResult = schema.validate(req[target], {
+            abortEarly: false
+        });
+        if (!validateResult.error) {
+            return next();
+        }
+        return res.status(400).send({
+            message: {
+                type: "error",
+                body: "Validation Errors"
+            },
+            errors: joiErrorFormatter(validateResult.error),
+            formData: req[target],
+        });
+    };
+};
