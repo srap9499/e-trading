@@ -44,7 +44,7 @@ app.get('/', (req, res, next) => {
 // Routes
 app.use('/auth', authRouter);
 app.use('/home', homeRouter);
-app.use('/user', userRouter);
+app.use('/user', authenticate, userRouter);
 app.use('/cart', authenticate, cartRouter);
 app.use('/product', productRouter);
 

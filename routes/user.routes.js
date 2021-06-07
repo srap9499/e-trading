@@ -8,19 +8,18 @@ const { validateRest } = require("../middlewares/validate.middleware");
 
 const router = Router();
 
-router.get('/mycart', authenticate, User.getMyCart);
+router.get('/mycart', User.getMyCart);
 
-router.get('/mycoupons', authenticate, User.getMyCoupons);
+router.get('/mycoupons', User.getMyCoupons);
 
-router.get('/orderhistory', authenticate, User.getOrderHistory);
+router.get('/orderhistory', User.getOrderHistory);
 
-router.get('/wallet', authenticate, User.getWalletPage);
+router.get('/wallet', User.getWalletPage);
 
-router.get('/wallet/amount', authenticate, User.getWalletAmount);
+router.get('/wallet/amount', User.getWalletAmount);
 
 router.post(
     '/wallet/addamount',
-    authenticate,
     validateRest(addAmountSchema),
     User.addAmount
 );
