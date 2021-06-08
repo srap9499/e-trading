@@ -13,3 +13,7 @@ Basic E-trading project using Express.JS and Sequelize
 ## Run Server (Auto restart mode)
 
     npm run dev
+
+## Client Home URL
+
+    hostname:port/home
