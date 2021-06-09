@@ -51,14 +51,14 @@ exports.getCouponPaginationData = ({ data, page, limit }) => {
 
 exports.getOrderHistoryPagination = ({ page, size }) => {
     const limit = size ? +size : 5;
-    const offset = page ? page * limit : 0;
+    const offset = page ? (+page-1) * limit : 0;
 
     return { limit, offset };
 };
 
 exports.getOrderHistoryPaginationData = ({ data, page, limit }) => {
     const { count: totalItems, rows: orders } = data;
-    const currentPage = page ? +page : 0;
+    const currentPage = page ? +page : 1;
     const totalPages = Math.ceil( totalItems / limit );
     const size = limit;
 
