@@ -23,3 +23,27 @@ exports.dateAfterYears = (years= 1) => {
     const dateAfterYears = new Date(now.setFullYear(now.getFullYear + years));
     return dateAfterYears;
 };
+
+// Format to Date-time string
+exports.formatDateTime = (date= new Date()) => {
+    const dateObj = new Date(date);
+    const options = { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const strDatetime = dateObj.toLocaleString('en', options);
+    return strDatetime;
+};
+
+// Format to Date string
+exports.formatDate = (date= new Date()) => {
+    const dateObj = new Date(date);
+    const options = { month: 'short', day: '2-digit', year: 'numeric' };
+    const strDate = dateObj.toLocaleDateString('en', options);
+    return strDate;
+};
+
+// Format to Time string
+exports.formatTime = (date= new Date()) => {
+    const dateObj = new Date(date);
+    const options = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const strTime = dateObj.toLocaleTimeString('en', options);
+    return strTime;
+}
