@@ -7,6 +7,8 @@ const router = Router();
 
 router.post('/add/:productId', Cart.addToCart);
 
+router.get('/products', Cart.getCartData);
+
 router.post('/update/:productId', Cart.updateCart);
 
 router.get('/checkout', Cart.checkOut);

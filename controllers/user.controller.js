@@ -21,52 +21,32 @@ const { Order, OrderDetail } = require("../models/order.model");
 const { sequelize } = require("../config/db-connection.config");
 
 
-exports.getMyCart = async (req, res, next) => {
-    const { userData } = req;
+/**
+ * @description API interdace to get Cart Page
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {import("express").NextFunction} next 
+ * @returns {Response} EJS
+ */
+exports.getCartPage = async (req, res, next) => {
+    const { id } = req.userData;
     const title = "My Cart";
-    const { page, size } = req.query;
     try {
-        const { limit, offset } = getCartPagination({ page, size });
         const user = await User.findOne({
             logging: false,
             attributes: ["id", "userName", "email"],
             where: {
-                email: userData.email
+                id
             },
         });
-        const data = await Cart.findAndCountAll({
-            logging: false,
-            attributes: ["quantity"],
-            limit,
-            offset,
-            where: { userId: user.id },
-            include: {
-                model: Product,
-                attributes: ["id", "name", "quantity", "price"],
-                include: [
-                    {
-                        model: Brand,
-                        attributes: ["name"]
-                    },
-                    {
-                        model: Category,
-                        attributes: ["category"]
-                    },
-                    {
-                        model: Subcategory,
-                        attributes: ["subcategory"]
-                    }
-                ]
+        return res.status(200).render('cart', { user, title });
+    } catch (error) {
+        return res.status(500).send({
+            message: {
+                type: 'error',
+                body: 'Something went wrong!'
             }
         });
-        let renderData = getCartPaginationData({ data, page, limit });
-        renderData.title = title;
-        renderData.user = user;
-        // return res.send(renderData);
-        return res.status(200).render('cart', renderData);
-    } catch (e) {
-        next(e);
-        // next({error: e, view: "cart", title});
     }
 };
 

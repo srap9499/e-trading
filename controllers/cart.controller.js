@@ -6,6 +6,8 @@ const { User } = require('../models/user.model');
 const { Wallet } = require('../models/wallet.model');
 const { Cart } = require('../models/cart.model');
 const { Product } = require('../models/product.model');
+const { Brand } = require('../models/brand.model');
+const { Category, Subcategory } = require('../models/categories.model');
 const { Coupon } = require('../models/coupon.model');
 const { Order, OrderDetail } = require('../models/order.model');
 const { invoiceGenerator } = require("../helpers/invoice.helper");
@@ -45,9 +47,67 @@ exports.addToCart = async (req, res, next) => {
     }
 };
 
+/**
+ * @description API interface to Get Cart data
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {import("express").NextFunction} next 
+ * @returns {Response} Cart Products: JSON
+ */
+ exports.getCartData = async (req, res, next) => {
+    const { id: userId } = req.userData;
+    try {
+        const cartItems = await Cart.findAll({
+            logging: false,
+            attributes: ["quantity"],
+            where: { userId },
+            include: {
+                model: Product,
+                attributes: ["id", "name", "quantity", "price"],
+                include: [
+                    {
+                        model: Brand,
+                        attributes: ["name"]
+                    },
+                    {
+                        model: Category,
+                        attributes: ["category"]
+                    },
+                    {
+                        model: Subcategory,
+                        attributes: ["subcategory"]
+                    }
+                ]
+            }
+        });
+        return res.status(200).send({
+            cartItems,
+            message: {
+                type: "success",
+                body: "Cart items fetched Successfully!"
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            message: {
+                type: "error",
+                body: "Something went wrong!"
+            }
+        });
+    }
+};
+
+/**
+ * @description API interface to update Products into user's cart
+ * @type Function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {import('express').NextFunction} next 
+ * @returns {Response} JSON
+ */
 exports.updateCart = async (req, res, next) => {
-    const { userData } = req;
-    const userId = userData.id;
+    const { id: userId } = req.userData;
     const { productId } = req.params;
     const { quantity } = req.body;
     try {
@@ -55,10 +115,20 @@ exports.updateCart = async (req, res, next) => {
             replacements: { userId, productId, quantity },
             logging: false
         });
-        return res.redirect('/user/mycart');
-    } catch(e) {
-        console.log(e);
-        return res.send(500).send("Something went wrong!");
+        return res.status(200).send({
+            message: {
+                type: "success",
+                body: "Cart updated successfully!"
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            message: {
+                type: "error",
+                body: "Something went wrong!"
+            }
+        });
     }
 };
 

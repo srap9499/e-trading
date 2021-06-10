@@ -8,7 +8,7 @@ const { validateRest } = require("../middlewares/validate.middleware");
 
 const router = Router();
 
-router.get('/mycart', User.getMyCart);
+router.get('/cart', User.getCartPage);
 
 router.get('/mycoupons', User.getMyCoupons);
 

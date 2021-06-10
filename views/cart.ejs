@@ -14,95 +14,77 @@
                                 <h2>My Cart</h2>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-3">
-                            <div class="cart-desc">
-                                <h4>Total <%= totalItems %> items in cart!</h4>
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div id="alert" class="alert" role="alert" hidden>
                             </div>
                         </div>
-                        <% if (totalItems > 0) { %>
-                            <div class="col-12 col-sm-12 col-md-3">
-                                <form action="/cart/checkout" method="GET">
-                                    <button type="submit" class="btn btn-check-out btn-block">Check Out</button>
-                                </form>
-                            </div>
-                        <% } %>
-                        <% if (!cartItems.length) { %>
-                            <div class="col-sm-12 col-md-12 justify-content-center">
-                                <p>Nothing to display here...</p>
-                            </div>
-                        <% } else { %>
-                            <% for (const item of cartItems) { %>
-                                <div class="col-sm-12 col-md-4">
-                                    <div class="cart-items">
-                                        <img src="/images/1.jpg" alt="product" class="img-responsive">
-                                        <div class="cart-product">
-                                            <div class="product-head">
-                                                <h5><%= item.product.name %></h5>
-                                                <% if (item.product.brand && item.product.brand.name) { %>
-                                                    <h6>By <%= item.product.brand.name %></h6>
-                                                <% } %>
-                                            </div>
-                                            <ul class="product-details">
-                                                <li><% if (item.product.category && item.product.category.category) { %><p class="detail-title"><span><%= item.product.category.category %></span></p><% } %><% if (item.product.subcategory && item.product.subcategory.subcategory) { %><p class="detail-title"><span><%= item.product.subcategory.subcategory %></span></p><% } %></li>
-                                                <li><p class="detail-title">Price: &#8377;</p><span><%= item.product.price %></span></li>
-                                                <li><p class="detail-title">Total Quantity Left:</p><span><%= item.product.quantity %></span></li>
-                                                <li><p class="detail-title">Quantity in Cart:</p><span><%= item.quantity %></span></li>
-                                            </ul>
-                                            <div>
-                                                <form action="/cart/update/<%= item.product.id %>" method="POST">
-                                                    <div class="row">
-                                                        <div class="col-6 col-sm-6 col-md-6 form-group">
-                                                            <select type="submit" name="quantity" id="update-quantity" class="form-control">
-                                                                <option value=<%= item.quantity %> selected hidden><%= item.quantity %></option>
-                                                                <option value=0>0 (Remove)</option>
-                                                                <% for (let option = 1; option <= item.product.quantity && option <= 10; option++) { %>
-                                                                    <option value=<%= option %>><%= option %></option>
-                                                                <% } %>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-6 col-sm-6 col-md-6 form-group">
-                                                            <button type="submit" class="btn btn-update-cart btn-block">Update Cart</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
+                        <div id="nothing-to-display" class="col-sm-12 col-md-12 justify-content-center" hidden>
+                            <p>Nothing to display here...</p>
+                        </div>
+                    </div>
+                    <div id="cart-area" class="row">
+                        <div class="col-12 col-sm-12 col-md-12">
+                            <div class="row cart-items">
+                                <div class="col-12 col-sm-12 col-md-6">
+                                    <div class="product-head">
+                                        <h5>
+                                            PUMA Smash Vulc Sneakers
+                                        </h5>
+                                        <h6>
+                                            By PUMA
+                                        </h6>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-3">
+                                    <ul class="product-details">
+                                        <li>
+                                            <p class="detail-title">
+                                                <span>
+                                                    Footwear
+                                                </span>
+                                            </p>
+                                            <p class="detail-title">
+                                                <span>
+                                                    Sneakers
+                                                </span>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p class="detail-title">Price: &nbsp;</p>
+                                            <span>&#8377; 999.00</span>
+                                        </li>
+                                        <li>
+                                            <p class="detail-title">Quantity Left: &nbsp;</p>
+                                            <span>24</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-3">
+                                    <div class="row">
+                                        <div class="col-6 col-sm-6 col-md-6">
+                                            <label for="quantity" style="display: inline-flex;">
+                                                Qty: &nbsp;
+                                            </label>
+                                            <select name="quantity" id="quantity" class="form-control" style="display: inline-flex; width: max-content;">
+                                                <option value=1 selected hidden>1</option>
+                                                <option value=0>0 (Remove)</option>
+                                                <option value=1>1</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-md-6">
+                                            <button type="button" class="btn btn-add-to-cart btn-block">Add To Cart</button>
                                         </div>
                                     </div>
                                 </div>
-                            <% } %>
-                        <% } %>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <% if (totalPages > 0) { %>
-                <nav aria-label="Cart Pagination">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item">
-                            <a class="page-link"
-                                href="/user/mycart/?size=<%= size%>&page=<%= (currentPage>0) ? (currentPage-1) : 0 %>"
-                                aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <% for (let pageNum=0; pageNum<totalPages; pageNum++) { %>
-                            <li class="page-item <%= currentPage==pageNum ? 'active' : '' %>"><a
-                                    class="page-link"
-                                    href="/user/mycart/?size=<%= size%>&page=<%= pageNum%>">
-                                    <%= pageNum+1 %>
-                                </a></li>
-                        <% } %>
-                        <li class="page-item">
-                            <a class="page-link"
-                                href="/user/mycart/?size=<%= size%>&page=<%= (currentPage < totalPages-1) ? (currentPage+1) : (totalPages-1) %>"
-                                aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            <% } %>
         </section>
 
         <%- include('./includes/tail.ejs') %>
+
+        <script src="/scripts/cart.script.js"></script>
     </body>
 </html>
