@@ -3,14 +3,14 @@
 
 exports.getProductPagination = ({ page, size }) => {
     const limit = size ? +size : 6;
-    const offset = page ? page * limit : 0;
+    const offset = page ? (+page-1) * limit : 0;
 
     return { limit, offset };
 };
 
 exports.getProductPaginationData = ({ data, page, limit }) => {
     const { count: totalItems, rows: products } = data;
-    const currentPage = page ? +page : 0;
+    const currentPage = page ? +page : 1;
     const totalPages = Math.ceil( totalItems / limit );
     const size = limit;
 

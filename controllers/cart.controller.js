@@ -11,9 +11,16 @@ const { Order, OrderDetail } = require('../models/order.model');
 const { invoiceGenerator } = require("../helpers/invoice.helper");
 const { sendInvoiceMail } = require("../helpers/mail.helper");
 
+/**
+ * @description API interface to add Products to user's cart
+ * @type Function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {import('express').NextFunction} next 
+ * @returns {Response} JSON
+ */
 exports.addToCart = async (req, res, next) => {
-    const { userData } = req;
-    const userId = userData.id;
+    const { id: userId } = req.userData;
     const { productId } = req.params;
     const { quantity } = req.body;
     try {
@@ -21,11 +28,20 @@ exports.addToCart = async (req, res, next) => {
             replacements: { userId, productId, quantity },
             logging: false
         });
-        return res.redirect('/home');
-        // return res.status(200).send("SuccessFull!");
+        return res.status(200).send({
+            message: {
+                type: "success",
+                body: "Product added to cart!"
+            }
+        });
     } catch (e) {
         console.log(e);
-        return res.status(500).send("Something went wrong!");
+        return res.status(500).send({
+            message: {
+                type: "error",
+                body: "Something went wrong!"
+            }
+        });
     }
 };
 
