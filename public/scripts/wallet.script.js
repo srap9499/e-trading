@@ -24,7 +24,7 @@ const displayResponseAlert = async (body) => {
             $('#alert').addClass("alert-success").removeClass("alert-danger");
         }
     } else {
-        $('#alert').addAttr("hidden");
+        $('#alert').attr("hidden", "true");
     }
     if (errors && errors.amount) {
         $('#amount').addClass('is-invalid');
@@ -43,7 +43,7 @@ const displayValidateAlert = async (body) => {
             $('#alert').addClass("alert-success").removeClass("alert-danger");
         }
     } else {
-        $('#alert').addAttr("hidden");
+        $('#alert').attr("hidden", "true");
     }
     if (errors && errors.amount) {
         $('#amount').addClass('is-invalid');

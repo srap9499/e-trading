@@ -9,40 +9,82 @@ const { Product } = require('../models/product.model');
 const { Brand } = require('../models/brand.model');
 const { Category, Subcategory } = require('../models/categories.model');
 
-exports.getHome = async (req, res, next) => {
-    const { userData } = req;
+/**
+ * @description API interface to get home page.
+ * @type Function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {import('express').NextFunction} next 
+ * @returns {Response} EJS
+ */
+exports.getHomePage = async (req, res, next) => {
+    const { id } = req.userData;
     const title = "E-Trading";
-    const { page, size } = req.query;
-    const { limit, offset } = getProductPagination({ page, size });
-    const user = await User.findOne({
-        logging: false,
-        attributes: ["id", "userName", "email"],
-        where: {
-            email: userData.email
-        },
-    });
-    const data = await Product.findAndCountAll({
-        logging: false,
-        attributes: ['id', 'name', 'quantity', 'price'],
-        limit,
-        offset,
-        include: [
-            {
-                model: Brand,
-                attributes: ["name"]
+    try {
+        const user = await User.findOne({
+            logging: false,
+            attributes: ["id", "userName", "email"],
+            where: {
+                id
             },
-            {
-                model: Category,
-                attributes: ["category"]
-            },
-            {
-                model: Subcategory,
-                attributes: ["subcategory"]
+        });
+        return res.status(200).render('home', { user, title });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            message: {
+                type: "error",
+                body: "Something went wrong!"
             }
-        ]
-    });
-    let renderData = getProductPaginationData({ data, page, limit });
-    renderData.title = title;
-    renderData.user = user;
-    res.render('home', renderData);
+        });
+    }
+};
+
+/**
+ * @description API interface to get Products
+ * @type Function
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {import('express').NextFunction} next 
+ * @returns {Response} JSON: Products
+ */
+exports.getProductsData = async (req, res, next) => {
+    try {
+        const { page, size } = req.query;
+        const { limit, offset } = getProductPagination({ page, size });
+        const data = await Product.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'name', 'quantity', 'price'],
+            limit,
+            offset,
+            include: [
+                {
+                    model: Brand,
+                    attributes: ["name"]
+                },
+                {
+                    model: Category,
+                    attributes: ["category"]
+                },
+                {
+                    model: Subcategory,
+                    attributes: ["subcategory"]
+                }
+            ]
+        });
+        let responseData = getProductPaginationData({ data, page, limit });
+        responseData.message = {
+            type: "success",
+            body: "Products fetched successfully!"
+        };
+        return res.status(200).send(responseData);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            message: {
+                type: "error",
+                body: "Something went wrong!"
+            }
+        });
+    }
 };

@@ -1,99 +1,41 @@
-    <%- include('./includes/head.ejs') %>
+<%- include('./includes/head.ejs') %>
 
     </head>
+
     <body>
         <%- include('./includes/nav.ejs') %>
-        
-        <section id="products-list">
-            <div class="content-box-md">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="left-heading">
-                                <h2>Products</h2>
+
+            <section id="products-list">
+                <div class="content-box-md">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="left-heading">
+                                    <h2>Products</h2>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="product-desc">
-                                <h4>Total <%= totalItems %> products available!</h4>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="product-desc">
+                                    <h4></h4>
+                                </div>
                             </div>
-                        </div>
-                        <% if (!products.length) { %>
-                            <div class="col-sm-12 col-md-12 justify-content-center">
+                            <div id="nothing-to-display" class="col-sm-12 col-md-12 justify-content-center" hidden>
                                 <p>Nothing to display here...</p>
                             </div>
-                        <% } else { %>
-                            <% for (const item of products) { %>
-                                <div class="col-sm-12 col-md-4">
-                                    <div class="product-items">
-                                        <img src="/images/1.jpg" alt="product" class="img-responsive">
-                                        <div class="list-product">
-                                            <div class="product-head">
-                                                <h5><%= item.name %></h5>
-                                                <% if (item.brand && item.brand.name) { %>
-                                                    <h6>By <%= item.brand.name %></h6>
-                                                <% } %>
-                                            </div>
-                                            <ul class="product-details">
-                                                <li><% if (item.category && item.category.category) { %><p class="detail-title"><span><%= item.category.category %></span></p><% } %><% if (item.subcategory && item.subcategory.subcategory) { %><p class="detail-title"><span><%= item.subcategory.subcategory %></span></p><% } %></li>
-                                                <li><p class="detail-title">Price: &#8377;</p><span><%= item.price %></span></li>
-                                                <li><p class="detail-title">Total Quantity Left:</p><span><%= item.quantity %></span></li>
-                                                <li><p class="detail-title">Quantity:</p></li>
-                                            </ul>
-                                            <div>
-                                                <form action="/cart/add/<%= item.id %>" method="POST">
-                                                    <div class="row">
-                                                        <div class="col-6 col-sm-6 col-md-6 form-group">
-                                                            <select name="quantity" id="add-quantity" class="form-control">
-                                                                <option value=1 selected hidden>1</option>
-                                                                <% for (let option = 1; option <= item.quantity && option <= 10; option++) { %>
-                                                                    <option value=<%= option %>><%= option %></option>
-                                                                <% } %>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-6 col-sm-6 col-md-6 form-group">
-                                                            <button type="submit" class="btn btn-add-to-cart btn-block">Add To Cart</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
-                        <% } %>
+                        </div>
+                        <div id="products-area" class="row">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <% if (totalPages > 0) { %>
-                <nav aria-label="Cart Pagination">
+                <nav aria-label="Product Pagination">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item">
-                            <a class="page-link"
-                                href="/home/?size=<%= size%>&page=<%= (currentPage>0) ? (currentPage-1) : 0 %>"
-                                aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <% for (let pageNum=0; pageNum<totalPages; pageNum++) { %>
-                            <li class="page-item <%= currentPage==pageNum ? 'active' : '' %>"><a
-                                    class="page-link"
-                                    href="/home/?size=<%= size%>&page=<%= pageNum%>">
-                                    <%= pageNum+1 %>
-                                </a></li>
-                        <% } %>
-                        <li class="page-item">
-                            <a class="page-link"
-                                href="/home/?size=<%= size%>&page=<%= (currentPage < totalPages-1) ? (currentPage+1) : (totalPages-1) %>"
-                                aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
                     </ul>
                 </nav>
-            <% } %>
-        </section>
-        
-        <%- include('./includes/tail.ejs') %>
+            </section>
+
+            <%- include('./includes/tail.ejs') %>
+
+            <script src="/scripts/products.script.js"></script>
     </body>
-</html>
+
+    </html>

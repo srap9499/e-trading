@@ -8,11 +8,14 @@ const { validateRest } = require("../middlewares/validate.middleware");
 
 const router = Router();
 
-router.get('/mycart', User.getMyCart);
+router.get('/cart', User.getCartPage);
 
 router.get('/mycoupons', User.getMyCoupons);
 
-router.get('/orderhistory', User.getOrderHistory);
+/** @description Routes for Order History */
+router.get('/orders', User.getOrderHistoryPage);
+
+router.get('/orders/history', User.getOrderHistoryData);
 
 router.get('/wallet', User.getWalletPage);
 

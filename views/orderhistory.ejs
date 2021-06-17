@@ -1,93 +1,91 @@
 <%- include('./includes/head.ejs') %>
 
-</head>
-<body>
-    <%- include('./includes/nav.ejs') %>
-        
-    <section id="orders-list">
-        <div class="content-box-md">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12 col-md-6">
-                        <div class="left-heading">
-                            <h2>Order History</h2>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6">
-                        <div class="product-desc">
-                            <h4>Total <%= totalItems %> orders in history!</h4>
-                        </div>
-                    </div>
-                    <% if (!orders.length) { %>
-                        <div class="col-sm-12 col-md-12 justify-content-center">
-                            <p>Nothing to display here...</p>
-                        </div>
-                    <% } else { %>
-                        <div class="col-12 col-sm-12 col-md-12 grid-table table-responsive-xl">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" class="align-middle text-center">Order<br>ID</th>
-                                        <th scope="col" class="align-middle text-center">DATE</th>
-                                        <th scope="col" class="align-middle text-center">Details</th>
-                                        <th scope="col" class="align-middle text-center">Price(Rs)</th>
-                                        <th scope="col" class="align-middle text-center">Quantity</th>
-                                        <th scope="col" class="align-middle text-center">Total(Rs)</th>
-                                        <th scope="col" class="align-middle text-center">Grand<br>Total(Rs)</th>
-                                        <th scope="col" class="align-middle text-center">Status</th>
-                                        <th scope="col" class="align-middle text-center">Remark</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% for (const item of orders) { %>
+    </head>
+
+    <body>
+        <%- include('./includes/nav.ejs') %>
+
+            <section id="orders-list">
+                <div class="content-box-md">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-6">
+                                <div class="left-heading">
+                                    <h2>Order History</h2>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-6">
+                                <div id="alert" class="alert" role="alert" hidden>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12">
+                                <div class="row options">
+                                    <div class="col-6 col-sm-6 col-md-3">
+                                        <select name="status" id="status" class="form-control">
+                                            <option value="" selected>Filter by Status</option>
+                                            <option value="success">Success</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="failed">Failed</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-md-3">
+                                        <select name="sort-by" id="sort-by" class="form-control">
+                                            <option value="" selected>Sort By: </option>
+                                            <option value="id">Order ID</option>
+                                            <option value="date">Date</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-md-3">
+                                        <select name="order-by" id="order-by" class="form-control">
+                                            <option value="" selected>Order By</option>
+                                            <option value="ASC">Ascending</option>
+                                            <option value="DESC">Descending</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-md-3 text-right">
+                                        <p style="display: inline-block; width: max-content;">Page Size: </p>
+                                        <select name="page-size" id="page-size" class="form-control" style="display: inline-block; width: auto;">
+                                            <option value=5 selected>5</option>
+                                            <option value=10>10</option>
+                                            <option value=15>15</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="nothing-to-display" class="col-sm-12 col-md-12 justify-content-center" hidden>
+                                <p>Nothing to display here...</p>
+                            </div>
+                            <div class="col-12 col-sm-12 col-md-12 grid-table table-responsive-xl">
+                                <table id="order-history" class="table" hidden>
+                                    <thead>
                                         <tr>
-                                            <td class="align-middle" ><%= item.id %></td>
-                                            <td class="align-middle" style="max-width: 85px;"><%= item.date.getDate()+'/'+(item.date.getMonth()+1)+'/'+item.date.getFullYear() %></td>
-                                            <td class="align-middle" style="min-width: 220px;"><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;">- <%= detail.product.name %></p><% } %></td>
-                                            <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.product.price %></p><% } %></td>
-                                            <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.quantity %></p><% } %></td>
-                                            <td class="align-middle" ><% for (const detail of item.orderdetails) { %><p style="display: table-row-group;"><%= detail.total %></p><% } %></td>
-                                            <td class="align-middle" ><%= item.discountedAmount %></td>
-                                            <td class="align-middle" style="max-width: 70px;"><a type="button" href="/cart/checkout/<%= item.id %>/status" class="<%= item.status ==='success' ? 'green' : item.status==='pending' ? 'blue' : 'red' %>" aria-label="view details & options"><%= item.status %></a></td>
-                                            <td class="align-middle" style="max-width: 140px;"><%= item.remark %></td>
+                                            <th scope="col" class="align-middle text-center">Order<br>ID</th>
+                                            <th scope="col" class="align-middle text-center">DATE</th>
+                                            <th scope="col" class="align-middle text-center">Details</th>
+                                            <th scope="col" class="align-middle text-center">Price</th>
+                                            <th scope="col" class="align-middle text-center">Qty</th>
+                                            <th scope="col" class="align-middle text-center">Sub Total</th>
+                                            <th scope="col" class="align-middle text-center">Total</th>
+                                            <th scope="col" class="align-middle text-center">Status</th>
+                                            <th scope="col" class="align-middle text-center">Remark</th>
                                         </tr>
-                                    <% } %>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    <% } %>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <% if (totalPages > 0) { %>
-            <nav aria-label="Cart Pagination">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="/user/orderhistory/?size=<%= size%>&page=<%= (currentPage>0) ? (currentPage-1) : 0 %>"
-                            aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <% for (let pageNum=0; pageNum<totalPages; pageNum++) { %>
-                        <li class="page-item <%= currentPage==pageNum ? 'active' : '' %>"><a
-                                class="page-link"
-                                href="/user/orderhistory/?size=<%= size%>&page=<%= pageNum%>">
-                                <%= pageNum+1 %>
-                            </a></li>
-                    <% } %>
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="/user/orderhistory/?size=<%= size%>&page=<%= (currentPage < totalPages-1) ? (currentPage+1) : (totalPages-1) %>"
-                            aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        <% } %>
-    </section>
-    
-    <%- include('./includes/tail.ejs') %>
-</body>
+                <nav aria-label="Cart Pagination">
+                    <ul class="pagination justify-content-center">
+                    </ul>
+                </nav>
+            </section>
+
+            <%- include('./includes/tail.ejs') %>
+
+            <script src="/scripts/orderhistory.script.js"></script>
+    </body>
+
 </html>
