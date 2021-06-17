@@ -177,6 +177,7 @@ exports.getOrderHistoryData = async (req, res, next) => {
                 }
             }
         });
+        console.log("Count:", data.count);
         let responseData = getOrderHistoryPaginationData({ data, page, limit });
         responseData.message = {
             type: "success",

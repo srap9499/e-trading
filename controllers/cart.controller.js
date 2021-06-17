@@ -80,6 +80,9 @@ exports.addToCart = async (req, res, next) => {
                 ]
             }
         });
+        cartItems.forEach(item => {
+            item.dataValues.subTotal = parseInt(item.quantity) * parseFloat(item.product.price);
+        });
         return res.status(200).send({
             cartItems,
             message: {
@@ -132,16 +135,22 @@ exports.updateCart = async (req, res, next) => {
     }
 };
 
+/**
+ * @description API interface to Proceed for order checkout
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {import("express").NextFunction} next 
+ * @returns {Response} order.id: JSON
+ */
 exports.checkOut = async (req, res, next) => {
-    const { userData } = req;
-    const userId = userData.id;
+    const { id: userId } = req.userData;
     try {
         const result = await sequelize.transaction(async (checkOut) => {
             const user = await User.findOne({
                 logging: false,
                 attributes: [ 'id', 'userName', 'email' ],
                 where: {
-                    id: userId,
+                    id: userId
                 },
                 include: {
                     model: Cart,
@@ -192,9 +201,10 @@ exports.checkOut = async (req, res, next) => {
             });
             return await order;
         });
-        return res.redirect('/cart/checkout/'+result.id+'/status');
-    } catch (e) {
-        return res.status(500).send(e.message);
+        return res.status(200).send({ id: result.id });
+        // res.redirect('/cart/checkout/'+result.id+'/status');
+    } catch (error) {
+        return res.status(500).send(error.message);
     }
 };
 
@@ -222,7 +232,7 @@ exports.getOrderStatus = async (req, res, next) => {
                 }
             }
         });
-        return res.status(200).render('orderstatus', { user, title });
+        res.render('orderstatus', { user, title });
     } catch (e) {
         console.log(e);
     }
