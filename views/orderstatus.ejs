@@ -38,13 +38,14 @@
                     <div class="row">
                         <% if (order.status==='success') { %>
                             <div class="col-12 col-sm-6 col-md-6">
-                                <form action="/cart/checkout" method="POST">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-6 col-md-6 form-group">
-                                            <button type="submit" class="btn btn-check-out btn-block">Success</button>
-                                        </div>
+                                <div class="row">
+                                    <div class="col-12 col-sm-6 col-md-6">
+                                        <div id="alert" class="alert alert-success" role="alert">Invoice sent via email!</div>
                                     </div>
-                                </form>
+                                    <div class="col-12 col-sm-6 col-md-6 form-group">
+                                        <button type="button" class="btn btn-order-status btn-block" onclick="window.location.href = '/user/orders';">Goto Order History</button>
+                                    </div>
+                                </div>
                             </div>
                         <% } else if (order.status==='pending') { %>
                             <div class="col-12 col-sm-4 col-md-4">
@@ -54,7 +55,7 @@
                                             <input type="text" class="form-control" name="code" id="code" placeholder="Coupon...">
                                         </div>
                                         <div class="col-12 col-sm-6 col-md-6 form-group">
-                                            <button type="submit" class="btn btn-check-out btn-block">Proceed Payment</button>
+                                            <button type="submit" class="btn btn-order-status btn-block">Proceed Payment</button>
                                         </div>
                                     </div>
                                 </form>
@@ -63,7 +64,7 @@
                                 <form action="/cart/checkout/<%= order.id %>/cancel" method="GET">
                                     <div class="row">
                                         <div class="col-12 col-sm-6 col-md-12 form-group">
-                                            <button type="submit" class="btn btn-check-out btn-block">Cancel</button>
+                                            <button type="submit" class="btn btn-order-status btn-block">Cancel</button>
                                         </div>
                                     </div>
                                 </form>
@@ -73,7 +74,7 @@
                                 <form action="/cart/checkout/<%= order.id %>/retry" method="GET">
                                     <div class="row">
                                         <div class="col-12 col-sm-6 col-md-6 form-group">
-                                            <button type="submit" class="btn btn-check-out btn-block">Retry</button>
+                                            <button type="submit" class="btn btn-order-status btn-block">Retry</button>
                                         </div>
                                     </div>
                                 </form>
