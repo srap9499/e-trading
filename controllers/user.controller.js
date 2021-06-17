@@ -175,9 +175,9 @@ exports.getOrderHistoryData = async (req, res, next) => {
                     model: Product,
                     attributes: ['id', 'name', 'price']
                 }
-            }
+            },
+            distinct: true
         });
-        console.log("Count:", data.count);
         let responseData = getOrderHistoryPaginationData({ data, page, limit });
         responseData.message = {
             type: "success",
