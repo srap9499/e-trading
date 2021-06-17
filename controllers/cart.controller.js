@@ -199,7 +199,7 @@ exports.checkOut = async (req, res, next) => {
                 },
                 transaction: checkOut
             });
-            return await order;
+            return order;
         });
         return res.status(200).send({ id: result.id });
         // res.redirect('/cart/checkout/'+result.id+'/status');
@@ -391,7 +391,7 @@ exports.retryOrder = async (req, res, next) => {
                 },
                 transaction: retryTransaction
             });
-            return await retryOrderResult;
+            return retryOrderResult;
         });
         return res.redirect('/cart/checkout/'+orderId+'/status');
     } catch (e) {
@@ -440,7 +440,7 @@ exports.cancelOrder = async (req, res, next) => {
                 },
                 transaction: cancelTransaction
             });
-            return await cancelOrderResult;
+            return cancelOrderResult;
         });
         return res.redirect('/cart/checkout/'+orderId+'/status');
     } catch (e) {

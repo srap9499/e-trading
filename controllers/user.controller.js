@@ -249,7 +249,7 @@ exports.addAmount = async (req, res, next) => {
             });
             wallet.amount = +(wallet.amount) + +amount;
             await wallet.save({ transaction: addAmountTransaction });
-            return await wallet;
+            return wallet;
         });
         return res.status(200).send({
             message: {
