@@ -1,3 +1,3 @@
-## Welcome to E-Trading
+# Get To Know me...
 
-Basic E-trading project using Express.JS and Sequelize
+I am Siddhesh Panchal, a software engineer. I have created a E-Trading project using Express, Node and Sequelize.
