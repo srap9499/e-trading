@@ -27,6 +27,29 @@ exports.addToCart = async (req, res, next) => {
     const { productId } = req.params;
     const { quantity } = req.body;
     try {
+        const product = await Product.findOne({
+            logging: false,
+            attributes: [ 'quantity' ],
+            where: {
+                id: productId
+            }
+        });
+        const cart = await Cart.findOne({
+            logging: false,
+            attributes: [ 'quantity' ],
+            where: {
+                userId,
+                productId
+            }
+        });
+        if (cart && cart.quantity && parseInt(product.quantity) < (parseInt(cart.quantity) + parseInt(quantity))) {
+            return res.status(400).send({
+                message: {
+                    type: "error",
+                    body: "Insufficient stock to add!"
+                }
+            });
+        }
         await sequelize.transaction(async addTransaction => {
             await sequelize.query('CALL add_to_cart( :userId, :productId, :quantity)', {
                 replacements: { userId, productId, quantity },
