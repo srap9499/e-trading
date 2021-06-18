@@ -17,6 +17,7 @@ const { Code } = require('../models/code.model');
 const { Wallet } = require('../models/wallet.model');
 const { Coupon } = require('../models/coupon.model');
 const { dateAfterWeeks } = require('../helpers/date.helper');
+const { development } = require('../config/development.config');
 
 
 // Render Sign Up page
@@ -35,7 +36,8 @@ exports.postSignUp = async (req, res, next) => {
             userName,
             email,
             password: hashedPassword,
-            wallet: {}
+            wallet: {},
+            userroleId: development.roles.User
         };
         const user = await User.create(userData, 
             {
@@ -149,7 +151,8 @@ exports.postSignIn = async (req, res, next) => {
     const userData = {
         id: user.id,
         userName: user.userName,
-        email: user.email
+        email: user.email,
+        role: user.userroleId
     }
     const token = generateToken(userData, 60 * 60);     // jwt authorization
     res.cookie('jwt_token', token, { maxAge: 60 * 60 * 1000, httpOnly: true });

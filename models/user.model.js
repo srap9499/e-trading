@@ -4,6 +4,7 @@ const Sequelize = require('sequelize');
 
 // Sequelize connection
 const { sequelize } = require('../config/db-connection.config');
+const { UserRole } = require('./role.model');
 
 const User = sequelize.define("user", {
     userName: {
@@ -53,5 +54,11 @@ User.addHook('beforeCreate', 'avoidDuplicateEmail', async (user) => {
         ]);
     }
 });
+
+UserRole.hasMany(User, {
+    allowNull: false,
+    onDelete: 'SET NULL'
+});
+User.belongsTo(UserRole);
 
 module.exports = { User };
