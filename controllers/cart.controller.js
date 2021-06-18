@@ -27,9 +27,12 @@ exports.addToCart = async (req, res, next) => {
     const { productId } = req.params;
     const { quantity } = req.body;
     try {
-        await sequelize.query('CALL add_to_cart( :userId, :productId, :quantity)', {
-            replacements: { userId, productId, quantity },
-            logging: false
+        await sequelize.transaction(async addTransaction => {
+            await sequelize.query('CALL add_to_cart( :userId, :productId, :quantity)', {
+                replacements: { userId, productId, quantity },
+                logging: false,
+                transaction: addTransaction
+            });
         });
         return res.status(200).send({
             message: {
@@ -115,9 +118,12 @@ exports.updateCart = async (req, res, next) => {
     const { productId } = req.params;
     const { quantity } = req.body;
     try {
-        await sequelize.query('CALL update_cart( :userId, :productId, :quantity)', {
-            replacements: { userId, productId, quantity },
-            logging: false
+        await sequelize.transaction(async updateTransaction => {
+            await sequelize.query('CALL update_cart( :userId, :productId, :quantity)', {
+                replacements: { userId, productId, quantity },
+                logging: false,
+                transaction: updateTransaction
+            });
         });
         return res.status(200).send({
             message: {
