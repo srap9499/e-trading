@@ -16,7 +16,7 @@ const UserRole = sequelize.define('userrole', {
     timestamps: false
 });
 
-UserRole.sync({ force: false }).then(async () => {
+UserRole.sync({ force: false, logging: false }).then(async () => {
     for (const [role, id] of Object.entries(roles)) {
         const isAlready = await UserRole.findOne({
             logging: false,
