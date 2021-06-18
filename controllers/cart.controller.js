@@ -193,6 +193,9 @@ exports.checkOut = async (req, res, next) => {
             let sum = 0;
         
             let outOfStock = false;
+            if (!user.carts.length) {
+                throw new Error('Something went wrong!');
+            }
             
             const cartDetail = await user.carts.map(i => {
                 if (i.quantity > i.product.quantity) {
@@ -234,7 +237,12 @@ exports.checkOut = async (req, res, next) => {
         return res.status(200).send({ id: result.id });
         // res.redirect('/cart/checkout/'+result.id+'/status');
     } catch (error) {
-        return res.status(500).send(error.message);
+        return res.status(500).send({
+            message: {
+                type: 'error',
+                body: error.message
+            }
+        });
     }
 };
 
