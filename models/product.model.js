@@ -27,6 +27,11 @@ const Product = sequelize.define('product', {
         type: Sequelize.DECIMAL(20, 2),
         allowNull: false,
         defaultValue: 0
+    },
+    imagePath: {
+        type: Sequelize.STRING(128),
+        allowNull: false,
+        defaultValue: 'images/products/default.jpg'
     }
 }, {
     paranoid: true  

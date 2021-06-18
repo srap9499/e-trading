@@ -54,7 +54,7 @@ exports.getProductsData = async (req, res, next) => {
         const { limit, offset } = getProductPagination({ page, size });
         const data = await Product.findAndCountAll({
             logging: false,
-            attributes: ['id', 'name', 'quantity', 'price'],
+            attributes: ['id', 'name', 'quantity', 'price', 'imagePath' ],
             limit,
             offset,
             include: [

@@ -43,7 +43,7 @@ const getData = () => {
             $('#products-area').empty();
 
             $.each(products, (i, product) => {
-                let { id, name, brand, category, subcategory, price } = product;
+                let { id, name, brand, category, subcategory, price, imagePath } = product;
                 brand = brand ? `By&nbsp;${brand.name}` : '';
                 category = category ? category.category : '';
                 subcategory = subcategory ? subcategory.subcategory : '';
@@ -56,7 +56,7 @@ const getData = () => {
                 const productRow = `<div class="col-12 col-sm-12 col-md-12">
                     <div class="row product-items">
                         <div class="col-12 col-sm-12 col-md-4">
-                            <img src="/images/1.jpg" alt="product" class="img-responsive">
+                            <img src="${imagePath}" alt="product" class="img-responsive">
                         </div>
                         <div class="col-12 col-sm-12 col-md-8">
                             <div class="product-head">
