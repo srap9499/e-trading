@@ -10,7 +10,6 @@ const Product = sequelize.define('product', {
     name: {
         type: Sequelize.STRING(50),
         allowNull: false,
-        unique: true,
         validate: {
             len: [2, 50],
             notNull: true,
