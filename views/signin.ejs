@@ -24,7 +24,7 @@
                         </div>
         
                         <div class="col-sm-12 col-md-12 form-group">
-                            <input type="text"
+                            <input type="password"
                                 class="form-control <%= (message.type === 'error') ? errors.password ? 'is-invalid' : '' : ''%>"
                                 id="password" name="password" placeholder="Password" value="<%= formData.password??'' %>">
                             <% if(message.type==='error' && errors.password) { %>
