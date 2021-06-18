@@ -8,7 +8,6 @@ const { resolve } = require('path');
 exports.invoiceGenerator = async (order) => {
     const invoicePath = path.resolve(__dirname, '../public/Invoices', `Invoice_${order.userId}_${order.id}.pdf`);
     const data = {
-        invoiceDate: new Date(),
         soldBy: "E-Trading Pvt. Ltd.",
         order
     };

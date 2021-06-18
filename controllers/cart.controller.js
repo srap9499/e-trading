@@ -12,6 +12,7 @@ const { Coupon } = require('../models/coupon.model');
 const { Order, OrderDetail } = require('../models/order.model');
 const { invoiceGenerator } = require("../helpers/invoice.helper");
 const { sendInvoiceMail } = require("../helpers/mail.helper");
+const { formatDateTime } = require("../helpers/date.helper");
 
 /**
  * @description API interface to add Products to user's cart
@@ -210,14 +211,14 @@ exports.checkOut = async (req, res, next) => {
 
 exports.getOrderStatus = async (req, res, next) => {
     const title = "Order Status";
-    const { id: userId } = req.userData;
+    const { id } = req.userData;
     const { orderId } = req.params;
     try {
         const user = await User.findOne({
             logging: false,
             attributes: [ 'id', 'userName', 'email' ],
             where: {
-                id: userId,
+                id
             },
             include: {
                 model: Order,
@@ -231,6 +232,9 @@ exports.getOrderStatus = async (req, res, next) => {
                     attributes: [ 'name', 'code' ]
                 }
             }
+        });
+        await user.orders.forEach(order => {
+            order.dataValues.date = formatDateTime(order.date);
         });
         res.render('orderstatus', { user, title });
     } catch (e) {
@@ -478,6 +482,7 @@ exports.generateInvoice = async (req, res, next) => {
                 }
             ]
         });
+        order.dataValues.date = formatDateTime(order.date);
         await invoiceGenerator(order).then(() => {
             sendInvoiceMail(userData, orderId);
         });
