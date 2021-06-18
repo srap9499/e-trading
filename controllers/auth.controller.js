@@ -49,7 +49,6 @@ exports.postSignUp = async (req, res, next) => {
             });
         if (user) {
             const otp = cryptoRandomString(6);
-            console.log('otp::::::::: ', otp);
             await Code.create({
                 email: user.email,
                 otp
@@ -65,6 +64,7 @@ exports.postSignUp = async (req, res, next) => {
         await signUpTransaction.commit();
         return res.status(400).send("No user created!");
     } catch (e) {
+        console.log(e);
         await signUpTransaction.rollback();
         next({ error: e, view: "signUp", title: "Sign Up"});
     }
@@ -121,7 +121,7 @@ exports.getSignIn = async (req, res, next) => {
 
 exports.postSignIn = async (req, res, next) => {
     const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ logging: false, where: { email } });
     if (!user) {
         return res.status(400).render('signIn', {
             message: {
