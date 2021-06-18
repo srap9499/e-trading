@@ -7,7 +7,7 @@ const Category = sequelize.define('category', {
     category: {
         type: Sequelize.STRING(25),
         unique: true,
-        defaultValue: "--NA--"
+        defaultValue: "General"
     }
 }, {
     timestamps: false
@@ -16,7 +16,7 @@ const Category = sequelize.define('category', {
 const Subcategory = sequelize.define('subcategory', {
     subcategory: {
         type: Sequelize.STRING(25),
-        defaultValue: "--NA--"
+        defaultValue: "General"
     }
 }, {
     timestamps: false
