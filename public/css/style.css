@@ -211,7 +211,7 @@ ul.product-details li p.detail-title {
     padding: .375rem .75rem;
     font-size: 1rem;
     line-height: 1.5;
-    margin: 0;
+    margin: 0 0 5px 0;
 }
 
 
@@ -222,6 +222,12 @@ ul.product-details li p.detail-title {
 }
 .content-box-md-2 {
     padding: 60px 0 0 0;
+}
+.content-box-sm {
+    padding: 30px 0;
+}
+.content-box-sm-2 {
+    padding: 30px 0 0 0;
 }
 
 
@@ -407,7 +413,8 @@ ul.navbar-nav > li > a.btn-signin {
 #my-coupons,
 #my-wallet,
 #orders-list,
-#order-status {
+#order-status,
+#update-user {
     margin-top: 100px;
 }
 
@@ -456,4 +463,8 @@ table tbody tr:hover {
 /* Order History Customization*/
 .options {
     margin-bottom: 20px;
+}
+
+.update-user-field {
+    padding: 10px 0;
 }

@@ -1,0 +1,191 @@
+<%- include('./includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <%- include('./includes/nav.ejs') %>
+        
+        <section id="update-user">
+            <div class="content-box-md-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="left-heading">
+                                <h2>Update Profile</h2>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div id="alert" class="alert" role="alert" hidden>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="update-user-details" style="background-color: cornsilk;">
+            <div class="content-box-sm-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="left-heading">
+                                <h3>User Details</h3>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div id="alert-user-detail" class="alert" role="alert">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="detail-field">
+                        <div class="update-user-field">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <input type="text" id="name" class="form-control" placeholder="User Name&mldr;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <input type="text" id="email" class="form-control" placeholder="Email Address&mldr;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-3">
+                                    <div class="form-group">
+                                        <button type="submit" id="update-user-details-btn" class="btn btn-add-amount btn-block">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="user-address">
+            <div class="content-box-sm-2">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="left-heading">
+                                <h3>User Address</h3>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div id="alert-user-address" class="alert alert-success" role="alert">
+                                Hello!
+                            </div>
+                        </div>
+                    </div>
+                    <div id="address-field">
+                        <div class="update-user-field">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="street">Street Address</label>
+                                        <input type="text" name="street" id="street" class="form-control" placeholder="Street Address&mldr;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="city">City</label>
+                                        <input type="text" name="city" id="city" class="form-control" placeholder="City&mldr;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="state">State</label>
+                                        <input type="text" name="state" id="state" class="form-control" placeholder="State&mldr;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="country">Country</label>
+                                        <input type="text" name="country" id="country" class="form-control" placeholder="Country Password&mldr;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="zipcode">Zip Code</label>
+                                        <input type="text" name="zipcode" id="zipcode" class="form-control" placeholder="Zip Code&mldr;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="address-btn">
+                                <div class="row">
+                                    <div class="col-6 col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" id="update-address-btn" class="btn btn-add-amount btn-block">Update Address</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" id="save-address-btn" class="btn btn-add-amount btn-block">Save Address</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-md-4">
+                                        <button type="reset" id="reset-address-btn" class="btn btn-add-amount btn-block">Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="change-password" style="background-color: cornsilk;">
+            <div class="content-box-sm">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div class="left-heading">
+                                <h3>Change Password</h3>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-6">
+                            <div id="alert-change-password" class="alert" role="alert">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="password-field">
+                        <div class="update-user-field">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="password">Old Password</label>
+                                        <input type="password" name="password" id="password" class="form-control" placeholder="Old Password&mldr;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="new_password">New Password</label>
+                                        <input type="password" name="new_password" id="new_password" class="form-control" placeholder="New Password&mldr;">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-md-4">
+                                    <div class="form-group">
+                                        <label for="confirm_password">Confirm Password</label>
+                                        <input type="text" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm Password&mldr;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="password-btn">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-md-4">
+                                        <div class="form-group">
+                                            <button type="button" id="change-password-btn" class="btn btn-add-amount btn-block">Change Password</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <%- include('./includes/tail.ejs') %>
+        <script src="/scripts/update-user.script.js"></script>
+    </body>
+</html>
