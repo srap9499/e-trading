@@ -239,7 +239,6 @@ exports.getWalletAmount = async (req, res, next) => {
 // @desc Add amount to wallet
 // @route POST /user/wallet/addmount
 exports.addAmount = async (req, res, next) => {
-    console.log("I am working here");
     const { id: userId } = req.userData;
     const { amount } = req.body;
     try {
@@ -274,7 +273,7 @@ exports.addAmount = async (req, res, next) => {
 
 exports.getUpdateUserPage = async (req, res, next) => {
     const { id } = req.userData;
-    const title = "My Wallet";
+    const title = "Update Profile";
     try {
         const user = await User.findOne({
             logging: false,
