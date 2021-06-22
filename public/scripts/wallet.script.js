@@ -58,16 +58,11 @@ const displayValidateAlert = async (body) => {
 
 // Add amount to wallet on click add button
 
-const submitForm = () => {
-    console.log("ready");
-    $('#add-amount').on('click', (event) => {
-        event.preventDefault();
-        console.log("submit");
-        $.post('/user/wallet/addamount', { amount: $('#amount').val() }, (body) => {
-            getWalletAmount();
-        })
-            .done(displayResponseAlert)
-            .fail(displayValidateAlert);
-    });
-};
-$(document).ready(submitForm);
+$('#add-amount').on('click', (event) => {
+    event.preventDefault();
+    $.post('/user/wallet/addamount', { amount: $('#amount').val() }, (body) => {
+        getWalletAmount();
+    })
+        .done(displayResponseAlert)
+        .fail(displayValidateAlert);
+});

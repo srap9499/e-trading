@@ -114,7 +114,7 @@ const getData = () => {
                 $('#products-area').append(productRow);
 
                 // On click event add to cart
-                $(document).on('click', `button#add-to-cart-${id}`, () => {
+                $(`button#add-to-cart-${id}`).on('click', () => {
                     $.ajax({
                         type: 'POST',
                         url: `/cart/add/${id}`,
@@ -202,4 +202,4 @@ const paginate = function () {
 
 $(document).ready( getData );
 
-$(document).on('click', 'ul.pagination li a', paginate);
+$('ul.pagination li a').on('click', paginate);

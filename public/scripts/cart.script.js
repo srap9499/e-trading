@@ -104,7 +104,7 @@ const getData = () => {
                 $('#cart-area').append(productRow);
 
                 // On change event update cart
-                $(document).on('change', `select#quantity${id}`, () => {
+                $(`select#quantity${id}`).on('change', () => {
                     $.ajax({
                         type: 'POST',
                         url: `/cart/update/${id}`,
@@ -162,7 +162,7 @@ const getData = () => {
             $('#checkout-area').append(checkoutRow);
 
             if (!isDisabled ) {
-                $(document).on('click', '#check-out-btn', () => {
+                $('#check-out-btn').on('click', () => {
                     $.ajax({
                         type: 'GET',
                         url: '/cart/checkout',

@@ -149,7 +149,7 @@ const paginate = function () {
 
 $(document).ready(getData);
 
-$(document).on('click', 'ul.pagination li a', paginate);
+$('ul.pagination li a').on('click', paginate);
 
 const filterByStatus = function () {
     queryData.page = 1;
