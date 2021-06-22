@@ -1,8 +1,6 @@
 'use strict';
 
 const {
-    getCartPagination,
-    getCartPaginationData,
     getCouponPagination,
     getCouponPaginationData,
     getOrderHistoryPagination,
@@ -10,15 +8,18 @@ const {
 } = require("../helpers/pagination.helper");
 
 const { Op } = require('sequelize');
-const { Cart } = require("../models/cart.model");
 const { User } = require("../models/user.model");
 const { Wallet } = require('../models/wallet.model');
 const { Product } = require('../models/product.model');
-const { Brand } = require("../models/brand.model");
-const { Category, Subcategory } = require("../models/categories.model");
 const { Coupon } = require('../models/coupon.model');
 const { Order, OrderDetail } = require("../models/order.model");
 const { sequelize } = require("../config/db-connection.config");
+const { BadRequest } = require("http-errors");
+const cryptoRandomString = require("crypto-random-string");
+const { Code, VerifyCode } = require("../models/code.model");
+const { sendUpdateDetailVerifyEmail } = require("../helpers/mail.helper");
+const { UserRole } = require("../models/role.model");
+const { dateAfterMinutes, formatDateTime } = require("../helpers/date.helper");
 
 
 /**
@@ -90,9 +91,12 @@ exports.getUserData = async (req, res, next) => {
     try {
         const user = await User.findOne({
             logging: false,
-            attributes: ['id', 'userName', 'email'],
+            attributes: ['id', 'userName', 'email', 'userroleId' ],
             where: {
                 id
+            },
+            include: {
+                model: UserRole
             }
         });
         return user
@@ -263,6 +267,140 @@ exports.addAmount = async (req, res, next) => {
             message: {
                 type: "error",
                 body: "Something went wrong!"
+            }
+        });
+    }
+};
+
+exports.getUpdateUserPage = async (req, res, next) => {
+    const { id } = req.userData;
+    const title = "My Wallet";
+    try {
+        const user = await User.findOne({
+            logging: false,
+            attributes: ['id', 'userName', 'email'],
+            where: {
+                id
+            }
+        });
+        return res.status(200).render('updateuser', { user, title });
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+exports.updateUserDetails = async (req, res, next) => {
+    const { id } = req.userData;
+    const { name, email } = req.body;
+    try {
+        const result = await sequelize.transaction(async updateUserDetailsTransaction => {
+            const user = await User.findOne({
+                logging: false,
+                attributes: [ 'id', 'userName', 'email' ],
+                where: {
+                    id
+                },
+                transaction: updateUserDetailsTransaction
+            });
+            let emailId = user.email;
+            if (email) {
+                const isAlready = await User.findOne({
+                    logging: false,
+                    attributes: [ 'id', 'userName', 'email' ],
+                    where: {
+                        id : {
+                            [Op.ne]: id
+                        },
+                        email
+                    },
+                    transaction: updateUserDetailsTransaction
+                });
+                if (isAlready) {
+                    throw new BadRequest('Email already exists!');
+                }
+                emailId = email;
+            }
+            const otp = cryptoRandomString(6);
+            console.log(formatDateTime(dateAfterMinutes(5)));
+            await VerifyCode.create({
+                email: emailId,
+                otp,
+                for: 'profile_update',
+                notAfter: dateAfterMinutes(5)
+            }, {
+                loggong: false,
+                transaction: updateUserDetailsTransaction
+            });
+            await sendUpdateDetailVerifyEmail({ userName: name??user.userName??'Anonymous', email: emailId }, otp, '5 minutes');
+            return { email: emailId };
+        });
+        return res.status(200).send({
+            message: {
+                type: 'success',
+                body: `Verify OTP sent to ${result.email}`
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(error.status).send({
+            message: {
+                type: 'error',
+                body: error.message
+            }
+        });
+    }
+};
+
+exports.verifyUpdateUserDetails = async (req, res, next) => {
+    const { id } = req.userData;
+    const { name, email, otp } = req.body;
+    try {
+        const result = await sequelize.transaction(async verifyTransaction => {
+            const user = await User.findOne({
+                logging: false,
+                attributes: [ 'id', 'userName', 'email', 'userroleId' ],
+                where: {
+                    id
+                },
+                transaction: verifyTransaction
+            });
+            const verifyCode = await VerifyCode.findOne({
+                logging: false,
+                attributes: [ 'id', 'otp', 'status' ],
+                where: { 
+                    email,
+                    for: 'profile_update',
+                    status: 'unused',
+                    notAfter: {
+                        [Op.gte]: new Date()
+                    }
+                },
+                order: [
+                    [ 'id', 'DESC' ]
+                ],
+                transaction: verifyTransaction
+            });
+            if (verifyCode.otp != otp) {
+                throw new BadRequest('Incorrect OTP!');
+            }
+            [ user["userName"], user["email"] ] = [ name, email ];
+            await user.save({ logging: false, transaction: verifyTransaction });
+            verifyCode.status = 'used';
+            await verifyCode.save({ logging: false, transaction: verifyTransaction });
+            return { email };
+        });
+        return res.status(200).send({
+            message: {
+                type: 'success',
+                body: `User details updated successfully!`
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(error.status).send({
+            message: {
+                type: 'error',
+                body: error.message
             }
         });
     }

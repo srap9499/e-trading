@@ -32,6 +32,27 @@ exports.sendVerifyEmail = async (user, otp) => {
     }
 };
 
+exports.sendUpdateDetailVerifyEmail = async (user, otp, validity) => {
+    try {
+        const verifyMail = {
+            from: process.env.MAIL_SENDER,
+            to: user.email,
+            subject: "Please verify email to Update your Profile details!",
+            html: `<h1>Welcome ${user.userName}</h1>
+            <p>We are glad to see you as a valueable customer on E-Trading. Verify your email using OTP provided below to change profile details</p>
+            <br><br>
+            <p>Your OTP for verification: <a href="" style="color: blue;">${otp}</a></p>
+            <p>Valid for: ${validity}</p>`
+        };
+    
+        const info = await transporter.sendMail(verifyMail);
+        console.log("Email sent:", info.response);
+    } catch (error) {
+        console.log("Email not sent:", error.message);
+        throw error;
+    }
+};
+
 exports.sendSignUpNotificationMail = (user, amount) => {
     const signUpNotificationList = [
         {

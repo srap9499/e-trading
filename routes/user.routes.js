@@ -2,8 +2,12 @@
 
 const { Router } = require("express");
 const User = require("../controllers/user.controller");
-const { addAmountSchema } = require("../helpers/validate.helper");
-const { authenticate } = require('../middlewares/auth.middleware');
+const {
+    addAmountSchema,
+    changeUserDetailSchema,
+    verifyChangeUserDetailSchema
+} = require("../helpers/validate.helper");
+
 const { validateRest } = require("../middlewares/validate.middleware");
 
 const router = Router();
@@ -25,6 +29,22 @@ router.post(
     '/wallet/addamount',
     validateRest(addAmountSchema),
     User.addAmount
+);
+
+router.get('/update', User.getUpdateUserPage);
+
+router.get('/userdetails', User.getUserData);
+
+router.put(
+    '/update/userdetails',
+    validateRest(changeUserDetailSchema),
+    User.updateUserDetails
+);
+
+router.put(
+    '/update/userdetails/verify',
+    validateRest(verifyChangeUserDetailSchema),
+    User.verifyUpdateUserDetails
 );
 
 module.exports = router;

@@ -1,5 +1,10 @@
 'use strict';
 
+exports.dateAfterMinutes = (minutes= 1) => {
+    const now = new Date();
+    const dateAfterMinutes = new Date(now.setMinutes(now.getMinutes() + minutes));
+    return dateAfterMinutes;
+};
 exports.dateAfterDays = (days= 1) => {
     const now = new Date();
     const dateAfterDays = new Date(now.setDate(now.getDate() + days));
