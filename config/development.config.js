@@ -17,5 +17,10 @@ exports.development = {
         userName: Env.SUPER_ADMIN_NAME,
         email: Env.SUPER_ADMIN_EMAIL,
         password: Env.SUPER_ADMIN_PASS
+    },
+    errMsgs: {
+        otp400: 'Incorrect OTP!',
+        pw400: 'Incorrect Password!',
+        user404: 'User not found!',
     }
 };
