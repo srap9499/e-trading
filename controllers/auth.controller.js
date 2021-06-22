@@ -18,6 +18,7 @@ const { Wallet } = require('../models/wallet.model');
 const { Coupon } = require('../models/coupon.model');
 const { dateAfterWeeks } = require('../helpers/date.helper');
 const { development } = require('../config/development.config');
+const { BadRequest } = require('http-errors');
 
 
 // Render Sign Up page
@@ -172,6 +173,43 @@ exports.getSignOut = async (req, res, next) => {
             message: {
                 type: "error",
                 body: "Something went wrong!"
+            }
+        });
+    }
+};
+
+exports.postChangePassword = async (req, res, next) => {
+    const { id } = req.userData;;
+    const { password, new_password } = req.body;
+    try {
+        await sequelize.transaction(async changePasswordTransaction => {
+            const user = await User.findOne({
+                attributes: [ 'id', 'password' ],
+                where: {
+                    id
+                },
+                transaction: changePasswordTransaction
+            });
+            const isMatch = compareSync(password, user.password);
+            if (!isMatch) {
+                throw new BadRequest('Incorrect Password!');
+            }
+            console.log(isMatch);
+            user.password = hashSync(new_password, 12);
+            await user.save({ transaction: changePasswordTransaction });
+        });
+        return res.status(200).send({
+            message: {
+                type: 'success',
+                body: 'Password changed sucessfully!'
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(error.status).send({
+            message: {
+                type: 'error',
+                body: error.message
             }
         });
     }
