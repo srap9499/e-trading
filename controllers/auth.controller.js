@@ -184,6 +184,7 @@ exports.postChangePassword = async (req, res, next) => {
     try {
         await sequelize.transaction(async changePasswordTransaction => {
             const user = await User.findOne({
+                logging: false,
                 attributes: [ 'id', 'password' ],
                 where: {
                     id
@@ -194,7 +195,6 @@ exports.postChangePassword = async (req, res, next) => {
             if (!isMatch) {
                 throw new BadRequest('Incorrect Password!');
             }
-            console.log(isMatch);
             user.password = hashSync(new_password, 12);
             await user.save({ transaction: changePasswordTransaction });
         });
