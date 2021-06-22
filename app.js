@@ -21,6 +21,7 @@ const { sequelize } = require('./config/db-connection.config');
 const { error } = require('./middlewares/error.middleware');
 // import authentication middleware
 const { authenticate } = require('./middlewares/auth.middleware');
+const { createSuper } = require('./helpers/auth.helper');
 
 // Create express server app
 const app = express();
@@ -54,8 +55,13 @@ app.use('/*', (req, res, next) => {
 
 app.use(error);
 
-sequelize.sync({ force: false, logging: false })
-    .then(result => {
+
+const forceSyncFlag = false;
+sequelize.sync({ force: forceSyncFlag, logging: false })
+    .then(async () => {
+        if (forceSyncFlag) {
+            await createSuper();
+        }
         app.listen(PORT, () => {
             console.log(`Server started on port: ${PORT}`);
         });
