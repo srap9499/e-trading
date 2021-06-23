@@ -8,6 +8,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 
 // Import routes
+const adminRouter = require('./routes/admin.routes');
 const authRouter = require('./routes/auth.routes');
 const homeRouter = require('./routes/home.routes');
 const userRouter = require('./routes/user.routes');
@@ -18,9 +19,9 @@ const productRouter = require('./routes/product.routes');
 const { sequelize } = require('./config/db-connection.config');
 
 // import custom error middleware
-const { error } = require('./middlewares/error.middleware');
+const { error, errorHandler } = require('./middlewares/error.middleware');
 // import authentication middleware
-const { authenticate } = require('./middlewares/auth.middleware');
+const { authenticate, isAdmin } = require('./middlewares/auth.middleware');
 const { createSuper } = require('./helpers/auth.helper');
 
 // Create express server app
@@ -43,6 +44,7 @@ app.get('/', (req, res, next) => {
 });
 
 // Routes
+app.use('/admin', [ authenticate, isAdmin ], adminRouter);
 app.use('/auth', authRouter);
 app.use('/home', homeRouter);
 app.use('/user', authenticate, userRouter);
@@ -52,6 +54,8 @@ app.use('/product', productRouter);
 app.use('/*', (req, res, next) => {
     return res.redirect('/home');
 });
+
+app.use(errorHandler);
 
 app.use(error);
 
