@@ -4,6 +4,8 @@ require('dotenv').config();
 const Env = process.env;
 
 exports.development = {
+    jwt_secret: Env.JWT_SECRET,
+    saltValue: 12,
     roles: {
         SuperAdmin: 1,
         SubAdmin: 2,
@@ -21,6 +23,12 @@ exports.development = {
     errMsgs: {
         otp400: 'Incorrect OTP!',
         pw400: 'Incorrect Password!',
+        invalid400: 'Validation Errors!',
         user404: 'User not found!',
+        auth401: 'Unauthorized request!',
+        err500: 'Something went wrong!'
+    },
+    Msgs: {
+        add200: "Added successfully!",
     }
 };

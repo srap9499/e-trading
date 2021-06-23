@@ -10,19 +10,20 @@ const { sequelize } = require('../config/db-connection.config');
 // configure environment variables
 const { 
     development: {
+        jwt_secret,
+        saltValue,
         roles,
         userStatus,
         superAdminData
     }
 } = require('../config/development.config');
 require('dotenv').config();
-const JWT_SECRET = process.env.JWT_SECRET;
 
 const { UserRole } = require('../models/role.model');
 const { User } = require('../models/user.model');
 
 exports.generateToken = (user, interval) => {
-    const token = sign(user, JWT_SECRET, { expiresIn: interval });
+    const token = sign(user, jwt_secret, { expiresIn: interval });
     return token;
 };
 
@@ -53,7 +54,7 @@ exports.createSuper = async () => {
                 }
             }
             const { userName, email, password } = superAdminData;
-            const hashedPassword = hashSync(password, 12);
+            const hashedPassword = hashSync(password, saltValue);
             const adminData = {
                 userName,
                 email,

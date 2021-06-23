@@ -17,7 +17,13 @@ const { Code } = require('../models/code.model');
 const { Wallet } = require('../models/wallet.model');
 const { Coupon } = require('../models/coupon.model');
 const { dateAfterWeeks } = require('../helpers/date.helper');
-const { development } = require('../config/development.config');
+const {
+    development: {
+        saltValue,
+        roles
+    }
+} = require('../config/development.config');
+
 const { BadRequest } = require('http-errors');
 
 
@@ -32,13 +38,13 @@ exports.postSignUp = async (req, res, next) => {
     const signUpTransaction = await sequelize.transaction();
     try {
         let userData;
-        const hashedPassword = hashSync(password, 12);
+        const hashedPassword = hashSync(password, saltValue);
         userData = {
             userName,
             email,
             password: hashedPassword,
             wallet: {},
-            userroleId: development.roles.User
+            userroleId: roles.User
         };
         const user = await User.create(userData, 
             {
@@ -153,7 +159,7 @@ exports.postSignIn = async (req, res, next) => {
         id: user.id,
         userName: user.userName,
         email: user.email,
-        role: user.userroleId
+        roleId: user.userroleId
     }
     const token = generateToken(userData, 60 * 60);     // jwt authorization
     res.cookie('jwt_token', token, { maxAge: 60 * 60 * 1000, httpOnly: true });
@@ -195,7 +201,7 @@ exports.postChangePassword = async (req, res, next) => {
             if (!isMatch) {
                 throw new BadRequest('Incorrect Password!');
             }
-            user.password = hashSync(new_password, 12);
+            user.password = hashSync(new_password, saltValue);
             await user.save({ transaction: changePasswordTransaction });
         });
         return res.status(200).send({
