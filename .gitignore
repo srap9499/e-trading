@@ -6,3 +6,6 @@ node_modules
 
 # Invoices directory
 Invoices
+
+# VS Code extensions
+.vscode
