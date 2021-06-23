@@ -61,6 +61,7 @@ exports.addSubAdmin = async (req, res, next) => {
                 userroleId: roles.SubAdmin
             };
             await User.create(subAdminData, {
+                logging: false,
                 transaction: addTransaction
             });
         });
