@@ -202,4 +202,4 @@ const paginate = function () {
 
 $(document).ready( getData );
 
-$('ul.pagination li a').on('click', paginate);
+$(document).on('click', 'ul.pagination li a', paginate);
