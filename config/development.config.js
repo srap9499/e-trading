@@ -4,6 +4,7 @@ require('dotenv').config();
 const Env = process.env;
 
 exports.development = {
+    APP_PORT: Env.APP_PORT,
     jwt_secret: Env.JWT_SECRET,
     saltValue: 12,
     roles: {

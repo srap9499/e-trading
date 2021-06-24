@@ -1,8 +1,13 @@
 'use strict';
 
 const path = require('path');
-// Import environment variables
-require('dotenv').config();
+// Import Configuration
+const {
+    development: {
+        APP_PORT
+    }
+} = require('./config/development.config');
+
 // import express framework
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -27,7 +32,7 @@ const { createSuper } = require('./helpers/auth.helper');
 // Create express server app
 const app = express();
 // configure server port number
-const PORT = process.env.APP_PORT
+const PORT = APP_PORT
 
 // configure view engine
 app.set('view engine', 'ejs');
