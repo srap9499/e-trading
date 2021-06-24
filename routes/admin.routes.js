@@ -25,6 +25,12 @@ router.get(
     Admin.getSubAdmins
 );
 
+router.delete(
+    '/subadmin/:id/delete',
+    [isSuperAdmin],
+    Admin.destroySubAdmin
+);
+
 router.get(
     '/subadmin/add',
     [isSuperAdmin],

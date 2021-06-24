@@ -5,6 +5,7 @@ const {
         saltValue,
         userStatus,
         roles,
+        errMsgs,
         Msgs
     }
 } = require('../config/development.config');
@@ -14,6 +15,7 @@ const { User } = require("../models/user.model");
 const { sequelize } = require('../config/db-connection.config');
 const { responseObj } = require('../helpers/response.helper');
 const { pagination, paginationMetaData } = require('../helpers/pagination.helper');
+const { InternalServerError } = require('http-errors');
 
 
 const getUserById = async (id) => {
@@ -115,6 +117,35 @@ exports.getSubAdmins = async (req, res, next) => {
         const data = paginationMetaData(subadmins, page, limit);
         return res.status(200).send(
             responseObj(true, Msgs.get200, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to soft delete Sub admin
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+exports.destroySubAdmin = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        console.log(id);
+        if (!parseInt(id)) {
+            throw new InternalServerError(errMsgs.err500);
+        }
+        await User.destroy({
+            logging: false,
+            where: {
+                id: parseInt(id),
+                userroleId: roles.SubAdmin
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, Msgs.del200)
         );
     } catch (error) {
         next(error);

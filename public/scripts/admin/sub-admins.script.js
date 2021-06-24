@@ -1,5 +1,32 @@
 'use strict';
 
+let curreEntries = 0;
+
+const clearAlert = () => {
+    $('#alert div').empty();
+    $('#alert')
+        .attr('hidden', 'true')
+        .removeClass('alert-success alert-danger');
+};
+
+const successAlert = (message={}) => {
+    $('#alert div').empty()
+        .append(message.body);
+    $('#alert')
+        .removeAttr('hidden')
+        .removeClass('alert-danger')
+        .addClass('alert-success');
+};
+
+const errorAlert = (message={}) => {
+    $('#alert div').empty()
+        .append(message.body);
+    $('#alert')
+        .removeAttr('hidden')
+        .removeClass('alert-success')
+        .addClass('alert-danger');
+};
+
 const sortByOptions = {
     1: ['id', 'ASC'],
     2: ['id', 'DESC'],
@@ -64,6 +91,27 @@ const tableArea = `
     </div>
 </div>`;
 
+const deleteSubAdmin = id => {
+    return () => {
+        $.ajax({
+            type: 'DELETE',
+            url: `/admin/subadmin/${id}/delete`,
+            success: response => {
+                const { message } = response;
+                successAlert(message);
+                if (curreEntries <=1 && queryData.page > 1) {
+                    queryData.page -= 1;
+                }
+                getSubAdmins();
+            },
+            error: response => {
+                const { responseJSON: { message } } = response;
+                errorAlert(message);
+            }
+        });
+    };
+};
+
 const createRow = (rowData) => {
     const { id, userName, email } = rowData;
     const subAdminRow = `
@@ -84,6 +132,7 @@ const createRow = (rowData) => {
 
     $('#sub-admins-table tbody').append(subAdminRow);
 
+    $(`#delete${id}`).on('click', deleteSubAdmin(id));
 }
 
 const createPagination = (totalPages) => {
@@ -113,6 +162,7 @@ const getSubAdmins = () => {
             const { data: { rows, totalPages } } = response;
             $('#sub-admins-area').empty();
             if (!rows || !rows.length) {
+                curreEntries = rows.length??0;
                 if ($('ul.pagination li').length - 2 != totalPages) {
                     $('ul.pagination').empty();
                     $('#options-area').empty();
@@ -120,6 +170,8 @@ const getSubAdmins = () => {
                 $('#sub-admins-area').append(nothingArea);
                 return;
             }
+            curreEntries = rows.length;
+
             $('#sub-admins-area').append(tableArea);
 
             $.each(rows, (i, subAdmin) => {
@@ -135,7 +187,8 @@ const getSubAdmins = () => {
             }
         },
         error: response => {
-            console.log(response);
+            const { responseJSON: { message } } = response;
+            errorAlert(message);
         }
     });
 };
@@ -189,3 +242,5 @@ const changePageSize = function() {
 $(document).on('change', 'select#sort-by', sortBy);
 
 $(document).on('change', 'select#page-size', changePageSize);
+
+$('#close-alert').on('click', clearAlert);
