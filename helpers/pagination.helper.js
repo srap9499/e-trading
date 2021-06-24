@@ -64,3 +64,25 @@ exports.getOrderHistoryPaginationData = ({ data, page, limit }) => {
 
     return { totalItems, orders, totalPages, currentPage, size };
 };
+
+/**
+ * @description Helper function to get Pagination limit and offset
+ */
+exports.pagination = ({page=1, size=3}) => {
+    const limit = parseInt(size ? size: 3);
+    const offset = parseInt(page ? (page - 1) * limit : 0);
+    
+    return { limit, offset };
+};
+
+/**
+ * @description Helper function to get Pagination Meta Data
+ */
+exports.paginationMetaData = (items, page, limit) => {
+    const { count: totalItems, rows } = items;
+    const currentPage = parseInt(page ? page : 1);
+    const totalPages = Math.ceil(totalItems / limit);
+    const size = limit;
+
+    return { rows, totalItems, totalPages, currentPage, size };
+};

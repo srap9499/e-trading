@@ -14,6 +14,18 @@ const router = Router();
 router.get('/', Admin.renderView());
 
 router.get(
+    '/subadmins',
+    [isSuperAdmin],
+    Admin.renderView('sub-admins', 'E-Trading - Sub Admins')
+);
+
+router.get(
+    '/subadmins/get',
+    [isSuperAdmin],
+    Admin.getSubAdmins
+);
+
+router.get(
     '/subadmin/add',
     [isSuperAdmin],
     Admin.renderView('add-sub-admin', 'E-Trading - Add Sub Admin')

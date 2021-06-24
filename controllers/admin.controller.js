@@ -13,21 +13,28 @@ const { UserRole } = require("../models/role.model");
 const { User } = require("../models/user.model");
 const { sequelize } = require('../config/db-connection.config');
 const { responseObj } = require('../helpers/response.helper');
+const { pagination, paginationMetaData } = require('../helpers/pagination.helper');
 
 
 const getUserById = async (id) => {
     const user = await User.findByPk(id, {
         logging: false,
-        attributes: [ 'id', 'userName', 'email' ],
+        attributes: ['id', 'userName', 'email'],
         include: {
             model: UserRole,
-            attributes: [ 'id', 'role' ]
+            attributes: ['id', 'role']
         }
     });
     return user;
 }
 
-exports.renderView = (view= 'dashboard', title= 'E-Trading') => {
+/**
+ * @description API interface to render admin views on get method
+ * @param {String} view 
+ * @param {String} title 
+ * @returns {Response} View
+ */
+exports.renderView = (view = 'dashboard', title = 'E-Trading') => {
     view = `admin/${view}`;
     return async (req, res, next) => {
         const { id } = req.userData;
@@ -48,6 +55,14 @@ exports.renderView = (view= 'dashboard', title= 'E-Trading') => {
     };
 };
 
+/**
+ * @description API interface to add Sub Admin
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method POST
+ * @returns {Response} JSON
+ */
 exports.addSubAdmin = async (req, res, next) => {
     const { userName, email, password } = req.body;
     try {
@@ -73,3 +88,35 @@ exports.addSubAdmin = async (req, res, next) => {
         next(error);
     }
 }
+
+/**
+ * @description API interface to fetch all Sub Admins with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+exports.getSubAdmins = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({ page, size });
+        const subadmins = await User.findAndCountAll({
+            logging: false,
+            attributes: [ 'id', 'userName', 'email', 'userroleId' ],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            where: {
+                userroleId: roles.SubAdmin
+            },
+            distinct: true
+        });
+        const data = paginationMetaData(subadmins, page, limit);
+        return res.status(200).send(
+            responseObj(true, Msgs.get200, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};

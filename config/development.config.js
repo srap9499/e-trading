@@ -30,5 +30,6 @@ exports.development = {
     },
     Msgs: {
         add200: "Added successfully!",
+        get200: "Data fetched successfully!"
     }
 };
