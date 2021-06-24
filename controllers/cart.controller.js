@@ -388,8 +388,8 @@ exports.retryOrder = async (req, res, next) => {
     const userId = userData.id;
     const { orderId } = req.params;
     try {
-        const result = await sequelize.transaction(async retryTransaction => {
-            const user = await User.findOne({
+        await sequelize.transaction(async retryTransaction => {
+            await User.findOne({
                 logging: false,
                 attributes: [ 'id', 'userName', 'email' ],
                 where: {
