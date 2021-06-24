@@ -2,7 +2,6 @@ const fs = require('fs');
 var path = require('path');
 const ejs = require('ejs');
 const pdf = require('html-pdf');
-const { resolve } = require('path');
 
  
 exports.invoiceGenerator = async (order) => {

@@ -17,7 +17,6 @@ const {
         superAdminData
     }
 } = require('../config/development.config');
-require('dotenv').config();
 
 const { UserRole } = require('../models/role.model');
 const { User } = require('../models/user.model');
@@ -31,7 +30,6 @@ exports.generateToken = (user, interval) => {
  * @description Helper function to create UserRoles and SuperAdmin User at first
  */
 exports.createSuper = async () => {
-    console.log("hello");
     try {
         await sequelize.transaction(async createSuperTransaction => {
             for (const [role, id] of Object.entries(roles)) {
@@ -67,7 +65,6 @@ exports.createSuper = async () => {
                 transaction: createSuperTransaction
             });
         });
-        console.log("success");
         return Promise.resolve();
     } catch (error) {
         console.log(error);

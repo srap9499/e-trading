@@ -12,7 +12,7 @@ const addSubAdminSchema = Joi.object({
     email: Joi.string()
         .trim()
         .lowercase()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'in'] } }),
 
     password: Joi.string()
         .min(5)
@@ -32,7 +32,7 @@ const signUpSchema = Joi.object({
     email: Joi.string()
         .trim()
         .lowercase()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'in'] } }),
 
     password: Joi.string()
         .min(5)
@@ -44,7 +44,7 @@ const signInSchema = Joi.object({
     email: Joi.string()
         .trim()
         .lowercase()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'in'] } }),
 
     password: Joi.string()
         .min(5)
@@ -89,9 +89,8 @@ const changeUserDetailSchema = Joi.object({
     email: Joi.string()
         .trim()
         .lowercase()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
-})
-    .or('name', 'email');
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'in'] } })
+});
 
 const verifyChangeUserDetailSchema = Joi.object({
     name: Joi.string()
@@ -103,7 +102,7 @@ const verifyChangeUserDetailSchema = Joi.object({
     email: Joi.string()
         .trim()
         .lowercase()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'in'] } }),
     otp: Joi.string()
         .alphanum()
         .length(6)

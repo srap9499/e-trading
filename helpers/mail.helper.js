@@ -1,21 +1,30 @@
 'use strict';
 
-require('dotenv').config();
+const {
+    development: {
+        mailer : {
+            MAIL_SERVICE,
+            MAIL_USER,
+            MAIL_PASSWORD,
+            MAIL_SENDER
+        }
+    }
+} = require('../config/development.config');
 const path = require('path');
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    service: process.env.MAIL_SERVICE,
+    service: MAIL_SERVICE,
     auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
+        user: MAIL_USER,
+        pass: MAIL_PASSWORD
     }
 });
 
 exports.sendVerifyEmail = async (user, otp) => {
     try {
         const verifyMail = {
-            from: process.env.MAIL_SENDER,
+            from: MAIL_SENDER,
             to: user.email,
             subject: "Please verify email to Activate your account!",
             html: `<h1>Welcome ${user.userName}</h1>
@@ -35,7 +44,7 @@ exports.sendVerifyEmail = async (user, otp) => {
 exports.sendUpdateDetailVerifyEmail = async (user, otp, validity) => {
     try {
         const verifyMail = {
-            from: process.env.MAIL_SENDER,
+            from: MAIL_SENDER,
             to: user.email,
             subject: "Please verify email to Update your Profile details!",
             html: `<h1>Welcome ${user.userName}</h1>
@@ -72,7 +81,7 @@ exports.sendSignUpNotificationMail = (user, amount) => {
     try {
         signUpNotificationList.forEach(async n => {
             const notifyMail = {
-                from: process.env.MAIL_SENDER,
+                from: MAIL_SENDER,
                 to: user.email,
                 subject: n.subject,
                 html: n.html
@@ -91,7 +100,7 @@ exports.sendInvoiceMail = (user, orderId) => {
     const invoiceName = `Invoice_${user.id}_${orderId}.pdf`;
     const invoicePath = path.join(__dirname, `../public/Invoices/Invoice_${user.id}_${orderId}.pdf`);
     const invoiceMail = {
-        from: process.env.MAIL_SENDER,
+        from: MAIL_SENDER,
         to: user.email,
         subject: "Purchase Invoice",
         attachments: [
