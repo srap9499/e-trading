@@ -14,7 +14,7 @@ const {
 } = require('../config/development.config');
 
 
-const auth = token => {
+const verifyToken = token => {
     return new Promise((resolve, reject) => {
         verify(token, jwt_secret, (err, data) => {
             if (err) {
@@ -31,7 +31,7 @@ exports.authenticate = async (req, res, next) => {
     if (!token) {
         return res.status(401).redirect('/auth/signIn');
     }
-    auth(token)
+    verifyToken(token)
         .then(userData => {
             req.userData = userData;
             next();

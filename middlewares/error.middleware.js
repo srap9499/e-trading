@@ -34,7 +34,6 @@ exports.error = ({ error, view, title="E-Trading"}, req, res, next) => {
 };
 
 exports.errorHandler = async (error, req, res, next) => {
-    // res.status(error.status).send(error);
     const isHttpError = createHttpError.isHttpError(error);
     if (isHttpError) {
         return res.status(error.status).send(responseObj(false, error.message));
