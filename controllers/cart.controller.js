@@ -465,8 +465,7 @@ exports.cancelOrder = async (req, res, next) => {
 };
 
 exports.generateInvoice = async (req, res, next) => {
-    const {  userData } = req;
-    const userId = userData.id;
+    const { id: userId } = req.userData;
     const { orderId } = req.params;
     try {
         const order = await Order.findOne({
@@ -498,7 +497,7 @@ exports.generateInvoice = async (req, res, next) => {
         await invoiceGenerator(order).then(() => {
             sendInvoiceMail(userData, orderId);
         });
-    } catch(e) {
-        console.log(e);
+    } catch(error) {
+        console.log(error);
     }
 };
