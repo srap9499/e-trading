@@ -20,6 +20,12 @@ exports.development = {
         email: Env.SUPER_ADMIN_EMAIL,
         password: Env.SUPER_ADMIN_PASS
     },
+    mailer: {
+        MAIL_SERVICE: Env.MAIL_SERVICE,
+        MAIL_USER: Env.MAIL_USER,
+        MAIL_PASSWORD: Env.MAIL_PASSWORD,
+        MAIL_SENDER: Env.MAIL_SENDER
+    },
     errMsgs: {
         otp400: 'Incorrect OTP!',
         pw400: 'Incorrect Password!',
