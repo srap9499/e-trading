@@ -16,7 +16,7 @@ const { Order, OrderDetail } = require("../models/order.model");
 const { sequelize } = require("../config/db-connection.config");
 const { BadRequest } = require("http-errors");
 const cryptoRandomString = require("crypto-random-string");
-const { Code, VerifyCode } = require("../models/code.model");
+const { VerifyCode } = require("../models/code.model");
 const { sendUpdateDetailVerifyEmail } = require("../helpers/mail.helper");
 const { UserRole } = require("../models/role.model");
 const { dateAfterMinutes, formatDateTime } = require("../helpers/date.helper");
@@ -242,7 +242,7 @@ exports.addAmount = async (req, res, next) => {
     const { id: userId } = req.userData;
     const { amount } = req.body;
     try {
-        const wallet = await sequelize.transaction(async addAmountTransaction => {
+        await sequelize.transaction(async addAmountTransaction => {
             const wallet = await Wallet.findOne({
                 attributes: ['id', 'amount'],
                 where: {
@@ -354,7 +354,7 @@ exports.verifyUpdateUserDetails = async (req, res, next) => {
     const { id } = req.userData;
     const { name, email, otp } = req.body;
     try {
-        const result = await sequelize.transaction(async verifyTransaction => {
+        await sequelize.transaction(async verifyTransaction => {
             const user = await User.findOne({
                 logging: false,
                 attributes: [ 'id', 'userName', 'email', 'userroleId' ],
@@ -395,12 +395,7 @@ exports.verifyUpdateUserDetails = async (req, res, next) => {
             }
         });
     } catch (error) {
-        console.log(error);
-        return res.status(error.status).send({
-            message: {
-                type: 'error',
-                body: error.message
-            }
-        });
+        console.log(error.name, error.message);
+        next();
     }
 };
