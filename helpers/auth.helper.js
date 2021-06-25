@@ -8,15 +8,13 @@ const {
 const { sequelize } = require('../config/db-connection.config');
 
 // configure environment variables
-const { 
-    development: {
-        jwt_secret,
-        saltValue,
-        roles,
-        userStatus,
-        superAdminData
-    }
-} = require('../config/development.config');
+const {
+    jwt_secret,
+    saltValue,
+    roles,
+    userStatus,
+    superAdminData
+} = require('../config/main.config');
 
 const { UserRole } = require('../models/role.model');
 const { User } = require('../models/user.model');

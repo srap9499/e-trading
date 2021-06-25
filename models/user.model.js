@@ -1,5 +1,16 @@
 'use strict';
 
+const {
+    ERROR_MESSAGES: {
+        USER_NAME_IS_ALPHANUMERIC_ERROR,
+        USER_NAME_LENGTH_ERROR,
+        EMAIL_UNIQUE_ERROR,
+        EMAIL_IS_EMAIL_ERROR,
+        EMAIL_LENGTH_ERROR,
+        PASSWORD_NOTNULL_ERROR
+    }
+} = require('../constants/main.constant');
+
 const Sequelize = require('sequelize');
 
 // Sequelize connection
@@ -11,23 +22,41 @@ const User = sequelize.define("user", {
         type: Sequelize.STRING(64),
         allowNull: false,
         validate: {
-            isAlphanumeric: { msg: "User Name should be a valid alpha-numeric!"},
-            len: {min: 2, max: 64, msg: "User Name length should between 2 and 64"
+            isAlphanumeric: {
+                msg: USER_NAME_IS_ALPHANUMERIC_ERROR
+            },
+            len: {
+                min: 2, 
+                max: 64,
+                msg: USER_NAME_LENGTH_ERROR
             },
         }
     },
     email: {
         type: Sequelize.STRING(50),
         allowNull: false,
-        unique: { msg: "Email already exists!"},
+        unique: { 
+            msg: EMAIL_UNIQUE_ERROR
+        },
         validate: {
-            isEmail: {msg: "Email should be a valid Email Id!"},
-            len: { min:0, max: 50, msg: "Email is to long!"}
+            isEmail: {
+                msg: EMAIL_IS_EMAIL_ERROR
+            },
+            len: {
+                min: 5,
+                max: 50,
+                msg: EMAIL_LENGTH_ERROR
+            }
         }
     },
     password: {
         type: Sequelize.STRING(64),
         allowNull: false,
+        validate: {
+            notNull: {
+                msg: PASSWORD_NOTNULL_ERROR
+            }
+        }
     },
     status: {
         type: Sequelize.ENUM('active', 'pending'),
@@ -52,7 +81,7 @@ User.addHook('beforeCreate', 'avoidDuplicateEmail', async (user) => {
     if (alreadyExists) {
         throw new Sequelize.ValidationError("error", [
             {
-                message: "Email Id already Exists!",
+                message: EMAIL_UNIQUE_ERROR,
                 path: "email",
                 name: "SequelizeValidationError"
             }

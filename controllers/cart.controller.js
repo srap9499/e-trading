@@ -1,5 +1,39 @@
 'use strict';
 
+const {
+    SUCCESS_MESSAGES: {
+        ADD_TO_CART_SUCCESS,
+        UPDATE_CART_SUCCESS,
+        CART_FETCH_SUCCESS,
+    },
+    ERROR_MESSAGES: {
+        ADD_TO_CART_OUT_OF_STOCK_ERROR,
+        DEFAULT_ERROR
+    },
+    VIEW_PATH: {
+        USER_VIEWS_PATH,
+    },
+    USER_VIEWS: {
+        ORDER_STATUS_VIEW,
+    },
+    VIEW_TITLES: {
+        USER_VIEW_TITLES: {
+            ORDER_STATUS_TITLE,
+        }
+    },
+    REQUEST_PROPERTIES: {
+        REQUEST_USERDATA
+    },
+    ORDER_REMARKS: {
+        PRODUCT_OUT_OF_STOCK,
+        PAYMENT_PENDING,
+        INVALID_COUPON,
+        INSUFFICIENT_WALLET_AMOUNT,
+        ORDER_CANCELED,
+        ORDER_PLACED_SUCCESS
+    }
+} = require('../constants/main.constant');
+
 const { sequelize } = require("../config/db-connection.config");
 const { Op } = require('sequelize');
 const { User } = require('../models/user.model');
@@ -13,6 +47,8 @@ const { Order, OrderDetail } = require('../models/order.model');
 const { invoiceGenerator } = require("../helpers/invoice.helper");
 const { sendInvoiceMail } = require("../helpers/mail.helper");
 const { formatDateTime } = require("../helpers/date.helper");
+const { InternalServerError, BadRequest } = require('http-errors');
+const { responseObj } = require('../helpers/response.helper');
 
 /**
  * @description API interface to add Products to user's cart
@@ -23,7 +59,7 @@ const { formatDateTime } = require("../helpers/date.helper");
  * @returns {Response} JSON
  */
 exports.addToCart = async (req, res, next) => {
-    const { id: userId } = req.userData;
+    const { id: userId } = req[REQUEST_USERDATA];
     const { productId } = req.params;
     const { quantity } = req.body;
     try {
@@ -43,12 +79,7 @@ exports.addToCart = async (req, res, next) => {
             }
         });
         if (cart && cart.quantity && parseInt(product.quantity) < (parseInt(cart.quantity) + parseInt(quantity))) {
-            return res.status(400).send({
-                message: {
-                    type: "error",
-                    body: "Insufficient stock to add!"
-                }
-            });
+            throw new BadRequest(ADD_TO_CART_OUT_OF_STOCK_ERROR);
         }
         await sequelize.transaction(async addTransaction => {
             await sequelize.query('CALL add_to_cart( :userId, :productId, :quantity)', {
@@ -57,20 +88,12 @@ exports.addToCart = async (req, res, next) => {
                 transaction: addTransaction
             });
         });
-        return res.status(200).send({
-            message: {
-                type: "success",
-                body: "Product added to cart!"
-            }
-        });
-    } catch (e) {
-        console.log(e);
-        return res.status(500).send({
-            message: {
-                type: "error",
-                body: "Something went wrong!"
-            }
-        });
+        return res.status(200).send(
+            responseObj(true, ADD_TO_CART_SUCCESS)
+        );
+    } catch (error) {
+        console.log(error);
+        next(error);
     }
 };
 
@@ -82,9 +105,9 @@ exports.addToCart = async (req, res, next) => {
  * @returns {Response} Cart Products: JSON
  */
  exports.getCartData = async (req, res, next) => {
-    const { id: userId } = req.userData;
+    const { id: userId } = req[REQUEST_USERDATA];
     try {
-        const cartItems = await Cart.findAll({
+        const cartdata = await Cart.findAll({
             logging: false,
             attributes: ["quantity"],
             where: { userId },
@@ -107,24 +130,15 @@ exports.addToCart = async (req, res, next) => {
                 ]
             }
         });
-        cartItems.forEach(item => {
+        cartdata.forEach(item => {
             item.dataValues.subTotal = parseInt(item.quantity) * parseFloat(item.product.price);
         });
-        return res.status(200).send({
-            cartItems,
-            message: {
-                type: "success",
-                body: "Cart items fetched Successfully!"
-            }
-        });
+        return res.status(200).send(
+            responseObj(true, CART_FETCH_SUCCESS, cartdata)
+        );
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            message: {
-                type: "error",
-                body: "Something went wrong!"
-            }
-        });
+        next(error);
     }
 };
 
@@ -137,7 +151,7 @@ exports.addToCart = async (req, res, next) => {
  * @returns {Response} JSON
  */
 exports.updateCart = async (req, res, next) => {
-    const { id: userId } = req.userData;
+    const { id: userId } = req[REQUEST_USERDATA];
     const { productId } = req.params;
     const { quantity } = req.body;
     try {
@@ -148,20 +162,12 @@ exports.updateCart = async (req, res, next) => {
                 transaction: updateTransaction
             });
         });
-        return res.status(200).send({
-            message: {
-                type: "success",
-                body: "Cart updated successfully!"
-            }
-        });
+        return res.status(200).send(
+            responseObj(true, UPDATE_CART_SUCCESS)
+        );
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            message: {
-                type: "error",
-                body: "Something went wrong!"
-            }
-        });
+        next(error);
     }
 };
 
@@ -173,9 +179,9 @@ exports.updateCart = async (req, res, next) => {
  * @returns {Response} order.id: JSON
  */
 exports.checkOut = async (req, res, next) => {
-    const { id: userId } = req.userData;
+    const { id: userId } = req[REQUEST_USERDATA];
     try {
-        const result = await sequelize.transaction(async (checkOut) => {
+        const result = await sequelize.transaction(async (checkOutTransaction) => {
             const user = await User.findOne({
                 logging: false,
                 attributes: [ 'id', 'userName', 'email' ],
@@ -188,13 +194,14 @@ exports.checkOut = async (req, res, next) => {
                         model: Product,
                         attributes: [ 'id', 'quantity', 'price' ]
                     }
-                }
+                },
+                transaction: checkOutTransaction
             });
             let sum = 0;
         
             let outOfStock = false;
             if (!user.carts.length) {
-                throw new Error('Something went wrong!');
+                throw new InternalServerError(DEFAULT_ERROR);
             }
             
             const cartDetail = await user.carts.map(i => {
@@ -215,7 +222,7 @@ exports.checkOut = async (req, res, next) => {
                 discountedAmount: sum,
                 orderdetails: cartDetail,
                 status: outOfStock ? "failed" : undefined,
-                remark: outOfStock ? "Insufficient product quantity!" : undefined
+                remark: outOfStock ? PRODUCT_OUT_OF_STOCK : PAYMENT_PENDING
             };
         
             const order = await Order.create(orderData, {
@@ -223,32 +230,27 @@ exports.checkOut = async (req, res, next) => {
                 include: {
                     model: OrderDetail
                 },
-                transaction: checkOut
+                transaction: checkOutTransaction
             });
             await Cart.destroy({
                 logging: false,
                 where: {
                     userId: user.id
                 },
-                transaction: checkOut
+                transaction: checkOutTransaction
             });
             return order;
         });
         return res.status(200).send({ id: result.id });
         // res.redirect('/cart/checkout/'+result.id+'/status');
     } catch (error) {
-        return res.status(500).send({
-            message: {
-                type: 'error',
-                body: error.message
-            }
-        });
+        next(error);
     }
 };
 
 exports.getOrderStatus = async (req, res, next) => {
-    const title = "Order Status";
-    const { id } = req.userData;
+    const title = ORDER_STATUS_TITLE;
+    const { id } = req[REQUEST_USERDATA];
     const { orderId } = req.params;
     try {
         const user = await User.findOne({
@@ -273,15 +275,14 @@ exports.getOrderStatus = async (req, res, next) => {
         await user.orders.forEach(order => {
             order.dataValues.date = formatDateTime(order.date);
         });
-        res.render('orderstatus', { user, title });
+        res.render(USER_VIEWS_PATH + ORDER_STATUS_VIEW, { user, title });
     } catch (e) {
         console.log(e);
     }
 };
 
 exports.payment = async (req, res, next) => {
-    const {  userData } = req;
-    const userId = userData.id;
+    const {  id: userId } = req[REQUEST_USERDATA];
     const { orderId } = req.params;
     const { code } = req.body;
     try {
@@ -327,16 +328,16 @@ exports.payment = async (req, res, next) => {
                 transaction: payTransaction
             });
             let failedFlag = false;
-            let remark = 'Order Placed';
+            let remark = ORDER_PLACED_SUCCESS;
             for (const detail of order.orderdetails) {
                 if (detail.quantity > detail.product.quantity) {
                     failedFlag = true;
-                    remark = "Insufficient product quantity!";
+                    remark = PRODUCT_OUT_OF_STOCK;
                 }
             }
             if (!failedFlag && code && !coupon) {
                 failedFlag = true;
-                remark = "Invalid coupon code!";
+                remark = INVALID_COUPON;
             }
             let amount = order.discountedAmount;
             if (!failedFlag && coupon) {
@@ -344,7 +345,7 @@ exports.payment = async (req, res, next) => {
             }
             if (!failedFlag && (user.wallet.amount - amount) < 0) {
                 failedFlag = true;
-                remark = "Insufficient wallet amount!";
+                remark = INSUFFICIENT_WALLET_AMOUNT;
             }
             const updateOrder = await Order.update({
                 discountedAmount: !failedFlag ? amount : undefined,
@@ -384,19 +385,10 @@ exports.payment = async (req, res, next) => {
 };
 
 exports.retryOrder = async (req, res, next) => {
-    const {  userData } = req;
-    const userId = userData.id;
+    const {  id: userId } = req[REQUEST_USERDATA];
     const { orderId } = req.params;
     try {
         await sequelize.transaction(async retryTransaction => {
-            await User.findOne({
-                logging: false,
-                attributes: [ 'id', 'userName', 'email' ],
-                where: {
-                    id: userId
-                },
-                transaction: retryTransaction
-            });
             const order = await Order.findOne({
                 logging: false,
                 where: {
@@ -414,11 +406,11 @@ exports.retryOrder = async (req, res, next) => {
                 transaction: retryTransaction
             });
             let failedFlag = false;
-            let remark = 'Payment pending';
+            let remark = PAYMENT_PENDING;
             for (const detail of order.orderdetails) {
                 if (detail.quantity > detail.product.quantity) {
                     failedFlag = true;
-                    remark = "Insufficient product quantity!";
+                    remark = PRODUCT_OUT_OF_STOCK;
                 }
             }
             const retryOrderResult = await Order.update({
@@ -441,14 +433,13 @@ exports.retryOrder = async (req, res, next) => {
 };
 
 exports.cancelOrder = async (req, res, next) => {
-    const {  userData } = req;
-    const userId = userData.id;
+    const {  id: userId } = req[REQUEST_USERDATA];
     const { orderId } = req.params;
     try {
         await sequelize.transaction(async cancelTransaction => {
             await Order.update({
                 status: 'failed',
-                remark: 'Order canceled!'
+                remark: ORDER_CANCELED
             }, {
                 logging: false,
                 where: {
@@ -465,7 +456,8 @@ exports.cancelOrder = async (req, res, next) => {
 };
 
 exports.generateInvoice = async (req, res, next) => {
-    const { id: userId } = req.userData;
+    const userData = req[REQUEST_USERDATA];
+    const { id: userId } = req[REQUEST_USERDATA];
     const { orderId } = req.params;
     try {
         const order = await Order.findOne({

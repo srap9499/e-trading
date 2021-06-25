@@ -1,5 +1,12 @@
 'use strict';
 
+const {
+    ERROR_MESSAGES: {
+        QUANTITY_NOTNULL_ERROR,
+        QUANTITY_IS_INT_ERROR
+    }
+} = require('../constants/main.constant');
+
 const Sequelize = require('sequelize');
 const { sequelize } = require("../config/db-connection.config");
 const { User } = require('./user.model');
@@ -11,7 +18,12 @@ const Cart = sequelize.define('cart', {
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isInt: true
+            notNull: {
+                msg: QUANTITY_NOTNULL_ERROR
+            },
+            isInt: {
+                msg: QUANTITY_IS_INT_ERROR
+            }
         }
     }
 }, {

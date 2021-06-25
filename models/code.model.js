@@ -1,5 +1,12 @@
 'use strict';
 
+const {
+    ERROR_MESSAGES: {
+        EMAIL_IS_EMAIL_ERROR,
+        EMAIL_LENGTH_ERROR
+    }
+} = require('../constants/main.constant');
+
 const { NOW } = require('sequelize');
 const Sequelize = require('sequelize');
 
@@ -11,7 +18,14 @@ const Code = sequelize.define('code', {
         allowNull: false,
         unique: true,
         validate: {
-            isEmail: true,
+            isEmail: {
+                msg: EMAIL_IS_EMAIL_ERROR
+            },
+            len: {
+                min: 5,
+                max: 50,
+                msg: EMAIL_LENGTH_ERROR
+            }
         }
     },
     otp: {
@@ -27,7 +41,14 @@ const VerifyCode = sequelize.define('verifycode', {
         type: Sequelize.STRING(50),
         allowNull: false,
         validate: {
-            isEmail: true,
+            isEmail: {
+                msg: EMAIL_IS_EMAIL_ERROR
+            },
+            len: {
+                min: 5,
+                max: 50,
+                msg: EMAIL_LENGTH_ERROR
+            }
         }
     },
     otp: {

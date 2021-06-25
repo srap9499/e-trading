@@ -1,14 +1,34 @@
 'use strict';
 
 const {
-    development: {
-        saltValue,
-        userStatus,
-        roles,
-        errMsgs,
-        Msgs
+    saltValue,
+    userStatus,
+    roles,
+} = require('../config/main.config');
+
+const {
+    SUCCESS_MESSAGES: {
+        ADD_SUB_ADMIN_SUCCESS,
+        DELETE_SUB_ADMIN_SUCCESS,
+        DATA_FETCH_SUCCESS
+    },
+    ERROR_MESSAGES: {
+        DEFAULT_ERROR
+    },
+    REQUEST_PROPERTIES: {
+        REQUEST_USERDATA
+    },
+    VIEW_PATH: {
+        ADMIN_VIEWS_PATH
+    },
+    ADMIN_VIEWS: {
+        DASHBOARD_VIEW
+    },
+    VIEW_TITLES: {
+        DEFAULT_TITLE
     }
-} = require('../config/development.config');
+} = require('../constants/main.constant');
+
 const { hashSync } = require("bcryptjs");
 const { UserRole } = require("../models/role.model");
 const { User } = require("../models/user.model");
@@ -21,7 +41,7 @@ const { InternalServerError } = require('http-errors');
 const getUserById = async (id) => {
     const user = await User.findByPk(id, {
         logging: false,
-        attributes: ['id', 'userName', 'email'],
+        attributes: ['id', 'userName', 'email', 'userroleId'],
         include: {
             model: UserRole,
             attributes: ['id', 'role']
@@ -36,10 +56,10 @@ const getUserById = async (id) => {
  * @param {String} title 
  * @returns {Response} View
  */
-exports.renderView = (view = 'dashboard', title = 'E-Trading') => {
-    view = `admin/${view}`;
+exports.renderView = (view = DASHBOARD_VIEW, title = DEFAULT_TITLE) => {
+    view = ADMIN_VIEWS_PATH + view;
     return async (req, res, next) => {
-        const { id } = req.userData;
+        const { id } = req[REQUEST_USERDATA];
         try {
             const user = await getUserById(id);
             return res.status(200).render(view, {
@@ -47,12 +67,7 @@ exports.renderView = (view = 'dashboard', title = 'E-Trading') => {
                 title
             });
         } catch (error) {
-            return res.status(error.status).send({
-                message: {
-                    type: "error",
-                    body: error.message
-                }
-            });
+            next(error);
         }
     };
 };
@@ -83,7 +98,7 @@ exports.addSubAdmin = async (req, res, next) => {
             });
         });
         return res.status(200).send(
-            responseObj(true, Msgs.add200)
+            responseObj(true, ADD_SUB_ADMIN_SUCCESS)
         );
     } catch (error) {
         console.log("API catch", error.name);
@@ -105,7 +120,7 @@ exports.getSubAdmins = async (req, res, next) => {
         const { limit, offset } = pagination({ page, size });
         const subadmins = await User.findAndCountAll({
             logging: false,
-            attributes: [ 'id', 'userName', 'email', 'userroleId' ],
+            attributes: ['id', 'userName', 'email', 'userroleId'],
             limit,
             offset,
             order: order ? [order] : [['id', 'ASC']],
@@ -116,7 +131,7 @@ exports.getSubAdmins = async (req, res, next) => {
         });
         const data = paginationMetaData(subadmins, page, limit);
         return res.status(200).send(
-            responseObj(true, Msgs.get200, data)
+            responseObj(true, DATA_FETCH_SUCCESS, data)
         );
     } catch (error) {
         next(error);
@@ -133,9 +148,8 @@ exports.getSubAdmins = async (req, res, next) => {
 exports.destroySubAdmin = async (req, res, next) => {
     try {
         const { id } = req.params;
-        console.log(id);
         if (!parseInt(id)) {
-            throw new InternalServerError(errMsgs.err500);
+            throw new InternalServerError(DEFAULT_ERROR);
         }
         await User.destroy({
             logging: false,
@@ -145,7 +159,7 @@ exports.destroySubAdmin = async (req, res, next) => {
             }
         });
         return res.status(200).send(
-            responseObj(true, Msgs.del200)
+            responseObj(true, DELETE_SUB_ADMIN_SUCCESS)
         );
     } catch (error) {
         next(error);

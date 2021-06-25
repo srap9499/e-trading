@@ -3,6 +3,19 @@
 const { Router } = require('express');
 const router = Router();
 
+const {
+    VIEW_TITLES: {
+        SHARED_VIEW_TITLES: {
+            SIGN_UP_TITLE,
+            SIGN_IN_TITLE,
+            VERIFY_ACCOUNT_TITLE
+        }
+    },
+    REQUEST_PROPERTIES: {
+        REQUEST_BODY
+    }
+} = require('../constants/main.constant');
+
 const Auth = require('../controllers/auth.controller');
 const { signUpSchema, verifySchema, signInSchema, changePasswordSchema } = require('../helpers/validate.helper');
 const { authenticate } = require('../middlewares/auth.middleware');
@@ -13,7 +26,7 @@ router.post(
     '/signUp', 
     validate(signUpSchema,{
         view: "signUp",
-        title: "Sign Up"
+        title: SIGN_UP_TITLE
     }), 
     Auth.postSignUp
 );
@@ -23,7 +36,7 @@ router.post(
     '/verify',
     validate(verifySchema, {
         view: "verify",
-        title: "Verify Account"
+        title: VERIFY_ACCOUNT_TITLE
     }),
     Auth.postVerify
 );
@@ -33,13 +46,18 @@ router.post(
     '/signIn',
     validate(signInSchema, {
         view: "signIn",
-        title: "Sign In"
+        title: SIGN_IN_TITLE
     }),
     Auth.postSignIn
 );
 
 router.get('/signOut', Auth.getSignOut);
 
-router.put('/changepassword', authenticate, validateRest(changePasswordSchema), Auth.postChangePassword);
+router.put(
+    '/changepassword',
+    [authenticate],
+    validateRest(changePasswordSchema, REQUEST_BODY),
+    Auth.postChangePassword
+);
 
 module.exports = router;

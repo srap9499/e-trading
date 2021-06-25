@@ -10,8 +10,8 @@ const getData = () => {
         url: '/cart/products',
         data: queryData,
         success: (response) => {
-            const { cartItems } = response;
-            if (!cartItems || !cartItems.length) {
+            const { data: cartdata } = response;
+            if (!cartdata || !cartdata.length) {
                 $('#nothing-to-display').removeAttr('hidden');
                 $('#cart-area, #checkout-area').attr('hidden', 'true');
                 return $('#cart-area, #checkout-area').empty();
@@ -20,11 +20,11 @@ const getData = () => {
             $('#cart-area, #checkout-area').removeAttr('hidden');
             $('#cart-area, #checkout-area').empty();
 
-            const totalItems = cartItems.length;
+            const totalItems = cartdata.length;
             let totalAmount = 0;
             let isDisabled = '';
-            $.each(cartItems, (i, item) => {
-                let {quantity, product, subTotal } = item;
+            $.each(cartdata, (i, cartitem) => {
+                let {quantity, product, subTotal } = cartitem;
                 let { id, name, quantity: stock, brand, category, subcategory, price } = product;
                 totalAmount += parseFloat(subTotal);
                 brand = brand ? `By&nbsp;${brand.name}` : '';

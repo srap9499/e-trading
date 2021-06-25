@@ -7,7 +7,7 @@ const { sequelize } = require("../config/db-connection.config");
 const Brand = sequelize.define("brand", {
     name: {
         type: Sequelize.STRING(40),
-        alloNull: false,
+        alloWNull: false,
         unique: true,
     }
 }, {
@@ -15,4 +15,4 @@ const Brand = sequelize.define("brand", {
     timestamps: false
 });
 
-module. exports = { Brand };
+module.exports = { Brand };

@@ -62,8 +62,8 @@ const getData = () => {
         data: queryData,
         success: (response) => {
             $('#alert').empty().attr('hidden', 'true').removeClass('alert-danger').addClass('alert-success');
-            const { orders, totalPages } = response;
-            if (!orders || !orders.length) {
+            const { data: { rows, totalPages } } = response;
+            if (!rows || !rows.length) {
                 if ($('ul.pagination li').length -2 != totalPages) {
                     $('ul.pagination').empty();
                 }
@@ -86,7 +86,7 @@ const getData = () => {
             $('select#page-size').parent().removeAttr('hidden');
             $('#order-history tbody').empty();
 
-            $.each(orders, (i, order) => {
+            $.each(rows, (i, order) => {
                 order.date = formatDateTime(order.date);
                 const detailRow = setOrderDetails(order.orderdetails);
                 let tr_id = 'tr_' + order.id;
@@ -104,9 +104,9 @@ const getData = () => {
                 $('#order-history tbody').append(orderRow);
             });
 
-            if ($('ul.pagination li').length - 2 != response.totalPages) {
+            if ($('ul.pagination li').length - 2 != totalPages) {
                 $('ul.pagination').empty();
-                createPagination(response.totalPages);
+                createPagination(totalPages);
             }
         },
         error: (error) => {

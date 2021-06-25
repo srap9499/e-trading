@@ -29,8 +29,8 @@ const getData = () => {
         url: '/home/products',
         data: queryData,
         success: (response) => {
-            const { products, totalPages } = response;
-            if (!products || !products.length) {
+            const { data: { rows, totalPages } } = response;
+            if (!rows || !rows.length) {
                 if ($('ul.pagination li').length != totalPages) {
                     $('ul.pagination').empty();
                 }
@@ -42,7 +42,7 @@ const getData = () => {
             $('#products-area').removeAttr('hidden');
             $('#products-area').empty();
 
-            $.each(products, (i, product) => {
+            $.each(rows, (i, product) => {
                 let { id, name, brand, category, subcategory, price, imagePath } = product;
                 brand = brand ? `By&nbsp;${brand.name}` : '';
                 category = category ? category.category : '';

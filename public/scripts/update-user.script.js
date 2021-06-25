@@ -241,7 +241,7 @@ const getUserDetails = () => {
         type: 'GET',
         url: '/user/userdetails',
         success: response => {
-            const { user: { userName: name, email } } = response;
+            const { data: { user: { userName: name, email } } } = response;
             getUserDetailSuccessAlert();
 
             $('#detail-field').empty();

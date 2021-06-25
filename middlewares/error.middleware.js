@@ -1,31 +1,35 @@
 'use strict';
 
 const {
-    development: {
-        errMsgs
+    ERROR_MESSAGES: {
+        VALIDATION_ERROR,
+        DEFAULT_ERROR
+    },
+    VIEW_TITLES: {
+        DEFAULT_TITLE
     }
-} = require('../config/development.config');
+} = require('../constants/main.constant');
 const createHttpError = require("http-errors");
 const { sequelizeErrorFormatter } = require("../helpers/error-formatter.helper");
 const { responseObj } = require("../helpers/response.helper");
 
-exports.error = ({ error, view, title="E-Trading"}, req, res, next) => {
+exports.error = ({ error, view, title = DEFAULT_TITLE }, req, res, next) => {
     if (error.name && error.name === 'SequelizeValidationError') {
         return res.status(400).render(view, {
             message: {
                 type: "error",
-                body: "Validation Errors!"
+                body: VALIDATION_ERROR
             },
             errors: sequelizeErrorFormatter(error),
             formData: req.body,
             title
         });
     }
-    
+
     return res.status(500).render(view, {
         message: {
             type: "error",
-            body: "Something went wrong!"
+            body: DEFAULT_ERROR
         },
         errors: {},
         formData: req.body,
@@ -41,15 +45,15 @@ exports.errorHandler = async (error, req, res, next) => {
     switch (error.name) {
         case "SequelizeValidationError":
             res.status(400).send(
-                responseObj(false, errMsgs.invalid400, sequelizeErrorFormatter(error))
+                responseObj(false, VALIDATION_ERROR, sequelizeErrorFormatter(error))
             );
             break;
-    
+
         default:
-            const code = error.status??500;
+            const code = error.status ?? 500;
             console.log(error.name, error.message);
             res.status(code).send(
-                responseObj(false, code==500 ? errMsgs.err500 : error.message, error)
+                responseObj(false, code == 500 ? DEFAULT_ERROR : error.message, error)
             );
             break;
     }

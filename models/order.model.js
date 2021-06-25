@@ -1,5 +1,14 @@
 'use strict';
 
+const {
+    ERROR_MESSAGES: {
+        AMOUNT_NOTNULL_ERROR,
+        AMOUNT_ISDECIMAL_ERROR,
+        QUANTITY_NOTNULL_ERROR,
+        QUANTITY_IS_INT_ERROR
+    }
+} = require('../constants/main.constant');
+
 const Sequelize = require("sequelize");
 const { sequelize } = require("../config/db-connection.config");
 const { User } = require('./user.model');
@@ -10,12 +19,28 @@ const Order = sequelize.define('order', {
     totalAmount: {
         type: Sequelize.DECIMAL(20, 2),
         allowNull: false,
-        defaultValue: 0
+        defaultValue: 0,
+        validate: {
+            notNull: {
+                msg: AMOUNT_NOTNULL_ERROR
+            },
+            isDecimal: {
+                msg: AMOUNT_ISDECIMAL_ERROR
+            }
+        }
     },
     discountedAmount: {
         type: Sequelize.DECIMAL(20, 2),
         allowNull: false,
-        defaultValue: 0
+        defaultValue: 0,
+        validate: {
+            notNull: {
+                msg: AMOUNT_NOTNULL_ERROR
+            },
+            isDecimal: {
+                msg: AMOUNT_ISDECIMAL_ERROR
+            }
+        }
     },
     status: {
         type: Sequelize.ENUM("pending", "success", "failed"),
@@ -52,13 +77,26 @@ const OrderDetail = sequelize.define('orderdetail', {
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isInt: true
+            notNull: {
+                msg: QUANTITY_NOTNULL_ERROR
+            },
+            isInt: {
+                msg: QUANTITY_IS_INT_ERROR
+            }
         }
     },
     total: {
         type: Sequelize.DECIMAL(20, 2),
         allowNull: false,
-        defaultValue: 0
+        defaultValue: 0,
+        validate: {
+            notNull: {
+                msg: AMOUNT_NOTNULL_ERROR
+            },
+            isDecimal: {
+                msg: AMOUNT_ISDECIMAL_ERROR
+            }
+        }
     }
 }, {
     timestamps: false

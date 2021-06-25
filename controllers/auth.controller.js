@@ -1,7 +1,51 @@
 'use strict';
 
-// import environment variables
-require('dotenv').config();
+const {
+    INITIAL_WALLET_BONUS_AMOUNT,
+    saltValue,
+    roles
+} = require('../config/main.config');
+
+const {
+    SUCCESS_MESSAGES: {
+        PASSWORD_CHANGE_SUCCESS,
+    },
+    ERROR_MESSAGES: {
+        WRONG_OTP,
+        WRONG_PASSWORD,
+        INVALID_USER,
+        USER_NOT_EXISTS,
+        WRONG_CREDENTIALS,
+    },
+    REQUEST_PROPERTIES: {
+        REQUEST_USERDATA
+    },
+    VIEW_PATH: {
+        SHARED_VIEWS_PATH
+    },
+    SHARED_VIEWS: {
+        SIGN_UP_VIEW,
+        SIGN_IN_VIEW,
+        VERIFY_ACCOUNT_VIEW
+    },
+    VIEW_TITLES: {
+        SHARED_VIEW_TITLES: {
+            SIGN_UP_TITLE,
+            SIGN_IN_TITLE,
+            VERIFY_ACCOUNT_TITLE
+        }
+    },
+    COOKIE_NAMES: {
+        AUTH_TOKEN
+    },
+    TOKEN_MAX_AGE: {
+        AUTH_TOKEN_MAX_AGE,
+    },
+    COOKIE_MAX_AGE: {
+        AUTH_TOKEN_COOKIE_MAX,
+    }
+} = require('../constants/main.constant');
+
 // import functions from bcryptjs module for password hashing
 const {
     hashSync,
@@ -12,24 +56,20 @@ const { generateToken } = require('../helpers/auth.helper');
 const cryptoRandomString = require('crypto-random-string');
 const { sendVerifyEmail, sendSignUpNotificationMail } = require('../helpers/mail.helper');
 const { sequelize } = require('../config/db-connection.config');
+const { UserRole } = require('../models/role.model');
 const { User } = require('../models/user.model');
 const { Code } = require('../models/code.model');
 const { Wallet } = require('../models/wallet.model');
 const { Coupon } = require('../models/coupon.model');
 const { dateAfterWeeks } = require('../helpers/date.helper');
-const {
-    development: {
-        saltValue,
-        roles
-    }
-} = require('../config/development.config');
 
 const { BadRequest } = require('http-errors');
+const { responseObj } = require('../helpers/response.helper');
 
 
 // Render Sign Up page
 exports.getSignUp = async (req, res, next) => {
-    res.render('signup', { message: {}, formData: {}, title: "Sign Up" });
+    res.render(SHARED_VIEWS_PATH + SIGN_UP_VIEW, { message: {}, formData: {}, title: SIGN_UP_TITLE });
 };
 
 // POST Sign Up
@@ -46,25 +86,25 @@ exports.postSignUp = async (req, res, next) => {
             wallet: {},
             userroleId: roles.User
         };
-        const user = await User.create(userData, 
+        const user = await User.create(userData,
             {
                 logging: false,
-                include: { 
-                    model: Wallet 
-                }, 
-                transaction: signUpTransaction 
+                include: {
+                    model: Wallet
+                },
+                transaction: signUpTransaction
             });
         if (user) {
             const otp = cryptoRandomString(6);
             await Code.create({
                 email: user.email,
                 otp
-            },{ 
-                logging: false, 
-                transaction: signUpTransaction 
+            }, {
+                logging: false,
+                transaction: signUpTransaction
             });
             sendVerifyEmail({ userName: user.userName, email: user.email }, otp);
-            sendSignUpNotificationMail({userName: user.userName, email: user.email }, process.env.N_BONUS_AMOUNT || 500);
+            sendSignUpNotificationMail({ userName: user.userName, email: user.email }, INITIAL_WALLET_BONUS_AMOUNT);
             await signUpTransaction.commit();
             return res.redirect('/auth/verify/' + user.id);
         }
@@ -73,14 +113,14 @@ exports.postSignUp = async (req, res, next) => {
     } catch (e) {
         console.log(e);
         await signUpTransaction.rollback();
-        next({ error: e, view: "signUp", title: "Sign Up"});
+        next({ error: e, view: SHARED_VIEWS_PATH + SIGN_UP_VIEW, title: SIGN_UP_TITLE });
     }
 };
 
 exports.getVerify = async (req, res, next) => {
     const { id } = req.params;
-    const title = "Verify Account"
-    return res.render('verify', { message: {}, formData: { id }, title});
+    const title = VERIFY_ACCOUNT_TITLE
+    return res.render(SHARED_VIEWS_PATH + VERIFY_ACCOUNT_VIEW, { message: {}, formData: { id }, title });
 };
 
 exports.postVerify = async (req, res, next) => {
@@ -91,14 +131,14 @@ exports.postVerify = async (req, res, next) => {
         const verified = await Code.findOne({ logging: false, where: { email: user.email, otp } });
         if (verified) {
             user.status = 'active';
-            user.wallet.amount = process.env.N_BONUS_AMOUNT || 500;
+            user.wallet.amount = INITIAL_WALLET_BONUS_AMOUNT;
             const coupon = await Coupon.create({
                 name: "Buy One Get One Free",
                 code: cryptoRandomString(6),
                 type: "dynamic",
                 value: 50,
                 notAfter: dateAfterWeeks(2)
-            },{ logging: false, transaction: verifyTransaction });
+            }, { logging: false, transaction: verifyTransaction });
             await user.wallet.save({ logging: false, transaction: verifyTransaction });
             await user.addCoupon(coupon, { logging: false, transaction: verifyTransaction });
             await user.save({ logging: false, transaction: verifyTransaction });
@@ -107,13 +147,13 @@ exports.postVerify = async (req, res, next) => {
             return res.redirect('/auth/signIn');
         }
         await verifyTransaction.commit();
-        return res.status(400).render('verify', {
+        return res.status(400).render(SHARED_VIEWS_PATH + VERIFY_ACCOUNT_VIEW, {
             message: {
                 type: "error",
-                body: "Invalid OTP"
+                body: WRONG_OTP
             },
             formData: req.body,
-            title: "Verify Account"
+            title: VERIFY_ACCOUNT_TITLE
         });
     } catch (err) {
         await verifyTransaction.rollback();
@@ -123,21 +163,21 @@ exports.postVerify = async (req, res, next) => {
 };
 
 exports.getSignIn = async (req, res, next) => {
-    res.render('signin', { message: { type: "success"}, formData: {}, title: "Sign In" });
+    res.render(SHARED_VIEWS_PATH + SIGN_IN_VIEW, { message: { type: "success" }, formData: {}, title: SIGN_IN_TITLE });
 };
 
 exports.postSignIn = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ logging: false, where: { email } });
     if (!user) {
-        return res.status(400).render('signIn', {
+        return res.status(400).render(SHARED_VIEWS_PATH + SIGN_IN_VIEW, {
             message: {
                 type: "error",
-                body: "Invalid User!"
+                body: INVALID_USER
             },
-            errors: { email: "User does not exists!"},
+            errors: { email: USER_NOT_EXISTS },
             formData: req.body,
-            title: "Sign In"
+            title: SIGN_IN_TITLE
         });
     }
     if (user.status == 'pending') {
@@ -145,15 +185,15 @@ exports.postSignIn = async (req, res, next) => {
     }
     const isMatch = compareSync(password, user.password);
     if (!isMatch) {
-        return res.status(400).render('signIn', {
+        return res.status(400).render(SHARED_VIEWS_PATH + SIGN_IN_VIEW, {
             message: {
                 type: "error",
-                body: "Invalid Email ID or Password!"
+                body: WRONG_CREDENTIALS
             },
             errors: {},
             formData: req.body,
-            title: "Sign In"
-        });    
+            title: SIGN_IN_TITLE
+        });
     }
     const userData = {
         id: user.id,
@@ -161,8 +201,8 @@ exports.postSignIn = async (req, res, next) => {
         email: user.email,
         roleId: user.userroleId
     }
-    const token = generateToken(userData, 60 * 60);     // jwt authorization
-    res.cookie('jwt_token', token, { maxAge: 60 * 60 * 1000, httpOnly: true });
+    const token = generateToken(userData, AUTH_TOKEN_MAX_AGE);     // jwt authorization
+    res.cookie(AUTH_TOKEN, token, { maxAge: AUTH_TOKEN_COOKIE_MAX, httpOnly: true });
     user.accessToken = token;
     await user.save();
     // res.status(200).send({ Message: "OK! Sign In successful!", "Token": token });
@@ -171,27 +211,22 @@ exports.postSignIn = async (req, res, next) => {
 
 exports.getSignOut = async (req, res, next) => {
     try {
-        res.clearCookie('jwt_token');
+        res.clearCookie(AUTH_TOKEN);
         return res.redirect('/auth/signIn');
-    } catch(e) {
-        console.log(e);
-        return res.status(500).send({
-            message: {
-                type: "error",
-                body: "Something went wrong!"
-            }
-        });
+    } catch (error) {
+        console.log(error);
+        next(error);
     }
 };
 
 exports.postChangePassword = async (req, res, next) => {
-    const { id } = req.userData;;
+    const { id } = req[REQUEST_USERDATA];
     const { password, new_password } = req.body;
     try {
         await sequelize.transaction(async changePasswordTransaction => {
             const user = await User.findOne({
                 logging: false,
-                attributes: [ 'id', 'password' ],
+                attributes: ['id', 'password'],
                 where: {
                     id
                 },
@@ -199,24 +234,16 @@ exports.postChangePassword = async (req, res, next) => {
             });
             const isMatch = compareSync(password, user.password);
             if (!isMatch) {
-                throw new BadRequest('Incorrect Password!');
+                throw new BadRequest(WRONG_PASSWORD);
             }
             user.password = hashSync(new_password, saltValue);
             await user.save({ transaction: changePasswordTransaction });
         });
-        return res.status(200).send({
-            message: {
-                type: 'success',
-                body: 'Password changed sucessfully!'
-            }
-        });
+        return res.status(200).send(
+            responseObj(true, PASSWORD_CHANGE_SUCCESS)
+        );
     } catch (error) {
         console.log(error);
-        return res.status(error.status).send({
-            message: {
-                type: 'error',
-                body: error.message
-            }
-        });
+        next(error);
     }
 };

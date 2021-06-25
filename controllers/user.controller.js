@@ -1,10 +1,41 @@
 'use strict';
 
 const {
+    SUCCESS_MESSAGES: {
+        UPDATE_PROFILE_SUCCESS,
+        ADD_AMOUNT_SUCCESS,
+        DATA_FETCH_SUCCESS,
+        WALLET_AMOUNT_FETCH_SUCCESSFULL,
+        ORDER_HISTORY_FETCH_SUCCESS
+    },
+    ERROR_MESSAGES: {
+        WRONG_OTP,
+        EMAIL_ALREADY_EXISTS,
+        USER_NOT_FOUND
+    },
+    VIEW_PATH: {
+        USER_VIEWS_PATH
+    },
+    USER_VIEWS: {
+        HOME_VIEW,
+        COUPON_VIEW,
+    },
+    VIEW_TITLES: {
+        DEFAULT_TITLE,
+        USER_VIEW_TITLES: {
+            COUPON_TITLE,
+        }
+    },
+    REQUEST_PROPERTIES: {
+        REQUEST_USERDATA
+    }
+} = require('../constants/main.constant');
+
+const {
     getCouponPagination,
     getCouponPaginationData,
-    getOrderHistoryPagination,
-    getOrderHistoryPaginationData
+    pagination,
+    paginationMetaData
 } = require("../helpers/pagination.helper");
 
 const { Op } = require('sequelize');
@@ -14,56 +45,57 @@ const { Product } = require('../models/product.model');
 const { Coupon } = require('../models/coupon.model');
 const { Order, OrderDetail } = require("../models/order.model");
 const { sequelize } = require("../config/db-connection.config");
-const { BadRequest } = require("http-errors");
+const { BadRequest, NotFound } = require("http-errors");
 const cryptoRandomString = require("crypto-random-string");
 const { VerifyCode } = require("../models/code.model");
 const { sendUpdateDetailVerifyEmail } = require("../helpers/mail.helper");
 const { UserRole } = require("../models/role.model");
 const { dateAfterMinutes, formatDateTime } = require("../helpers/date.helper");
+const { responseObj } = require('../helpers/response.helper');
 
+
+const getUserById = async (id) => {
+    const user = await User.findByPk(id, {
+        logging: false,
+        attributes: ['id', 'userName', 'email', 'userroleId'],
+        include: {
+            model: UserRole,
+            attributes: ['id', 'role']
+        }
+    });
+    return user;
+}
 
 /**
- * @description API interdace to get Cart Page
- * @param {Request} req 
- * @param {Response} res 
- * @param {import("express").NextFunction} next 
- * @returns {Response} EJS
+ * @description API interface to render user views on get method
+ * @param {String} view 
+ * @param {String} title 
+ * @returns {Response} View
  */
-exports.getCartPage = async (req, res, next) => {
-    const { id } = req.userData;
-    const title = "My Cart";
-    try {
-        const user = await User.findOne({
-            logging: false,
-            attributes: ["id", "userName", "email"],
-            where: {
-                id
-            },
-        });
-        return res.status(200).render('cart', { user, title });
-    } catch (error) {
-        return res.status(500).send({
-            message: {
-                type: 'error',
-                body: 'Something went wrong!'
-            }
-        });
-    }
+exports.renderView = (view = HOME_VIEW, title = DEFAULT_TITLE) => {
+    view = USER_VIEWS_PATH + view;
+    return async (req, res, next) => {
+        const { id } = req[REQUEST_USERDATA];
+        try {
+            const user = await getUserById(id);
+            return res.status(200).render(view, {
+                user,
+                title
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
 };
 
 exports.getMyCoupons = async (req, res, next) => {
-    const { userData } = req;
-    const title = "My Coupons";
+    const { id } = req[REQUEST_USERDATA];
+    const view = USER_VIEWS_PATH + COUPON_VIEW;
+    const title = COUPON_TITLE;
     const { page, size } = req.query;
     try {
         const { limit, offset } = getCouponPagination({ page, size });
-        const user = await User.findOne({
-            logging: false,
-            attributes: ["id", "userName", "email"],
-            where: {
-                email: userData.email
-            }
-        });
+        const user = await getUserById(id);
         const data = await Coupon.findAndCountAll({
             logging: false,
             limit,
@@ -80,79 +112,24 @@ exports.getMyCoupons = async (req, res, next) => {
         let renderData = getCouponPaginationData({ data, page, limit });
         renderData.title = title;
         renderData.user = user;
-        return res.status(200).render('coupon', renderData);
-    } catch (e) {
-        console.log(e);
+        return res.status(200).render(view, renderData);
+    } catch (error) {
+        next(error);
     }
 };
 
 exports.getUserData = async (req, res, next) => {
-    const { id } = req.userData;
+    const { id } = req[REQUEST_USERDATA];
     try {
-        const user = await User.findOne({
-            logging: false,
-            attributes: ['id', 'userName', 'email', 'userroleId' ],
-            where: {
-                id
-            },
-            include: {
-                model: UserRole
-            }
-        });
-        return user
-            ? res.status(200).send({
-                user,
-                message: {
-                    type: "success",
-                    body: "User data found successfully!"
-                }
-            })
-            : res.status(404).send({
-                user,
-                message: {
-                    type: "error",
-                    body: "No user data found!"
-                }
-            });
+        const user = await getUserById(id);
+        if (!user) {
+            throw new NotFound(USER_NOT_FOUND);
+        }
+        return res.status(200).send(
+                responseObj(true, DATA_FETCH_SUCCESS, { user })
+            );
     } catch (error) {
-        return res.status(500).send({
-            message: {
-                type: "error",
-                body: "Something went wrong!"
-            }
-        });
-    }
-};
-
-// @desc Order History Page
-// @route GET /user/orders
-exports.getOrderHistoryPage = async (req, res, next) => {
-    const { id } = req.userData;
-    const title = "Order History";
-    try {
-        const user = await User.findOne({
-            logging: false,
-            attributes: ['id', 'userName', 'email'],
-            where: {
-                id
-            }
-        });
-        return res.status(200).render('orderhistory', {
-            user,
-            message: {
-                type: "success",
-                body: "User data found successfully!"
-            },
-            title
-        });
-    } catch (error) {
-        console.log(error.message);
-        return res.status(500).send({
-            message: {
-                type: "error",
-                body: "Something went wrong!"
-            }
-        });
+        next(error);
     }
 };
 
@@ -160,12 +137,12 @@ exports.getOrderHistoryPage = async (req, res, next) => {
 // @route GET /user/orders/history
 exports.getOrderHistoryData = async (req, res, next) => {
     try {
-        const { id } = req.userData;
+        const { id } = req[REQUEST_USERDATA];
         const { status, sortBy, orderBy, page, size } = req.query;
         const order = sortBy ? [ [sortBy, orderBy] ] : undefined;
         const where = status ? { status, userId: id } : { userId: id };
-        const { limit, offset } = getOrderHistoryPagination({ page, size });
-        const data = await Order.findAndCountAll({
+        const { limit, offset } = pagination({ page, size });
+        const order_histories = await Order.findAndCountAll({
             logging: false,
             limit,
             offset,
@@ -182,64 +159,41 @@ exports.getOrderHistoryData = async (req, res, next) => {
             },
             distinct: true
         });
-        let responseData = getOrderHistoryPaginationData({ data, page, limit });
-        responseData.message = {
-            type: "success",
-            body: "Order history fetched successfully!"
-        };
-        return res.status(200).send(responseData);
+        const data = paginationMetaData(order_histories, page, limit);
+        return res.status(200).send(
+            responseObj(true, ORDER_HISTORY_FETCH_SUCCESS, data)
+        );
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            message: {
-                type: "error",
-                body: "Something went wrong"
-            }
-        });
-    }
-};
-
-// @desc User's Wallet Page
-// @route GET /user/wallet
-exports.getWalletPage = async (req, res, next) => {
-    const { id } = req.userData;
-    const title = "My Wallet";
-    try {
-        const user = await User.findOne({
-            logging: false,
-            attributes: ['id', 'userName', 'email'],
-            where: {
-                id
-            }
-        });
-        return res.status(200).render('wallet', { user, title });
-    } catch (e) {
-        console.log(e);
+        next(error);
     }
 };
 
 // @desc fetch wallet amount
 // @route GET /user/wallet/amount
 exports.getWalletAmount = async (req, res, next) => {
-    const { id: userId } = req.userData;
+    const { id: userId } = req[REQUEST_USERDATA];
     try {
-        const wallet = await Wallet.findOne({
+        const walletdata = await Wallet.findOne({
+            logging: false,
             attributes: ['amount'],
             where: {
                 userId
             }
         });
-        return res.status(200).send({ wallet });
-    } catch (e) {
-        console.log(e);
-        return res.status(500).send("Something went wrong");
+        return res.status(200).send(
+            responseObj(true, WALLET_AMOUNT_FETCH_SUCCESSFULL, walletdata)
+        );
+    } catch (error) {
+        console.log(error);
+        next(error);
     }
 };
 
 // @desc Add amount to wallet
 // @route POST /user/wallet/addmount
 exports.addAmount = async (req, res, next) => {
-    const { id: userId } = req.userData;
+    const { id: userId } = req[REQUEST_USERDATA];
     const { amount } = req.body;
     try {
         await sequelize.transaction(async addAmountTransaction => {
@@ -250,46 +204,20 @@ exports.addAmount = async (req, res, next) => {
                 },
                 transaction: addAmountTransaction,
             });
-            wallet.amount = +(wallet.amount) + +amount;
+            wallet.amount = parseFloat(wallet.amount) + parseFloat(amount);
             await wallet.save({ transaction: addAmountTransaction });
-            return wallet;
         });
-        return res.status(200).send({
-            message: {
-                type: "success",
-                body: "Successfully added amount to wallet!"
-            }
-        });
-    } catch (e) {
-        console.log(e);
-        return res.status(500).send({
-            message: {
-                type: "error",
-                body: "Something went wrong!"
-            }
-        });
-    }
-};
-
-exports.getUpdateUserPage = async (req, res, next) => {
-    const { id } = req.userData;
-    const title = "Update Profile";
-    try {
-        const user = await User.findOne({
-            logging: false,
-            attributes: ['id', 'userName', 'email'],
-            where: {
-                id
-            }
-        });
-        return res.status(200).render('updateuser', { user, title });
-    } catch (e) {
-        console.log(e);
+        return res.status(200).send(
+            responseObj(true, ADD_AMOUNT_SUCCESS)
+        );
+    } catch (error) {
+        console.log(error);
+        next(error);
     }
 };
 
 exports.updateUserDetails = async (req, res, next) => {
-    const { id } = req.userData;
+    const { id } = req[REQUEST_USERDATA];
     const { name, email } = req.body;
     try {
         const result = await sequelize.transaction(async updateUserDetailsTransaction => {
@@ -315,7 +243,7 @@ exports.updateUserDetails = async (req, res, next) => {
                     transaction: updateUserDetailsTransaction
                 });
                 if (isAlready) {
-                    throw new BadRequest('Email already exists!');
+                    throw new BadRequest(EMAIL_ALREADY_EXISTS);
                 }
                 emailId = email;
             }
@@ -333,25 +261,17 @@ exports.updateUserDetails = async (req, res, next) => {
             await sendUpdateDetailVerifyEmail({ userName: name??user.userName??'Anonymous', email: emailId }, otp, '5 minutes');
             return { email: emailId };
         });
-        return res.status(200).send({
-            message: {
-                type: 'success',
-                body: `Verify OTP sent to ${result.email}`
-            }
-        });
+        return res.status(200).send(
+            responseObj(true, `Verify OTP sent to ${result.email}`)
+        );
     } catch (error) {
         console.log(error);
-        return res.status(error.status).send({
-            message: {
-                type: 'error',
-                body: error.message
-            }
-        });
+        next(error);
     }
 };
 
 exports.verifyUpdateUserDetails = async (req, res, next) => {
-    const { id } = req.userData;
+    const { id } = req[REQUEST_USERDATA];
     const { name, email, otp } = req.body;
     try {
         await sequelize.transaction(async verifyTransaction => {
@@ -380,7 +300,7 @@ exports.verifyUpdateUserDetails = async (req, res, next) => {
                 transaction: verifyTransaction
             });
             if (verifyCode.otp != otp) {
-                throw new BadRequest('Incorrect OTP!');
+                throw new BadRequest(WRONG_OTP);
             }
             [ user["userName"], user["email"] ] = [ name, email ];
             await user.save({ logging: false, transaction: verifyTransaction });
@@ -388,14 +308,11 @@ exports.verifyUpdateUserDetails = async (req, res, next) => {
             await verifyCode.save({ logging: false, transaction: verifyTransaction });
             return { email };
         });
-        return res.status(200).send({
-            message: {
-                type: 'success',
-                body: `User details updated successfully!`
-            }
-        });
+        return res.status(200).send(
+            responseObj(true, UPDATE_PROFILE_SUCCESS)
+        );
     } catch (error) {
         console.log(error.name, error.message);
-        next();
+        next(error);
     }
 };

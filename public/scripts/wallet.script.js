@@ -3,7 +3,8 @@ const getWalletAmount = async () => {
     $.get({
         url: '/user/wallet/amount',
         success: async (response) => {
-            $('#display-amount').val(response.wallet.amount);
+            const { data: walletdata={} } = response;
+            $('#display-amount').val(walletdata.amount);
         }
     });
 };

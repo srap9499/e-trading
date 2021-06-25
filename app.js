@@ -3,10 +3,9 @@
 const path = require('path');
 // Import Configuration
 const {
-    development: {
-        APP_PORT
-    }
-} = require('./config/development.config');
+    APP_PORT,
+    FORCE_SYNC_FLAG
+} = require('./config/main.config');
 
 // import express framework
 const express = require('express');
@@ -49,7 +48,7 @@ app.get('/', (req, res, next) => {
 });
 
 // Routes
-app.use('/admin', [ authenticate, isAdmin ], adminRouter);
+app.use('/admin', [authenticate, isAdmin], adminRouter);
 app.use('/auth', authRouter);
 app.use('/home', homeRouter);
 app.use('/user', authenticate, userRouter);
@@ -65,10 +64,9 @@ app.use(errorHandler);
 app.use(error);
 
 
-const forceSyncFlag = false;
-sequelize.sync({ force: forceSyncFlag, logging: false })
+sequelize.sync({ force: FORCE_SYNC_FLAG, logging: false })
     .then(async () => {
-        if (forceSyncFlag) {
+        if (FORCE_SYNC_FLAG) {
             await createSuper();
         }
         app.listen(PORT, () => {

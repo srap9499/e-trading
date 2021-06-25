@@ -3,8 +3,17 @@
 require('dotenv').config();
 const Env = process.env;
 
-exports.development = {
+const development = {
+    DATABASE: {
+        DATABASE_HOST: Env.DATABASE_HOST,
+        DATABASE_NAME: Env.DATABASE_NAME,
+        DATABASE_USER: Env.DATABASE_USER,
+        DATABASE_PASSWORD: Env.DATABASE_PASSWORD,
+        DATABASE_DIALECT: Env.DATABASE_DIALECT
+    },
+    FORCE_SYNC_FLAG: false,
     APP_PORT: Env.APP_PORT,
+    INITIAL_WALLET_BONUS_AMOUNT: 500,
     jwt_secret: Env.JWT_SECRET,
     saltValue: 12,
     roles: {
@@ -21,23 +30,20 @@ exports.development = {
         email: Env.SUPER_ADMIN_EMAIL,
         password: Env.SUPER_ADMIN_PASS
     },
-    mailer: {
+    MAILER: {
         MAIL_SERVICE: Env.MAIL_SERVICE,
         MAIL_USER: Env.MAIL_USER,
         MAIL_PASSWORD: Env.MAIL_PASSWORD,
         MAIL_SENDER: Env.MAIL_SENDER
-    },
-    errMsgs: {
-        otp400: 'Incorrect OTP!',
-        pw400: 'Incorrect Password!',
-        invalid400: 'Validation Errors!',
-        user404: 'User not found!',
-        auth401: 'Unauthorized request!',
-        err500: 'Something went wrong!'
-    },
-    Msgs: {
-        add200: "Added successfully!",
-        get200: "Data fetched successfully!",
-        del200: "Deleted successfully!"
     }
+};
+
+switch (Env.NODE_ENV) {
+    case "development":
+        module.exports = development;
+        break;
+
+    default:
+        module.exports = development;
+        break;
 };

@@ -6,12 +6,22 @@ const { verify } = require('jsonwebtoken');
 
 // import config
 const {
-    development: {
-        jwt_secret,
-        roles,
-        errMsgs
+    jwt_secret,
+    roles,
+} = require('../config/main.config');
+
+const {
+    ERROR_MESSAGES: {
+        UNAUTHORIZED_REQUEST
+    },
+    REQUEST_PROPERTIES: {
+        REQUEST_COOKIES,
+        REQUEST_USERDATA
+    },
+    COOKIE_NAMES: {
+        AUTH_TOKEN
     }
-} = require('../config/development.config');
+} = require('../constants/main.constant');
 
 
 const verifyToken = token => {
@@ -27,13 +37,13 @@ const verifyToken = token => {
 }
 
 exports.authenticate = async (req, res, next) => {
-    const token = req.cookies.jwt_token;
+    const token = req[REQUEST_COOKIES][AUTH_TOKEN];
     if (!token) {
         return res.status(401).redirect('/auth/signIn');
     }
     verifyToken(token)
         .then(userData => {
-            req.userData = userData;
+            req[REQUEST_USERDATA] = userData;
             next();
         })
         .catch(err => {
@@ -43,11 +53,11 @@ exports.authenticate = async (req, res, next) => {
 };
 
 exports.isAdmin = async (req, res, next) => {
-    const { roleId } = req.userData;
+    const { roleId } = req[REQUEST_USERDATA];
     try {
         const isAdmin = parseInt(roleId) == parseInt(roles.SubAdmin) || parseInt(roleId) == parseInt(roles.SuperAdmin);
         if (!isAdmin) {
-            throw new Unauthorized(errMsgs.auth401);
+            throw new Unauthorized(UNAUTHORIZED_REQUEST);
         }
         next();
     } catch (error) {
@@ -56,11 +66,11 @@ exports.isAdmin = async (req, res, next) => {
 };
 
 exports.isSuperAdmin = async (req, res, next) => {
-    const {roleId} = req.userData;
+    const { roleId } = req[REQUEST_USERDATA];
     try {
         const isSuperAdmin = parseInt(roleId) == parseInt(roles.SuperAdmin);
         if (!isSuperAdmin) {
-            throw new Unauthorized(errMsgs.auth401);
+            throw new Unauthorized(UNAUTHORIZED_REQUEST);
         }
         next();
     } catch (error) {
@@ -69,11 +79,11 @@ exports.isSuperAdmin = async (req, res, next) => {
 };
 
 exports.isUser = async (req, res, next) => {
-    const {roleId} = req.userData;
+    const { roleId } = req[REQUEST_USERDATA];
     try {
         const isUser = parseInt(roleId) == parseInt(roles.User);
         if (!isUser) {
-            throw new Unauthorized(errMsgs.auth401);
+            throw new Unauthorized(UNAUTHORIZED_REQUEST);
         }
         next();
     } catch (error) {

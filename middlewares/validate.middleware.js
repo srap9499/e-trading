@@ -1,15 +1,18 @@
 'use strict';
 
 const {
-    development: {
-        errMsgs
+    ERROR_MESSAGES: {
+        VALIDATION_ERROR
+    },
+    REQUEST_PROPERTIES: {
+        REQUEST_BODY
     }
-} = require('../config/development.config');
+} = require('../constants/main.constant');
+
 const { joiErrorFormatter } = require("../helpers/error-formatter.helper");
 const { responseObj } = require("../helpers/response.helper");
 
-exports.validate = (schema , { target="body", view, title="E-Trading"}) => {
-    target = target.toLowerCase();
+exports.validate = (schema, { target = REQUEST_BODY, view, title = "E-Trading" }) => {
     return async (req, res, next) => {
         const validateResult = schema.validate(req[target], {
             abortEarly: false
@@ -20,7 +23,7 @@ exports.validate = (schema , { target="body", view, title="E-Trading"}) => {
         return res.status(400).render(view, {
             message: {
                 type: "error",
-                body: "Validation Errors"
+                body: VALIDATION_ERROR
             },
             errors: joiErrorFormatter(validateResult.error),
             formData: req[target],
@@ -30,8 +33,7 @@ exports.validate = (schema , { target="body", view, title="E-Trading"}) => {
 };
 
 
-exports.validateRest = (schema, target="body") => {
-    target = target.toLowerCase();
+exports.validateRest = (schema, target = REQUEST_BODY) => {
     return async (req, res, next) => {
         const validateResult = schema.validate(req[target], {
             abortEarly: false
@@ -40,7 +42,7 @@ exports.validateRest = (schema, target="body") => {
             return next();
         }
         return res.status(400).send(
-            responseObj(false, errMsgs.invalid400, joiErrorFormatter(validateResult.error))
+            responseObj(false, VALIDATION_ERROR, joiErrorFormatter(validateResult.error))
         );
     };
 };
