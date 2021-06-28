@@ -14,8 +14,9 @@ const {
         DELETE_BRAND_SUCCESS,
         RESTORE_BRAND_SUCCESS,
         ADD_BRAND_SUCCESS,
+        DELETE_PRODUCT_SUCCESS,
         DATA_FETCH_SUCCESS,
-        PRODUCTS_FETCH_SUCCESS
+        PRODUCTS_FETCH_SUCCESS,
     },
     ERROR_MESSAGES: {
         DEFAULT_ERROR
@@ -406,6 +407,33 @@ exports.addBrand = async (req, res, next) => {
         const data = paginationMetaData(products, page, limit);
         return res.status(200).send(
             responseObj(true, PRODUCTS_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to soft delete Product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+ exports.destroyProduct = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (!parseInt(id)) {
+            throw new InternalServerError(DEFAULT_ERROR);
+        }
+        await Product.destroy({
+            logging: false,
+            where: {
+                id: parseInt(id)
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, DELETE_PRODUCT_SUCCESS)
         );
     } catch (error) {
         next(error);

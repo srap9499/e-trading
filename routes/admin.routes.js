@@ -214,4 +214,13 @@ router.get(
     Admin.getProducts
 );
 
+/**
+ * @description Route to delete Product
+ * @method DELETE /admin/product/:id/delete
+ */
+ router.delete(
+    '/product/:id/delete',
+    Admin.destroyProduct
+);
+
 module.exports = router;
