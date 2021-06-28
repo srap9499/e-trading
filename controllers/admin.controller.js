@@ -12,6 +12,7 @@ const {
         DELETE_SUB_ADMIN_SUCCESS,
         RESTORE_SUB_ADMIN_SUCCESS,
         DELETE_BRAND_SUCCESS,
+        RESTORE_BRAND_SUCCESS,
         DATA_FETCH_SUCCESS
     },
     ERROR_MESSAGES: {
@@ -319,6 +320,33 @@ exports.destroyBrand = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, DELETE_BRAND_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to restore deleted Sub admin
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+ exports.restoreBrand = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (!parseInt(id)) {
+            throw new InternalServerError(DEFAULT_ERROR);
+        }
+        await Brand.restore({
+            logging: false,
+            where: {
+                id: parseInt(id)
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, RESTORE_BRAND_SUCCESS)
         );
     } catch (error) {
         next(error);

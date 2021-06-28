@@ -86,6 +86,27 @@ const tableArea = `
     </div>
 </div>`;
 
+const restoreBrand = id => {
+    return () => {
+        $.ajax({
+            type: 'PUT',
+            url: `/admin/brand/${id}/restore`,
+            success: response => {
+                const { message } = response;
+                successAlert(message);
+                if (currentEntries <=1 && queryData.page > 1) {
+                    queryData.page -= 1;
+                }
+                getBrands();
+            },
+            error: response => {
+                const { responseJSON: { message } } = response;
+                errorAlert(message);
+            }
+        });
+    };
+};
+
 const createRow = (rowData) => {
     const { id, name } = rowData;
     const brandRow = `
@@ -103,6 +124,7 @@ const createRow = (rowData) => {
 
     $('#brands-table tbody').append(brandRow);
 
+    $(`#restore${id}`).on('click', restoreBrand(id));
 };
 
 const createPagination = (totalPages) => {

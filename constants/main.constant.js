@@ -13,6 +13,7 @@ module.exports = {
         DELETE_SUB_ADMIN_SUCCESS: "Sub Admin Deleted Succefully!",
         RESTORE_SUB_ADMIN_SUCCESS: "Sub Admin Restored Successfully!",
         DELETE_BRAND_SUCCESS: "Brand Deleted Successfully!",
+        RESTORE_BRAND_SUCCESS: "Brand Restored Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
         PRODUCTS_FETCH_SUCCESS: "Products Fetched Successfully!",
         CART_FETCH_SUCCESS: "Cart Items Fetched Successfully!",

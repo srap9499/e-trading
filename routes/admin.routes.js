@@ -164,4 +164,13 @@ router.get(
     Admin.getBrandsTrash
 );
 
+/**
+ * @description Route to restore soft deleted Brand
+ * @method PUT /admin/brand/:id/restore
+ */
+router.put(
+    '/brand/:id/restore',
+    Admin.restoreBrand
+);
+
 module.exports = router;
