@@ -331,7 +331,7 @@ exports.destroyBrand = async (req, res, next) => {
 };
 
 /**
- * @description API interface to restore deleted Sub admin
+ * @description API interface to restore deleted Brand
  * @param {Request} req 
  * @param {Response} res 
  * @param {Function} next 
@@ -434,6 +434,41 @@ exports.addBrand = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, DELETE_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to fetch deleted Products with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+ exports.getProductsTrash = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({ page, size });
+        const products = await Product.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'name', 'quantity', 'price'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            where: {
+                deletedAt: {
+                    [Op.ne]: null
+                }
+            },
+            distinct: true,
+            paranoid: false
+        });
+        const data = paginationMetaData(products, page, limit);
+        return res.status(200).send(
+            responseObj(true, PRODUCTS_FETCH_SUCCESS, data)
         );
     } catch (error) {
         next(error);

@@ -65,7 +65,8 @@ module.exports = {
         BRANDS_VIEW: "brands",
         BRANDS_TRASH_VIEW: "brands-trash",
         ADD_BRAND_VIEW: "add-brand",
-        PRODUCTS_VIEW: "products"
+        PRODUCTS_VIEW: "products",
+        PRODUCTS_TRASH_VIEW: "products-trash"
     },
     USER_VIEWS: {
         HOME_VIEW: "home",
@@ -91,7 +92,8 @@ module.exports = {
             BRANDS_TITLE: "E-Trading - Brands",
             BRANDS_TRASH_TITLE: "E-Trading - Brands Trash",
             ADD_BRAND_TITLE: "E-trading - Add Brand",
-            PRODUCTS_TITLE: "E-Trading - Products"
+            PRODUCTS_TITLE: "E-Trading - Products",
+            PRODUCTS_TRASH_TITLE: "E-Trading - Products Trash"
         },
         USER_VIEW_TITLES: {
             HOME_TITLE: "E-Trading - Home",

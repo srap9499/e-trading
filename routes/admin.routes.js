@@ -12,7 +12,8 @@ const {
         BRANDS_VIEW,
         BRANDS_TRASH_VIEW,
         ADD_BRAND_VIEW,
-        PRODUCTS_VIEW
+        PRODUCTS_VIEW,
+        PRODUCTS_TRASH_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
@@ -23,7 +24,8 @@ const {
             BRANDS_TITLE,
             BRANDS_TRASH_TITLE,
             ADD_BRAND_TITLE,
-            PRODUCTS_TITLE
+            PRODUCTS_TITLE,
+            PRODUCTS_TRASH_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -221,6 +223,24 @@ router.get(
  router.delete(
     '/product/:id/delete',
     Admin.destroyProduct
+);
+
+/**
+ * @description Route to render Products Trash view
+ * @method GET /admin/products/trash
+ */
+ router.get(
+    '/products/trash',
+    Admin.renderView(PRODUCTS_TRASH_VIEW, PRODUCTS_TRASH_TITLE)
+);
+
+/**
+ * @description Route to get Products Trash
+ * @method GET /admin/brands/trash/get
+ */
+router.get(
+    '/products/trash/get',
+    Admin.getProductsTrash
 );
 
 module.exports = router;
