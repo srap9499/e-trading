@@ -57,7 +57,7 @@ router.get(
 
 /**
  * @description Route to delete Sub Admins
- * @method GET /admin/subadmins/:id/delete
+ * @method DELETE /admin/subadmins/:id/delete
  */
 router.delete(
     '/subadmin/:id/delete',
@@ -133,6 +133,15 @@ router.get(
  router.get(
     '/brands/get',
     Admin.getBrands
+);
+
+/**
+ * @description Route to delete Brand
+ * @method DELETE /admin/brand/:id/delete
+ */
+ router.delete(
+    '/brand/:id/delete',
+    Admin.destroyBrand
 );
 
 module.exports = router;

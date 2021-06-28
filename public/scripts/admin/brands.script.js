@@ -86,6 +86,27 @@ const tableArea = `
     </div>
 </div>`;
 
+const deleteBrand = id => {
+    return () => {
+        $.ajax({
+            type: 'DELETE',
+            url: `/admin/brand/${id}/delete`,
+            success: response => {
+                const { message } = response;
+                successAlert(message);
+                if (currentEntries <=1 && queryData.page > 1) {
+                    queryData.page -= 1;
+                }
+                getBrands();
+            },
+            error: response => {
+                const { responseJSON: { message } } = response;
+                errorAlert(message);
+            }
+        });
+    };
+};
+
 const createRow = (rowData) => {
     const { id, name } = rowData;
     const brandRow = `
@@ -103,7 +124,7 @@ const createRow = (rowData) => {
 
     $('#brands-table tbody').append(brandRow);
 
-    $(`#delete${id}`).on('click', ()=> {console.log("delete:", id)});
+    $(`#delete${id}`).on('click', deleteBrand(id));
 }
 
 const createPagination = (totalPages) => {
