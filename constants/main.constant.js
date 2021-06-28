@@ -59,7 +59,8 @@ module.exports = {
         ADD_SUB_ADMIN_VIEW: "add-sub-admin",
         SUB_ADMINS_VIEW: "sub-admins",
         SUB_ADMINS_TRASH_VIEW: "sub-admins-trash",
-        BRANDS_VIEW: "brands"
+        BRANDS_VIEW: "brands",
+        BRANDS_TRASH_VIEW: "brands-trash"
     },
     USER_VIEWS: {
         HOME_VIEW: "home",
@@ -82,7 +83,8 @@ module.exports = {
             ADD_SUB_ADMIN_TITLE: "E-Trading - Add Sub Admin",
             SUB_ADMINS_TITLE: "E-Trading - Sub Admins",
             SUB_ADMINS_TRASH_TITLE: "E-Trading - Sub Admins Trash",
-            BRANDS_TITLE: "E-Trading - Brands"
+            BRANDS_TITLE: "E-Trading - Brands",
+            BRANDS_TRASH_TITLE: "E-Trading - Brands Trash"
         },
         USER_VIEW_TITLES: {
             HOME_TITLE: "E-Trading - Home",

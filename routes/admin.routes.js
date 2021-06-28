@@ -9,7 +9,8 @@ const {
         ADD_SUB_ADMIN_VIEW,
         SUB_ADMINS_VIEW,
         SUB_ADMINS_TRASH_VIEW,
-        BRANDS_VIEW
+        BRANDS_VIEW,
+        BRANDS_TRASH_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
@@ -17,7 +18,8 @@ const {
             ADD_SUB_ADMIN_TITLE,
             SUB_ADMINS_TITLE,
             SUB_ADMINS_TRASH_TITLE,
-            BRANDS_TITLE
+            BRANDS_TITLE,
+            BRANDS_TRASH_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -142,6 +144,24 @@ router.get(
  router.delete(
     '/brand/:id/delete',
     Admin.destroyBrand
+);
+
+/**
+ * @description Route to render Brands Trash view
+ * @method GET /admin/brands/trash
+ */
+ router.get(
+    '/brands/trash',
+    Admin.renderView(BRANDS_TRASH_VIEW, BRANDS_TRASH_TITLE)
+);
+
+/**
+ * @description Route to get Brands Trash
+ * @method GET /admin/brands/trash/get
+ */
+router.get(
+    '/brands/trash/get',
+    Admin.getBrandsTrash
 );
 
 module.exports = router;

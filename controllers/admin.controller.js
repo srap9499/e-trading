@@ -264,6 +264,41 @@ exports.destroySubAdmin = async (req, res, next) => {
 };
 
 /**
+ * @description API interface to fetch deleted Brands with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+ exports.getBrandsTrash = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({ page, size });
+        const brands = await Brand.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'name'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            where: {
+                deletedAt: {
+                    [Op.ne]: null
+                }
+            },
+            distinct: true,
+            paranoid: false
+        });
+        const data = paginationMetaData(brands, page, limit);
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
  * @description API interface to soft delete Brand
  * @param {Request} req 
  * @param {Response} res 
