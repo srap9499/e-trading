@@ -92,6 +92,27 @@ const tableArea = `
     </div>
 </div>`;
 
+const restoreProduct = id => {
+    return () => {
+        $.ajax({
+            type: 'PUT',
+            url: `/admin/product/${id}/restore`,
+            success: response => {
+                const { message } = response;
+                successAlert(message);
+                if (currentEntries <=1 && queryData.page > 1) {
+                    queryData.page -= 1;
+                }
+                getProducts();
+            },
+            error: response => {
+                const { responseJSON: { message } } = response;
+                errorAlert(message);
+            }
+        });
+    };
+};
+
 const createRow = (rowData) => {
     const { id, name, quantity, price } = rowData;
     const productRow = `
@@ -118,6 +139,8 @@ const createRow = (rowData) => {
     </tr>`;
 
     $('#products-table tbody').append(productRow);
+
+    $(`#restore${id}`).on('click', restoreProduct(id));
 }
 
 const createPagination = (totalPages) => {

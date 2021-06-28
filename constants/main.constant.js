@@ -16,6 +16,7 @@ module.exports = {
         RESTORE_BRAND_SUCCESS: "Brand Restored Successfully!",
         ADD_BRAND_SUCCESS: "Brand Added Successfully!",
         DELETE_PRODUCT_SUCCESS: "Product Deleted Successfully!",
+        RESTORE_PRODUCT_SUCCESS: "Product Restored Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
         PRODUCTS_FETCH_SUCCESS: "Products Fetched Successfully!",
         CART_FETCH_SUCCESS: "Cart Items Fetched Successfully!",
