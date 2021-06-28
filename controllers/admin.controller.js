@@ -14,7 +14,8 @@ const {
         DELETE_BRAND_SUCCESS,
         RESTORE_BRAND_SUCCESS,
         ADD_BRAND_SUCCESS,
-        DATA_FETCH_SUCCESS
+        DATA_FETCH_SUCCESS,
+        PRODUCTS_FETCH_SUCCESS
     },
     ERROR_MESSAGES: {
         DEFAULT_ERROR
@@ -37,6 +38,7 @@ const { hashSync } = require("bcryptjs");
 const { UserRole } = require("../models/role.model");
 const { User } = require("../models/user.model");
 const { Brand } = require('../models/brand.model');
+const { Product } = require('../models/product.model');
 const { sequelize } = require('../config/db-connection.config');
 const { responseObj } = require('../helpers/response.helper');
 const { pagination, paginationMetaData } = require('../helpers/pagination.helper');
@@ -379,4 +381,33 @@ exports.addBrand = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-}
+};
+
+/**
+ * @description API interface to fetch all Products with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+ exports.getProducts = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({ page, size });
+        const products = await Product.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'name', 'quantity', 'price'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            distinct: true
+        });
+        const data = paginationMetaData(products, page, limit);
+        return res.status(200).send(
+            responseObj(true, PRODUCTS_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};

@@ -11,7 +11,8 @@ const {
         SUB_ADMINS_TRASH_VIEW,
         BRANDS_VIEW,
         BRANDS_TRASH_VIEW,
-        ADD_BRAND_VIEW
+        ADD_BRAND_VIEW,
+        PRODUCTS_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
@@ -21,7 +22,8 @@ const {
             SUB_ADMINS_TRASH_TITLE,
             BRANDS_TITLE,
             BRANDS_TRASH_TITLE,
-            ADD_BRAND_TITLE
+            ADD_BRAND_TITLE,
+            PRODUCTS_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -192,6 +194,24 @@ router.post(
     '/brand/add',
     validateRest(addBrandSchema, REQUEST_BODY),
     Admin.addBrand
+);
+
+/**
+ * @description Route to render All Products view
+ * @method GET /admin/products
+ */
+ router.get(
+    '/products',
+    Admin.renderView(PRODUCTS_VIEW, PRODUCTS_TITLE)
+);
+
+/**
+ * @description Route to get All Products
+ * @method GET /admin/products/get
+ */
+router.get(
+    '/products/get',
+    Admin.getProducts
 );
 
 module.exports = router;
