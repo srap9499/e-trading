@@ -33,6 +33,9 @@ module.exports = {
         QUANTITY_IS_INT_ERROR: "Quantity should be a valid number!",
         PRICE_NOTNULL_ERROR: "Price should not be Empty or Null!",
         PRICE_ISDECIMAL_ERROR: "Price should be a Valid decimal number!",
+        BRAND_NOTNULL_EMPTY_ERROR: "Brand should not be Null or Empty!",
+        BRAND_LENGTH_ERROR: "Brand length should between 2 to 40 characters!",
+        BRAND_UNIQUE_ERROR: "Brand already exists!",
         WRONG_OTP: "Incorrect OTP!",
         WRONG_PASSWORD: "Incorrect Password!",
         VALIDATION_ERROR: "Validation Errors!",
@@ -54,7 +57,8 @@ module.exports = {
         DASHBOARD_VIEW: "dashboard",
         ADD_SUB_ADMIN_VIEW: "add-sub-admin",
         SUB_ADMINS_VIEW: "sub-admins",
-        SUB_ADMINS_TRASH_VIEW: "sub-admins-trash"
+        SUB_ADMINS_TRASH_VIEW: "sub-admins-trash",
+        BRANDS_VIEW: "brands"
     },
     USER_VIEWS: {
         HOME_VIEW: "home",
@@ -76,7 +80,8 @@ module.exports = {
             DASHBOARD_TITLE: "E-Trading - Admin Dashboard",
             ADD_SUB_ADMIN_TITLE: "E-Trading - Add Sub Admin",
             SUB_ADMINS_TITLE: "E-Trading - Sub Admins",
-            SUB_ADMINS_TRASH_TITLE: "E-Trading - Sub Admins Trash"
+            SUB_ADMINS_TRASH_TITLE: "E-Trading - Sub Admins Trash",
+            BRANDS_TITLE: "E-Trading - Brands"
         },
         USER_VIEW_TITLES: {
             HOME_TITLE: "E-Trading - Home",

@@ -33,6 +33,7 @@ const {
 const { hashSync } = require("bcryptjs");
 const { UserRole } = require("../models/role.model");
 const { User } = require("../models/user.model");
+const { Brand } = require('../models/brand.model');
 const { sequelize } = require('../config/db-connection.config');
 const { responseObj } = require('../helpers/response.helper');
 const { pagination, paginationMetaData } = require('../helpers/pagination.helper');
@@ -226,6 +227,35 @@ exports.destroySubAdmin = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, RESTORE_SUB_ADMIN_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to fetch all Brands with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+ exports.getBrands = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({ page, size });
+        const brands = await Brand.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'name'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            distinct: true
+        });
+        const data = paginationMetaData(brands, page, limit);
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, data)
         );
     } catch (error) {
         next(error);

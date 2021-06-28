@@ -8,14 +8,16 @@ const {
         DASHBOARD_VIEW,
         ADD_SUB_ADMIN_VIEW,
         SUB_ADMINS_VIEW,
-        SUB_ADMINS_TRASH_VIEW
+        SUB_ADMINS_TRASH_VIEW,
+        BRANDS_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
             DASHBOARD_TITLE,
             ADD_SUB_ADMIN_TITLE,
             SUB_ADMINS_TITLE,
-            SUB_ADMINS_TRASH_TITLE
+            SUB_ADMINS_TRASH_TITLE,
+            BRANDS_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -112,6 +114,25 @@ router.put(
     '/subadmin/:id/restore',
     [isSuperAdmin],
     Admin.restoreSubAdmin
+);
+
+
+/**
+ * @description Route to render Brands view
+ * @method GET /admin/brands
+ */
+router.get(
+    '/brands',
+    Admin.renderView(BRANDS_VIEW, BRANDS_TITLE)
+);
+
+/**
+ * @description Route to get all Sub Admins
+ * @method GET /admin/subadmins/get
+ */
+ router.get(
+    '/brands/get',
+    Admin.getBrands
 );
 
 module.exports = router;
