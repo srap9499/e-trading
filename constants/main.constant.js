@@ -14,6 +14,7 @@ module.exports = {
         RESTORE_SUB_ADMIN_SUCCESS: "Sub Admin Restored Successfully!",
         DELETE_BRAND_SUCCESS: "Brand Deleted Successfully!",
         RESTORE_BRAND_SUCCESS: "Brand Restored Successfully!",
+        ADD_BRAND_SUCCESS: "Brand Added Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
         PRODUCTS_FETCH_SUCCESS: "Products Fetched Successfully!",
         CART_FETCH_SUCCESS: "Cart Items Fetched Successfully!",
@@ -61,7 +62,8 @@ module.exports = {
         SUB_ADMINS_VIEW: "sub-admins",
         SUB_ADMINS_TRASH_VIEW: "sub-admins-trash",
         BRANDS_VIEW: "brands",
-        BRANDS_TRASH_VIEW: "brands-trash"
+        BRANDS_TRASH_VIEW: "brands-trash",
+        ADD_BRAND_VIEW: "add-brand"
     },
     USER_VIEWS: {
         HOME_VIEW: "home",
@@ -85,7 +87,8 @@ module.exports = {
             SUB_ADMINS_TITLE: "E-Trading - Sub Admins",
             SUB_ADMINS_TRASH_TITLE: "E-Trading - Sub Admins Trash",
             BRANDS_TITLE: "E-Trading - Brands",
-            BRANDS_TRASH_TITLE: "E-Trading - Brands Trash"
+            BRANDS_TRASH_TITLE: "E-Trading - Brands Trash",
+            ADD_BRAND_TITLE: "E-trading - Add Brand"
         },
         USER_VIEW_TITLES: {
             HOME_TITLE: "E-Trading - Home",

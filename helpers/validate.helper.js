@@ -22,6 +22,14 @@ const addSubAdminSchema = Joi.object({
 })
     .with("password", "confirm_password");
 
+const addBrandSchema = Joi.object({
+    name: Joi.string()
+        .trim()
+        .min(2)
+        .max(40)
+        .required()
+});
+
 const signUpSchema = Joi.object({
     userName: Joi.string()
         .trim()
@@ -112,6 +120,7 @@ const verifyChangeUserDetailSchema = Joi.object({
 
 module.exports = {
     addSubAdminSchema,
+    addBrandSchema,
     signUpSchema,
     verifySchema,
     signInSchema,

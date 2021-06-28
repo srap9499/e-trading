@@ -4,7 +4,8 @@ const {
     ERROR_MESSAGES: {
         BRAND_NOTNULL_EMPTY_ERROR,
         BRAND_LENGTH_ERROR,
-        BRAND_UNIQUE_ERROR
+        BRAND_UNIQUE_ERROR,
+        VALIDATION_ERROR
     }
 } = require('../constants/main.constant');
 
@@ -38,14 +39,20 @@ const Brand = sequelize.define("brand", {
     updatedAt: false,
     paranoid: true,
     hooks: {
-        beforeCreate: async (brand, options) => {
+        beforeCreate: async brand => {
             const brandExists = await Brand.findOne({
+                logging: false,
                 where: {
                     name: brand.name
                 }
             });
             if (brandExists) {
-                throw new Sequelize.ValidationError(BRAND_UNIQUE_ERROR);
+                throw new Sequelize.ValidationError(VALIDATION_ERROR, [
+                    {
+                        message: BRAND_UNIQUE_ERROR,
+                        path: "name"
+                    }
+                ]);
             }
         }
     }

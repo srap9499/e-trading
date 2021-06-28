@@ -13,6 +13,7 @@ const {
         RESTORE_SUB_ADMIN_SUCCESS,
         DELETE_BRAND_SUCCESS,
         RESTORE_BRAND_SUCCESS,
+        ADD_BRAND_SUCCESS,
         DATA_FETCH_SUCCESS
     },
     ERROR_MESSAGES: {
@@ -352,3 +353,30 @@ exports.destroyBrand = async (req, res, next) => {
         next(error);
     }
 };
+
+/**
+ * @description API interface to add Brand
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method POST
+ * @returns {Response} JSON
+ */
+exports.addBrand = async (req, res, next) => {
+    const { name } = req.body;
+    try {
+        await sequelize.transaction(async addTransaction => {
+            await Brand.create({
+                name
+            }, {
+                logging: false,
+                transaction: addTransaction
+            });
+        });
+        return res.status(200).send(
+            responseObj(true, ADD_BRAND_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+}

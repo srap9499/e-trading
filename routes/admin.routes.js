@@ -10,7 +10,8 @@ const {
         SUB_ADMINS_VIEW,
         SUB_ADMINS_TRASH_VIEW,
         BRANDS_VIEW,
-        BRANDS_TRASH_VIEW
+        BRANDS_TRASH_VIEW,
+        ADD_BRAND_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
@@ -19,7 +20,8 @@ const {
             SUB_ADMINS_TITLE,
             SUB_ADMINS_TRASH_TITLE,
             BRANDS_TITLE,
-            BRANDS_TRASH_TITLE
+            BRANDS_TRASH_TITLE,
+            ADD_BRAND_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -28,7 +30,7 @@ const {
 } = require('../constants/main.constant');
 
 const Admin = require('../controllers/admin.controller');
-const { addSubAdminSchema } = require('../helpers/validate.helper');
+const { addSubAdminSchema, addBrandSchema } = require('../helpers/validate.helper');
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
 const { validateRest } = require('../middlewares/validate.middleware');
 
@@ -171,6 +173,25 @@ router.get(
 router.put(
     '/brand/:id/restore',
     Admin.restoreBrand
+);
+
+/**
+ * @description Route to render Add Brand view
+ * @method GET /admin/brand/add
+ */
+ router.get(
+    '/brand/add',
+    Admin.renderView(ADD_BRAND_VIEW, ADD_BRAND_TITLE)
+);
+
+/**
+ * @description Route to Add Brand
+ * @method POST /admin/brand/add
+ */
+router.post(
+    '/brand/add',
+    validateRest(addBrandSchema, REQUEST_BODY),
+    Admin.addBrand
 );
 
 module.exports = router;
