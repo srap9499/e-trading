@@ -1,0 +1,92 @@
+    <%- include('./includes/head.ejs') %>
+
+    </head>
+
+    <body class="h-100">
+        <!-- Header -->
+        <%- include('./includes/nav.ejs') %>
+        <!-- Header Ends -->
+
+        <!-- Sub Admin -->
+        <section id="sub-admins-trash">
+            <div class="jumbotron bg-light">
+                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                    <div class="row gutters">
+                        <div class="col-12 col-sm-12 col-md-5">
+                            <h2 class="h2 display-6">
+                                Sub Admins Trash
+                            </h2>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-7">
+                            <div id="alert" class="alert alert-success py-1 py-sm-1 py-md-2 py-lg-2" role="alert" hidden>
+                                <div class="text-muted d-inline-flex"></div>
+                                <i id="close-alert" class="far fa-times-circle me-right"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <div id="options-area">
+                        <div class="row gy-3 gx-2">
+                            <div class="col-5 col-md-2">
+                                <select name="page-size" id="page-size" class="form-select small py-0 py-sm-1">
+                                    <option value=5 selected>Page Size</option>
+                                </select>
+                            </div>
+                            <div class="col-7 col-md-3">
+                                <select name="sort-by" id="sort-by" class="form-select small py-0 py-sm-1">
+                                    <option class="small" value=1 selected>Sort By</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr class="my-sm-2 my-md-3 my-lg-4">
+                    </div>
+                    <div id="sub-admins-area">
+                        <div class="row gy-3">
+                            <div class="col-xs-12 col-12">
+                                <table class="table table-light table-striped table-hover lead">
+                                    <thead class="small border-1">
+                                        <tr>
+                                            <th scope="col" class="align-middle">U.ID</th>
+                                            <th scope="col" class="align-middle">User Name</th>
+                                            <th scope="col" class="align-middle">Email Address</th>
+                                            <th scope="col" class="align-middle">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="small border-1">
+                                        <tr>
+                                            <td>
+                                                id
+                                            </td>
+                                            <td>
+                                                userName
+                                            </td>
+                                            <td>
+                                                email
+                                            </td>
+                                            <td>
+                                                <i id="restoreid" class="fas fa-trash-restore"></i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <nav aria-level="Sub Admins Trash Pagination">
+                        <ul class="pagination">
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+        <!-- Sub Admin Ends -->
+
+        <!-- Sub Admin Custom JS -->
+        <script src="/scripts/admin/sub-admins-trash.script.js"></script>
+
+        <!-- Footer -->
+        <%- include('./includes/footer.ejs') %>
+        <!-- Footer Ends -->
+    </body>
+</html>

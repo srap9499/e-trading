@@ -54,6 +54,7 @@ module.exports = {
         DASHBOARD_VIEW: "dashboard",
         ADD_SUB_ADMIN_VIEW: "add-sub-admin",
         SUB_ADMINS_VIEW: "sub-admins",
+        SUB_ADMINS_TRASH_VIEW: "sub-admins-trash"
     },
     USER_VIEWS: {
         HOME_VIEW: "home",
@@ -74,7 +75,8 @@ module.exports = {
         ADMIN_VIEW_TITLES: {
             DASHBOARD_TITLE: "E-Trading - Admin Dashboard",
             ADD_SUB_ADMIN_TITLE: "E-Trading - Add Sub Admin",
-            SUB_ADMINS_TITLE: "E-Trading - Sub Admins"
+            SUB_ADMINS_TITLE: "E-Trading - Sub Admins",
+            SUB_ADMINS_TRASH_TITLE: "E-Trading - Sub Admins Trash"
         },
         USER_VIEW_TITLES: {
             HOME_TITLE: "E-Trading - Home",

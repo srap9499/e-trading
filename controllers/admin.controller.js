@@ -10,6 +10,7 @@ const {
     SUCCESS_MESSAGES: {
         ADD_SUB_ADMIN_SUCCESS,
         DELETE_SUB_ADMIN_SUCCESS,
+        RESTORE_SUB_ADMIN_SUCCESS,
         DATA_FETCH_SUCCESS
     },
     ERROR_MESSAGES: {
@@ -36,6 +37,7 @@ const { sequelize } = require('../config/db-connection.config');
 const { responseObj } = require('../helpers/response.helper');
 const { pagination, paginationMetaData } = require('../helpers/pagination.helper');
 const { InternalServerError } = require('http-errors');
+const { Op } = require('sequelize');
 
 
 const getUserById = async (id) => {
@@ -139,6 +141,42 @@ exports.getSubAdmins = async (req, res, next) => {
 };
 
 /**
+ * @description API interface to fetch deleted Sub Admins with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+ exports.getSubAdminsTrash = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({ page, size });
+        const subadmins = await User.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'userName', 'email', 'userroleId'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            where: {
+                userroleId: roles.SubAdmin,
+                deletedAt: {
+                    [Op.ne]: null
+                }
+            },
+            distinct: true,
+            paranoid: false
+        });
+        const data = paginationMetaData(subadmins, page, limit);
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
  * @description API interface to soft delete Sub admin
  * @param {Request} req 
  * @param {Response} res 
@@ -160,6 +198,34 @@ exports.destroySubAdmin = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, DELETE_SUB_ADMIN_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to restore deleted Sub admin
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+ exports.restoreSubAdmin = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (!parseInt(id)) {
+            throw new InternalServerError(DEFAULT_ERROR);
+        }
+        await User.restore({
+            logging: false,
+            where: {
+                id: parseInt(id),
+                userroleId: roles.SubAdmin
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, RESTORE_SUB_ADMIN_SUCCESS)
         );
     } catch (error) {
         next(error);
