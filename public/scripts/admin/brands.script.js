@@ -70,7 +70,7 @@ const nothingArea = `
 </div>`;
 
 const tableArea = `
-<div class="row gy-3">
+<div class="row gy-3 table-responsive-parent">
     <div class="col-xs-12 col-12">
         <table id="brands-table" class="table table-light table-striped table-hover lead">
             <thead class="small border-1">
