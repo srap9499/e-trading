@@ -4,6 +4,9 @@ const {
     ERROR_MESSAGES: {
         VALIDATION_ERROR
     },
+    VIEW_PATH: {
+        SHARED_VIEWS_PATH
+    },
     REQUEST_PROPERTIES: {
         REQUEST_BODY
     }
@@ -13,6 +16,7 @@ const { joiErrorFormatter } = require("../helpers/error-formatter.helper");
 const { responseObj } = require("../helpers/response.helper");
 
 exports.validate = (schema, { target = REQUEST_BODY, view, title = "E-Trading" }) => {
+    view = SHARED_VIEWS_PATH + view;
     return async (req, res, next) => {
         const validateResult = schema.validate(req[target], {
             abortEarly: false
