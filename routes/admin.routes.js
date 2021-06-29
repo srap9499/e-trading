@@ -319,4 +319,22 @@ router.get(
     Admin.getSubCategoriesTrash
 );
 
+/**
+ * @description Route to restore soft deleted Category
+ * @method PUT /admin/category/:id/restore
+ */
+router.put(
+    '/category/:id/restore',
+    Admin.restoreCategory
+);
+
+/**
+ * @description Route to restore soft deleted Sub Category
+ * @method PUT /admin/subcategory/:id/restore
+ */
+router.put(
+    '/subcategory/:id/restore',
+    Admin.restoreSubCategory
+);
+
 module.exports = router;

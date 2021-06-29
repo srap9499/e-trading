@@ -18,6 +18,8 @@ const {
         RESTORE_PRODUCT_SUCCESS,
         DELETE_CATEGORY_SUCCESS,
         DELETE_SUB_CATEGORY_SUCCESS,
+        RESTORE_CATEGORY_SUCCESS,
+        RESTORE_SUB_CATEGORY_SUCCESS,
         DATA_FETCH_SUCCESS,
         PRODUCTS_FETCH_SUCCESS,
     },
@@ -661,6 +663,54 @@ exports.getSubCategoriesTrash = async (req, res, next) => {
         const data = paginationMetaData(categories, page, limit);
         return res.status(200).send(
             responseObj(true, DATA_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to restore deleted Category
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+exports.restoreCategory = async (req, res, next) => {
+    try {
+        const  { id } = req.params;
+        await Category.restore({
+            logging: console.log,
+            where: {
+                id
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, RESTORE_CATEGORY_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to restore deleted Sub Category
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+exports.restoreSubCategory = async (req, res, next) => {
+    try {
+        const  { id } = req.params;
+        await Subcategory.restore({
+            logging: console.log,
+            where: {
+                id
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, RESTORE_SUB_CATEGORY_SUCCESS)
         );
     } catch (error) {
         next(error);

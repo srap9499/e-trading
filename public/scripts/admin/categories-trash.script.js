@@ -88,6 +88,27 @@ const categoriesTableArea = `
     </div>
 </div>`;
 
+const restoreCategory = id => {
+    return () => {
+        $.ajax({
+            type: 'PUT',
+            url: `/admin/category/${id}/restore`,
+            success: response => {
+                const { message } = response;
+                successAlert(message);
+                if (currentEntries <=1 && queryData.page > 1) {
+                    queryData.page -= 1;
+                }
+                getCategories();
+            },
+            error: response => {
+                const { responseJSON: { message } } = response;
+                errorAlert(message);
+            }
+        });
+    };
+};
+
 const createCategoryRow = (rowData) => {
     const { id, category, subcategories } = rowData;
     let subcategory = '';
@@ -115,10 +136,17 @@ const createCategoryRow = (rowData) => {
             ${subcategory}
         </td>
         <td class="small">
+            <div class="row gx-4 gy-0 text-center">
+                <div class="col-3">
+                    <i id="restore${id}" class="fas fa-trash-restore" title="Restore ${category}"></i>
+                </div>
+            </div>
         </td>
     </tr>`;
 
     $('#categories-table tbody').append(categoryRow);
+
+    $(`#restore${id}`).on('click', restoreCategory(id));
 };
 
 const createCategoryPagination = (totalPages) => {

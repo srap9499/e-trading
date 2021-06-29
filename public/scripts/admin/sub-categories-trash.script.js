@@ -13,7 +13,7 @@ const clearSubAlert = () => {
 const successSubAlert = (message={}) => {
     $('#sub-alert div').empty()
         .append(message.body);
-    $('#alert')
+    $('#sub-alert')
         .removeAttr('hidden')
         .removeClass('alert-danger')
         .addClass('alert-success');
@@ -80,6 +80,27 @@ const subCategoriesTableArea = `
     </div>
 </div>`;
 
+const restoreSubCategory = id => {
+    return () => {
+        $.ajax({
+            type: 'PUT',
+            url: `/admin/subcategory/${id}/restore`,
+            success: response => {
+                const { message } = response;
+                successSubAlert(message);
+                if (currentSubEntries <=1 && subQueryData.page > 1) {
+                    subQueryData.page -= 1;
+                }
+                getSubCategories();
+            },
+            error: response => {
+                const { responseJSON: { message } } = response;
+                errorSubAlert(message);
+            }
+        });
+    };
+};
+
 const createSubCategoryRow = (rowData) => {
     const { id, category, subcategories } = rowData;
     let subCategory = '';
@@ -93,8 +114,12 @@ const createSubCategoryRow = (rowData) => {
             <div class="col-7 col-md-8">
                 <p class="muted-text small py-0 my-0">${subcategory}</p>
             </div>
+            <div class="col-3 small py-0 my-0">
+                <i id="restore-sub${id}" class="fas fa-trash-restore" title="Restore ${subcategory}"></i>
+            </div>
         </div>`;
         subCategory += subcategoryRow;
+        $(document).on('click', `#restore-sub${id}`, restoreSubCategory(id));
     });
     const categoryRow = `
     <tr>
@@ -143,7 +168,7 @@ const getSubCategories = () => {
                 currentSubEntries = rows.length??0;
                 if ($('ul#sub-category-page.pagination li').length - 2 != totalPages) {
                     $('ul#sub-category-page.pagination').empty();
-                    $('#options-area').empty();
+                    $('#sub-options-area').empty();
                 }
                 $('#sub-categories-area').append(nothingArea);
                 return;
