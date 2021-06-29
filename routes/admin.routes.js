@@ -13,7 +13,8 @@ const {
         BRANDS_TRASH_VIEW,
         ADD_BRAND_VIEW,
         PRODUCTS_VIEW,
-        PRODUCTS_TRASH_VIEW
+        PRODUCTS_TRASH_VIEW,
+        CATEGORIES_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
@@ -25,7 +26,8 @@ const {
             BRANDS_TRASH_TITLE,
             ADD_BRAND_TITLE,
             PRODUCTS_TITLE,
-            PRODUCTS_TRASH_TITLE
+            PRODUCTS_TRASH_TITLE,
+            CATEGORIES_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -236,7 +238,7 @@ router.get(
 
 /**
  * @description Route to get Products Trash
- * @method GET /admin/brands/trash/get
+ * @method GET /admin/products/trash/get
  */
 router.get(
     '/products/trash/get',
@@ -244,12 +246,31 @@ router.get(
 );
 
 /**
- * @description Route to restore soft deleted Brand
- * @method PUT /admin/brand/:id/restore
+ * @description Route to restore soft deleted Product
+ * @method PUT /admin/product/:id/restore
  */
 router.put(
     '/product/:id/restore',
     Admin.restoreProduct
 );
+
+/**
+ * @description Route to render Categories view
+ * @method GET /admin/categories
+ */
+ router.get(
+    '/categories',
+    Admin.renderView(CATEGORIES_VIEW, CATEGORIES_TITLE)
+);
+
+/**
+ * @description Route to get Categories
+ * @method GET /admin/categories/get
+ */
+router.get(
+    '/categories/get',
+    Admin.getCategories
+);
+
 
 module.exports = router;

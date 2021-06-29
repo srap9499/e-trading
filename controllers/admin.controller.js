@@ -46,6 +46,7 @@ const { responseObj } = require('../helpers/response.helper');
 const { pagination, paginationMetaData } = require('../helpers/pagination.helper');
 const { InternalServerError } = require('http-errors');
 const { Op } = require('sequelize');
+const { Category, Subcategory } = require('../models/categories.model');
 
 
 const getUserById = async (id) => {
@@ -497,6 +498,39 @@ exports.addBrand = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, RESTORE_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to fetch Categories with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+exports.getCategories = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({page, size});
+        const categories = await Category.findAndCountAll({
+            logging: console.log,
+            attributes: ['id', 'category'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            include: {
+                model: Subcategory,
+                attributes: ['id', 'subcategory']
+            },
+            distinct: true
+        });
+        const data = paginationMetaData(categories, page, limit);
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, data)
         );
     } catch (error) {
         next(error);
