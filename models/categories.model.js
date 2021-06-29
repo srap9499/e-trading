@@ -10,7 +10,9 @@ const Category = sequelize.define('category', {
         defaultValue: "General"
     }
 }, {
-    timestamps: false
+    createdAt: false,
+    updatedAt: false,
+    paranoid: true
 });
 
 const Subcategory = sequelize.define('subcategory', {
@@ -19,7 +21,9 @@ const Subcategory = sequelize.define('subcategory', {
         defaultValue: "General"
     }
 }, {
-    timestamps: false
+    createdAt: false,
+    updatedAt: false,
+    paranoid: true
 });
 
 Category.hasMany(Subcategory, {

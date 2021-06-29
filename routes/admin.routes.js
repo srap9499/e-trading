@@ -14,7 +14,8 @@ const {
         ADD_BRAND_VIEW,
         PRODUCTS_VIEW,
         PRODUCTS_TRASH_VIEW,
-        CATEGORIES_VIEW
+        CATEGORIES_VIEW,
+        CATEGORIES_TRASH_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
@@ -27,7 +28,8 @@ const {
             ADD_BRAND_TITLE,
             PRODUCTS_TITLE,
             PRODUCTS_TRASH_TITLE,
-            CATEGORIES_TITLE
+            CATEGORIES_TITLE,
+            CATEGORIES_TRASH_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -272,5 +274,31 @@ router.get(
     Admin.getCategories
 );
 
+/**
+ * @description Route to render Categories Trash view
+ * @method GET /admin/categories/trash
+ */
+ router.get(
+    '/categories/trash',
+    Admin.renderView(CATEGORIES_TRASH_VIEW, CATEGORIES_TRASH_TITLE)
+);
+
+/**
+ * @description Route to get Categories Trash
+ * @method GET /admin/categories/trash/get
+ */
+router.get(
+    '/categories/trash/get',
+    Admin.getCategoriesTrash
+);
+
+/**
+ * @description Route to get sub Categories Trash
+ * @method GET /admin/subcategories/trash/get
+ */
+router.get(
+    '/subcategories/trash/get',
+    Admin.getSubCategoriesTrash
+);
 
 module.exports = router;

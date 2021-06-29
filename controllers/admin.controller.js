@@ -536,3 +536,81 @@ exports.getCategories = async (req, res, next) => {
         next(error);
     }
 };
+
+/**
+ * @description API interface to fetch Categories Trash with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+exports.getCategoriesTrash = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({page, size});
+        const categories = await Category.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'category'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            where: {
+                deletedAt: {
+                    [Op.ne]: null
+                }
+            },
+            include: {
+                model: Subcategory,
+                attributes: ['id', 'subcategory']
+            },
+            distinct: true,
+            paranoid: false
+        });
+        const data = paginationMetaData(categories, page, limit);
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to fetch Categories Trash with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+exports.getSubCategoriesTrash = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({page, size});
+        const categories = await Category.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'category'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            include: {
+                model: Subcategory,
+                attributes: ['id', 'subcategory'],
+                where: {
+                    deletedAt: {
+                        [Op.ne]: null
+                    }
+                },
+                paranoid: false
+            },
+            distinct: true,
+        });
+        const data = paginationMetaData(categories, page, limit);
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
