@@ -275,6 +275,24 @@ router.get(
 );
 
 /**
+ * @description Route to delete Category
+ * @method DELETE /admin/category/:id/delete
+ */
+router.delete(
+    '/category/:id/delete',
+    Admin.destroyCategory
+);
+
+/**
+ * @description Route to delete Sub Category
+ * @method DELETE /admin/subcategory/:id/delete
+ */
+router.delete(
+    '/subcategory/:id/delete',
+    Admin.destroySubCategory
+);
+
+/**
  * @description Route to render Categories Trash view
  * @method GET /admin/categories/trash
  */

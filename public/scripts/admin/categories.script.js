@@ -31,9 +31,7 @@ const sortByOptions = {
     1: ['id', 'ASC'],
     2: ['id', 'DESC'],
     3: ['category', 'ASC'],
-    4: ['category', 'DESC'],
-    5: ['subcategories.subcategory', 'ASC'],
-    6: ['subcategories.subcategory', 'DESC']
+    4: ['category', 'DESC']
 };
 
 const queryData = {
@@ -89,6 +87,48 @@ const tableArea = `
     </div>
 </div>`;
 
+const deleteSubCategory = id => {
+    return () => {
+        $.ajax({
+            type: 'DELETE',
+            url: `/admin/subcategory/${id}/delete`,
+            success: response => {
+                const { message } = response;
+                successAlert(message);
+                if (currentEntries <=1 && queryData.page > 1) {
+                    queryData.page -= 1;
+                }
+                getCategories();
+            },
+            error: response => {
+                const { responseJSON: { message } } = response;
+                errorAlert(message);
+            }
+        });
+    };
+};
+
+const deleteCategory = id => {
+    return () => {
+        $.ajax({
+            type: 'DELETE',
+            url: `/admin/category/${id}/delete`,
+            success: response => {
+                const { message } = response;
+                successAlert(message);
+                if (currentEntries <=1 && queryData.page > 1) {
+                    queryData.page -= 1;
+                }
+                getCategories();
+            },
+            error: response => {
+                const { responseJSON: { message } } = response;
+                errorAlert(message);
+            }
+        });
+    };
+};
+
 const createRow = (rowData) => {
     const { id, category, subcategories } = rowData;
     let subcategory = '';
@@ -101,8 +141,19 @@ const createRow = (rowData) => {
             <div class="col-7 col-md-8">
                 <p class="muted-text small py-0 my-0">${item.subcategory}</p>
             </div>
+            <div class="col-3">
+                <div class="row gx-3 gy-0 text-center">
+                    <div class="col-3 small py-0 my-0">
+                        <i id="edit-sub${item.id}" class="fas fa-pencil-alt" title="Edit ${item.subcategory}"></i>
+                    </div>
+                    <div class="col-3 small py-0 my-0">
+                        <i id="delete-sub${item.id}" class="fas fa-trash" title="Delete ${item.subcategory}"></i>
+                    </div>
+                </div>
+            </div>
         </div>`;
         subcategory += subcategoryRow;
+        $(document).on('click', `#delete-sub${item.id}`, deleteSubCategory(item.id));
     });
     const categoryRow = `
     <tr>
@@ -116,10 +167,20 @@ const createRow = (rowData) => {
             ${subcategory}
         </td>
         <td class="small">
+            <div class="row gx-4 gy-0 text-center">
+                <div class="col-3">
+                    <i id="edit${id}" class="fas fa-pencil-alt" title="Edit ${category}"></i>
+                </div>
+                <div class="col-3">
+                    <i id="delete${id}" class="fas fa-trash" title="Delete ${category}"></i>
+                </div>
+            </div>
         </td>
     </tr>`;
 
     $('#categories-table tbody').append(categoryRow);
+
+    $(`#delete${id}`).on('click', deleteCategory(id));
 }
 
 const createPagination = (totalPages) => {

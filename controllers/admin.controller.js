@@ -16,6 +16,8 @@ const {
         ADD_BRAND_SUCCESS,
         DELETE_PRODUCT_SUCCESS,
         RESTORE_PRODUCT_SUCCESS,
+        DELETE_CATEGORY_SUCCESS,
+        DELETE_SUB_CATEGORY_SUCCESS,
         DATA_FETCH_SUCCESS,
         PRODUCTS_FETCH_SUCCESS,
     },
@@ -517,7 +519,7 @@ exports.getCategories = async (req, res, next) => {
         const { order, page, size } = req.query;
         const { limit, offset } = pagination({page, size});
         const categories = await Category.findAndCountAll({
-            logging: console.log,
+            logging: false,
             attributes: ['id', 'category'],
             limit,
             offset,
@@ -531,6 +533,56 @@ exports.getCategories = async (req, res, next) => {
         const data = paginationMetaData(categories, page, limit);
         return res.status(200).send(
             responseObj(true, DATA_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to soft delete Category
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+exports.destroyCategory = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        await Category.destroy({
+            logging: false,
+            where: {
+                id
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, DELETE_CATEGORY_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to soft delete Sub Category
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+exports.destroySubCategory = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        await Subcategory.destroy({
+            logging: false,
+            where: {
+                id
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, DELETE_SUB_CATEGORY_SUCCESS)
         );
     } catch (error) {
         next(error);
