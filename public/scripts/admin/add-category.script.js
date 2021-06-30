@@ -47,6 +47,7 @@ const postAddCategory = function (event) {
             const { message } = response;
             successAlert(message);
             $('#add-category-btn').removeAttr('disabled');
+            generateOptions();
         },
         error: response => {
             const { responseJSON: {message, errors} } = response;
