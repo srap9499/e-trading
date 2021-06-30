@@ -22,6 +22,7 @@ module.exports = {
         RESTORE_CATEGORY_SUCCESS: "Category Restored Successfully!",
         RESTORE_SUB_CATEGORY_SUCCESS: "Category Restored Successfully!",
         ADD_CATEGORY_SUCCESS: "Category Added Successfully!",
+        ADD_SUB_CATEGORY_SUCCESS: "Sub Category Added Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
         PRODUCTS_FETCH_SUCCESS: "Products Fetched Successfully!",
         CART_FETCH_SUCCESS: "Cart Items Fetched Successfully!",

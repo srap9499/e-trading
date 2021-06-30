@@ -21,6 +21,7 @@ const {
         RESTORE_CATEGORY_SUCCESS,
         RESTORE_SUB_CATEGORY_SUCCESS,
         ADD_CATEGORY_SUCCESS,
+        ADD_SUB_CATEGORY_SUCCESS,
         DATA_FETCH_SUCCESS,
         PRODUCTS_FETCH_SUCCESS,
     },
@@ -684,7 +685,7 @@ exports.restoreCategory = async (req, res, next) => {
     try {
         const  { id } = req.params;
         await Category.restore({
-            logging: console.log,
+            logging: false,
             where: {
                 id
             }
@@ -708,7 +709,7 @@ exports.restoreSubCategory = async (req, res, next) => {
     try {
         const  { id } = req.params;
         await Subcategory.restore({
-            logging: console.log,
+            logging: false,
             where: {
                 id
             }
@@ -721,6 +722,13 @@ exports.restoreSubCategory = async (req, res, next) => {
     }
 };
 
+/**
+ * @description API interface to Add Category
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
 exports.addCategory = async (req, res, next) => {
     try {
         const { category } = req.body;
@@ -731,7 +739,7 @@ exports.addCategory = async (req, res, next) => {
                     {subcategory: DEFAULT_SUBCATEGORY}
                 ]
             }, {
-                logging: console.log,
+                logging: false,
                 include: {
                     model: Subcategory
                 },
@@ -740,6 +748,63 @@ exports.addCategory = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, ADD_CATEGORY_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getPreviousAddedCategory = async (req, res, next) => {
+    try {
+        await sequelize.transaction(async getTransaction => {
+            const subcategory = await Subcategory.findOne({
+                attributes: [ 'categoryId' ],
+                order: [
+                    ['id', 'DESC']
+                ],
+            });
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getCategoryList = async (req, res, next) => {
+    try {
+        const categories = await sequelize.transaction(async getTransaction => {
+            const categories = await Category.findAll({
+                logging: console.log,
+                attributes: ['id', 'category'],
+                order: [
+                    ['category', 'ASC']
+                ],
+                transaction: getTransaction
+            });
+            return categories;
+        });
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, categories)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.addSubCategory = async (req, res, next) => {
+    console.log('I\'m Here!');
+    try {
+        const { categoryId, subcategory } = req.body;
+        await sequelize.transaction(async addTransaction => {
+            await Subcategory.create({
+                subcategory,
+                categoryId
+            }, {
+                logging: console.log,
+                transaction: addTransaction
+            });
+        });
+        return res.status(200).send(
+            responseObj(true, ADD_SUB_CATEGORY_SUCCESS)
         );
     } catch (error) {
         next(error);

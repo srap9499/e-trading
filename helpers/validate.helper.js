@@ -32,7 +32,18 @@ const addBrandSchema = Joi.object({
 
 const addCategorySchema = Joi.object({
     category: Joi.string()
-        .regex(/^[a-zA-Z]+$/, "Letters")
+        .regex(/^[\w\s]+$/, "Words")
+        .min(2)
+        .max(25)
+        .required()
+});
+
+const addSubCategorySchema = Joi.object({
+    categoryId: Joi.number()
+        .min(1)
+        .required(),
+    subcategory: Joi.string()
+        .regex(/^[\w\s]+$/, "Words")
         .min(2)
         .max(25)
         .required()
@@ -130,6 +141,7 @@ module.exports = {
     addSubAdminSchema,
     addBrandSchema,
     addCategorySchema,
+    addSubCategorySchema,
     signUpSchema,
     verifySchema,
     signInSchema,

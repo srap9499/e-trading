@@ -40,7 +40,14 @@ const {
 } = require('../constants/main.constant');
 
 const Admin = require('../controllers/admin.controller');
-const { addSubAdminSchema, addBrandSchema, addCategorySchema } = require('../helpers/validate.helper');
+
+const {
+    addSubAdminSchema,
+    addBrandSchema,
+    addCategorySchema,
+    addSubCategorySchema
+} = require('../helpers/validate.helper');
+
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
 const { validateRest } = require('../middlewares/validate.middleware');
 
@@ -356,6 +363,25 @@ router.post(
     '/category/add',
     validateRest(addCategorySchema, REQUEST_BODY),
     Admin.addCategory
+);
+
+/**
+ * @description Route to get category list 
+ * @method GET /admin/categories/list
+ */
+router.get(
+    '/categories/list',
+    Admin.getCategoryList
+);
+
+/**
+ * @description Route to Add Sub Category,
+ * @method POST /admin/subcategory/add
+ */
+router.post(
+    '/subcategory/add',
+    validateRest(addSubCategorySchema, REQUEST_BODY),
+    Admin.addSubCategory
 );
 
 module.exports = router;

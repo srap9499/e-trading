@@ -10,7 +10,7 @@
         <!-- Add Category -->
         <section id="add-category" class="mb-2">
             <div class="jumbotron bg-light">
-                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                <div class="container-md pt-2 pt-sm-2 pt-md-3 pt-lg-4 pt-xl-5 pb-2 pb-lg-3">
                     <div class="row gutters">
                         <div class="col-12 col-sm-12 col-md-5">
                             <h2 class="h2 display-6">
@@ -50,6 +50,67 @@
             </div>
         </section>
         <!-- Add Category Ends -->
+
+        <!-- Add Sub Category -->
+        <section id="add-sub-category">
+            <div class="jumbotron bg-light">
+                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                    <div class="row gutters">
+                        <div class="col-12 col-sm-12 col-md-5">
+                            <h2 class="h2 display-6">
+                                Add Sub Category
+                            </h2>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-7">
+                            <div id="sub-alert" class="alert alert-success py-1 py-sm-1" role="alert" hidden="hidden">
+                                <div class="muted-text"></div>
+                                <i id="close-sub-alert" class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <form id="sub-category-form" enctype="multipart/form-data">
+                                <div class="row gx-4 gy-3">
+                                    <div class="col-12">
+                                        <div class="from-group">
+                                            <label for="categoryId">Category</label>
+                                            <select name="categoryId" id="categoryId" class="form-select py-1" placeholder="Select Category&mldr;">
+                                                <option>Select Category&mldr;</option>
+                                                <div id="previous-added-options">
+                                                    <option value="5" selected hidden>5</option>
+                                                </div>
+                                                ::after
+                                                <s id="category-options">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </div>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="from-group">
+                                            <label for="subcategory">Sub Category</label>
+                                            <input type="text" name="subcategory" id="subcategory" class="form-control py-1" placeholder="Enter Sub Category&mldr;">
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="from-group">
+                                            <button type="submit" id="add-sub-category-btn" class="btn btn-primary py-1">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Add Sub Category Ends -->
 
         <!-- Add Category Custom JS -->
         <script src="/scripts/admin/add-category.script.js"></script>
