@@ -1,0 +1,60 @@
+    <%- include('./includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <!-- Header -->
+        <%- include('./includes/nav.ejs') %>
+        <!-- Header Ends -->
+
+        <!-- Add Category -->
+        <section id="add-category" class="mb-2">
+            <div class="jumbotron bg-light">
+                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                    <div class="row gutters">
+                        <div class="col-12 col-sm-12 col-md-5">
+                            <h2 class="h2 display-6">
+                                Add Category
+                            </h2>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-7">
+                            <div id="alert" class="alert alert-success py-1 py-sm-1" role="alert" hidden>
+                                <div class="muted-text"></div>
+                                <i id="close-alert" class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div id="add-category-area">
+                                <form id="category-form" enctype="multipart/form-data">
+                                    <div class="row gx-4 gy-3">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <lable for="category" class="muted-text">Category</lable>
+                                                <input type="text" name="category" id="category" class="form-control py-1" placeholder="Enter Category&mldr;">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <button type="submit" id="add-category-btn" class="btn btn-primary py-1">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Add Category Ends -->
+
+        <!-- Add Category Custom JS -->
+        <script src="/scripts/admin/add-category.script.js"></script>
+
+        <!-- Footer -->
+        <%- include('./includes/footer.ejs') %>
+        <!-- Footer Ends -->
+    </body>

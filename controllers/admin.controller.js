@@ -20,6 +20,7 @@ const {
         DELETE_SUB_CATEGORY_SUCCESS,
         RESTORE_CATEGORY_SUCCESS,
         RESTORE_SUB_CATEGORY_SUCCESS,
+        ADD_CATEGORY_SUCCESS,
         DATA_FETCH_SUCCESS,
         PRODUCTS_FETCH_SUCCESS,
     },
@@ -37,6 +38,9 @@ const {
     },
     VIEW_TITLES: {
         DEFAULT_TITLE
+    },
+    DEFAULTS: {
+        DEFAULT_SUBCATEGORY
     }
 } = require('../constants/main.constant');
 
@@ -711,6 +715,31 @@ exports.restoreSubCategory = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, RESTORE_SUB_CATEGORY_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.addCategory = async (req, res, next) => {
+    try {
+        const { category } = req.body;
+        await sequelize.transaction(async addTransaction => {
+            await Category.create({
+                category,
+                subcategories: [
+                    {subcategory: DEFAULT_SUBCATEGORY}
+                ]
+            }, {
+                logging: console.log,
+                include: {
+                    model: Subcategory
+                },
+                transaction: addTransaction
+            });
+        });
+        return res.status(200).send(
+            responseObj(true, ADD_CATEGORY_SUCCESS)
         );
     } catch (error) {
         next(error);

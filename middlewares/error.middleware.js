@@ -43,6 +43,7 @@ exports.errorHandler = async (error, req, res, next) => {
         return res.status(error.status).send(responseObj(false, error.message));
     }
     switch (error.name) {
+        case "SequelizeUniqueConstraintError":
         case "SequelizeValidationError":
             res.status(400).send(
                 responseObj(false, VALIDATION_ERROR, sequelizeErrorFormatter(error))

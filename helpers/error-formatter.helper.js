@@ -12,6 +12,7 @@ const joiErrorFormatter = (rowErrors) => {
 const sequelizeErrorFormatter = (rowErrors) => {
     const errors = {};
     rowErrors.errors.map(e => {
+        e.path = e.path.includes('.') ? e.path.split('.').reverse()[0] : e.path;
         errors[e.path] = e.message;
     });
     

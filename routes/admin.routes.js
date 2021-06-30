@@ -15,7 +15,8 @@ const {
         PRODUCTS_VIEW,
         PRODUCTS_TRASH_VIEW,
         CATEGORIES_VIEW,
-        CATEGORIES_TRASH_VIEW
+        CATEGORIES_TRASH_VIEW,
+        ADD_CATEGORY_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
@@ -29,7 +30,8 @@ const {
             PRODUCTS_TITLE,
             PRODUCTS_TRASH_TITLE,
             CATEGORIES_TITLE,
-            CATEGORIES_TRASH_TITLE
+            CATEGORIES_TRASH_TITLE,
+            ADD_CATEGORY_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -38,7 +40,7 @@ const {
 } = require('../constants/main.constant');
 
 const Admin = require('../controllers/admin.controller');
-const { addSubAdminSchema, addBrandSchema } = require('../helpers/validate.helper');
+const { addSubAdminSchema, addBrandSchema, addCategorySchema } = require('../helpers/validate.helper');
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
 const { validateRest } = require('../middlewares/validate.middleware');
 
@@ -335,6 +337,25 @@ router.put(
 router.put(
     '/subcategory/:id/restore',
     Admin.restoreSubCategory
+);
+
+/**
+ * @description Route to render Add Category view
+ * @method GET /admin/category/add
+ */
+router.get(
+    '/category/add',
+    Admin.renderView(ADD_CATEGORY_VIEW, ADD_CATEGORY_TITLE)
+);
+
+/**
+ * @description Route to Add Category,
+ * @method POST /admin/category/add
+ */
+router.post(
+    '/category/add',
+    validateRest(addCategorySchema, REQUEST_BODY),
+    Admin.addCategory
 );
 
 module.exports = router;

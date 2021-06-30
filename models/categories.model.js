@@ -1,13 +1,44 @@
 'use strict';
 
+const {
+    ERROR_MESSAGES: {
+        CATEGORY_UNIQUE_ERROR,
+        CATEGORY_NOTNULL_EMPTY_ERROR,
+        CATEGORY_IS_ALPHA_ERROR,
+        CATEGORY_LENGTH_ERROR,
+        SUB_CATEGORY_NOTNULL_EMPTY_ERROR,
+        SUB_CATEGORY_IS_ALPHA_ERROR,
+        SUB_CATEGORY_LENGTH_ERROR
+    }
+} = require('../constants/main.constant');
+
 const Sequelize = require('sequelize');
 const { sequelize } = require('../config/db-connection.config');
 
 const Category = sequelize.define('category', {
     category: {
         type: Sequelize.STRING(25),
-        unique: true,
-        defaultValue: "General"
+        unique: {
+            args: true,
+            msg: CATEGORY_UNIQUE_ERROR
+        },
+        allowNull: false,
+        defaultValue: "General",
+        validate: {
+            notNull: {
+                msg: CATEGORY_NOTNULL_EMPTY_ERROR
+            },
+            notEmpty: {
+                msg: CATEGORY_NOTNULL_EMPTY_ERROR
+            },
+            isAlpha: {
+                msg: CATEGORY_IS_ALPHA_ERROR
+            },
+            len: {
+                max: 25,
+                msg: CATEGORY_LENGTH_ERROR
+            }
+        }
     }
 }, {
     createdAt: false,
@@ -18,7 +49,23 @@ const Category = sequelize.define('category', {
 const Subcategory = sequelize.define('subcategory', {
     subcategory: {
         type: Sequelize.STRING(25),
-        defaultValue: "General"
+        allowNull: false,
+        defaultValue: "General",
+        validate: {
+            notNull: {
+                msg: SUB_CATEGORY_NOTNULL_EMPTY_ERROR
+            },
+            notEmpty: {
+                msg: SUB_CATEGORY_NOTNULL_EMPTY_ERROR
+            },
+            isAlpha: {
+                msg: SUB_CATEGORY_IS_ALPHA_ERROR
+            },
+            len: {
+                max: 25,
+                msg: SUB_CATEGORY_LENGTH_ERROR
+            }
+        }
     }
 }, {
     createdAt: false,
@@ -27,6 +74,7 @@ const Subcategory = sequelize.define('subcategory', {
 });
 
 Category.hasMany(Subcategory, {
+    allowNull: false,
     onDelete: "CASCADE"
 });
 Subcategory.belongsTo(Category, {

@@ -21,6 +21,7 @@ module.exports = {
         DELETE_SUB_CATEGORY_SUCCESS: "Sub Category Deleted Successfully!",
         RESTORE_CATEGORY_SUCCESS: "Category Restored Successfully!",
         RESTORE_SUB_CATEGORY_SUCCESS: "Category Restored Successfully!",
+        ADD_CATEGORY_SUCCESS: "Category Added Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
         PRODUCTS_FETCH_SUCCESS: "Products Fetched Successfully!",
         CART_FETCH_SUCCESS: "Cart Items Fetched Successfully!",
@@ -45,6 +46,13 @@ module.exports = {
         BRAND_NOTNULL_EMPTY_ERROR: "Brand should not be Null or Empty!",
         BRAND_LENGTH_ERROR: "Brand length should between 2 to 40 characters!",
         BRAND_UNIQUE_ERROR: "Brand already exists!",
+        CATEGORY_UNIQUE_ERROR: "Category already Exists!",
+        CATEGORY_NOTNULL_EMPTY_ERROR: "Category should not be Null or Empty!",
+        CATEGORY_IS_ALPHA_ERROR: "Category Should be a Valid Alpha!",
+        CATEGORY_LENGTH_ERROR: "Category length should be less or equal to 25 chharacters",
+        SUB_CATEGORY_NOTNULL_EMPTY_ERROR: "Sub Category should not be Null or Empty!",
+        SUB_CATEGORY_IS_ALPHA_ERROR: "Sub Category Should be a Valid Alpha!",
+        SUB_CATEGORY_LENGTH_ERROR: "Sub Category length should be less or equal to 25 chharacters",
         WRONG_OTP: "Incorrect OTP!",
         WRONG_PASSWORD: "Incorrect Password!",
         VALIDATION_ERROR: "Validation Errors!",
@@ -73,7 +81,8 @@ module.exports = {
         PRODUCTS_VIEW: "products",
         PRODUCTS_TRASH_VIEW: "products-trash",
         CATEGORIES_VIEW: "categories",
-        CATEGORIES_TRASH_VIEW: "categories-trash"
+        CATEGORIES_TRASH_VIEW: "categories-trash",
+        ADD_CATEGORY_VIEW: "add-category"
     },
     USER_VIEWS: {
         HOME_VIEW: "home",
@@ -102,7 +111,8 @@ module.exports = {
             PRODUCTS_TITLE: "E-Trading - Products",
             PRODUCTS_TRASH_TITLE: "E-Trading - Products Trash",
             CATEGORIES_TITLE: "E-Trading - Categories",
-            CATEGORIES_TRASH_TITLE: "E-Trading - Categories Trash"
+            CATEGORIES_TRASH_TITLE: "E-Trading - Categories Trash",
+            ADD_CATEGORY_TITLE: "E-Trading - Add Category"
         },
         USER_VIEW_TITLES: {
             HOME_TITLE: "E-Trading - Home",
@@ -150,5 +160,8 @@ module.exports = {
         INSUFFICIENT_WALLET_AMOUNT: "Insufficient Wallet Amount!",
         ORDER_CANCELED: "Order Canceled!",
         ORDER_PLACED_SUCCESS: "Order Placed!"
+    },
+    DEFAULTS: {
+        DEFAULT_SUBCATEGORY: "General"
     }
 };
