@@ -31,7 +31,8 @@ const Category = sequelize.define('category', {
             notEmpty: {
                 msg: CATEGORY_NOTNULL_EMPTY_ERROR
             },
-            isAlpha: {
+            is: {
+                args: /^[\w\s]+$/,
                 msg: CATEGORY_IS_ALPHA_ERROR
             },
             len: {
@@ -58,7 +59,8 @@ const Subcategory = sequelize.define('subcategory', {
             notEmpty: {
                 msg: SUB_CATEGORY_NOTNULL_EMPTY_ERROR
             },
-            isAlpha: {
+            is: {
+                args: /^[\w\s]+$/,
                 msg: SUB_CATEGORY_IS_ALPHA_ERROR
             },
             len: {
@@ -68,6 +70,12 @@ const Subcategory = sequelize.define('subcategory', {
         }
     }
 }, {
+    indexes: [
+        {
+            unique: true,
+            fields: [ 'subcategory', 'categoryId' ]
+        }
+    ],
     createdAt: false,
     updatedAt: false,
     paranoid: true
