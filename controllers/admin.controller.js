@@ -677,7 +677,7 @@ exports.getSubcategory_previousSelectedCategory = async (req, res, next) => {
 };
 
 /**
- * @description API interface to get Brand List for add subcategory / add product
+ * @description API interface to get Category List for add subcategory / add product
  * @param {Request} req 
  * @param {Response} res 
  * @param {Function} next 
@@ -843,6 +843,42 @@ exports.addSubCategory = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, RESTORE_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to previous selected Brand for add Product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - Previous Brand
+ */
+exports.getProduct_previousSelectedBrand = async (req, res, next) => {
+    try {
+        const previous_brand = await sequelize.transaction(async getTransaction => {
+            const product = await Product.findOne({
+                logging: console.log,
+                attributes: [ 'brandId' ],
+                order: [
+                    ['id', 'DESC']
+                ],
+                transaction: getTransaction
+            });
+            const brand = await Brand.findOne({
+                logging: console.log,
+                attributes: ['id', 'name'],
+                where: {
+                    id: product.brandId
+                },
+                transaction: getTransaction
+            });
+            return brand;
+        });
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, previous_brand)
         );
     } catch (error) {
         next(error);

@@ -353,6 +353,15 @@ router.get(
 );
 
 /**
+ * @description Route to get Previous Selected Brand for Add Product
+ * @method GET /admin/product/previous/brand
+ */
+router.get(
+    '/product/previous/brand',
+    Admin.getProduct_previousSelectedBrand
+);
+
+/**
  * @description Route to get brand list 
  * @method GET /admin/brands/list
  */
