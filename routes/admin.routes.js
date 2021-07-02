@@ -14,6 +14,7 @@ const {
         ADD_BRAND_VIEW,
         PRODUCTS_VIEW,
         PRODUCTS_TRASH_VIEW,
+        ADD_PRODUCT_VIEW,
         CATEGORIES_VIEW,
         CATEGORIES_TRASH_VIEW,
         ADD_CATEGORY_VIEW
@@ -29,6 +30,7 @@ const {
             ADD_BRAND_TITLE,
             PRODUCTS_TITLE,
             PRODUCTS_TRASH_TITLE,
+            ADD_PRODUCT_TITLE,
             CATEGORIES_TITLE,
             CATEGORIES_TRASH_TITLE,
             ADD_CATEGORY_TITLE
@@ -45,7 +47,8 @@ const {
     addSubAdminSchema,
     addBrandSchema,
     addCategorySchema,
-    addSubCategorySchema
+    addSubCategorySchema,
+    addProductSchema
 } = require('../helpers/validate.helper');
 
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
@@ -212,60 +215,6 @@ router.post(
 );
 
 /**
- * @description Route to render All Products view
- * @method GET /admin/products
- */
- router.get(
-    '/products',
-    Admin.renderView(PRODUCTS_VIEW, PRODUCTS_TITLE)
-);
-
-/**
- * @description Route to get All Products
- * @method GET /admin/products/get
- */
-router.get(
-    '/products/get',
-    Admin.getProducts
-);
-
-/**
- * @description Route to delete Product
- * @method DELETE /admin/product/:id/delete
- */
- router.delete(
-    '/product/:id/delete',
-    Admin.destroyProduct
-);
-
-/**
- * @description Route to render Products Trash view
- * @method GET /admin/products/trash
- */
- router.get(
-    '/products/trash',
-    Admin.renderView(PRODUCTS_TRASH_VIEW, PRODUCTS_TRASH_TITLE)
-);
-
-/**
- * @description Route to get Products Trash
- * @method GET /admin/products/trash/get
- */
-router.get(
-    '/products/trash/get',
-    Admin.getProductsTrash
-);
-
-/**
- * @description Route to restore soft deleted Product
- * @method PUT /admin/product/:id/restore
- */
-router.put(
-    '/product/:id/restore',
-    Admin.restoreProduct
-);
-
-/**
  * @description Route to render Categories view
  * @method GET /admin/categories
  */
@@ -382,6 +331,95 @@ router.post(
     '/subcategory/add',
     validateRest(addSubCategorySchema, REQUEST_BODY),
     Admin.addSubCategory
+);
+
+/**
+ * @description Route to get subcategory list by categoryId
+ * @method GET /admin/categories/:categoryId/subcategories/list
+ */
+router.get(
+    '/categories/:categoryId/subcategories/list',
+    Admin.getSubCategoryListByCategoryId
+);
+
+/**
+ * @description Route to get brand list 
+ * @method GET /admin/brands/list
+ */
+router.get(
+    '/brands/list',
+    Admin.getBrandList
+);
+
+/**
+ * @description Route to render All Products view
+ * @method GET /admin/products
+ */
+ router.get(
+    '/products',
+    Admin.renderView(PRODUCTS_VIEW, PRODUCTS_TITLE)
+);
+
+/**
+ * @description Route to get All Products
+ * @method GET /admin/products/get
+ */
+router.get(
+    '/products/get',
+    Admin.getProducts
+);
+
+/**
+ * @description Route to delete Product
+ * @method DELETE /admin/product/:id/delete
+ */
+ router.delete(
+    '/product/:id/delete',
+    Admin.destroyProduct
+);
+
+/**
+ * @description Route to render Products Trash view
+ * @method GET /admin/products/trash
+ */
+ router.get(
+    '/products/trash',
+    Admin.renderView(PRODUCTS_TRASH_VIEW, PRODUCTS_TRASH_TITLE)
+);
+
+/**
+ * @description Route to get Products Trash
+ * @method GET /admin/products/trash/get
+ */
+router.get(
+    '/products/trash/get',
+    Admin.getProductsTrash
+);
+
+/**
+ * @description Route to restore soft deleted Product
+ * @method PUT /admin/product/:id/restore
+ */
+router.put(
+    '/product/:id/restore',
+    Admin.restoreProduct
+);
+
+/**
+ * @description Route to render Add Product view
+ * @method GET /admin/product/add
+ */
+router.get(
+    '/product/add',
+    Admin.renderView(ADD_PRODUCT_VIEW, ADD_PRODUCT_TITLE)
+);
+
+router.post(
+    '/product/add',
+    [
+        validateRest(addProductSchema, REQUEST_BODY)
+    ],
+    Admin.addProduct
 );
 
 module.exports = router;

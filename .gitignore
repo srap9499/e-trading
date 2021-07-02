@@ -7,5 +7,9 @@ node_modules
 # Invoices directory
 Invoices
 
+# Products Images
+public/images/products/*
+!public/images/products/default.jpg
+
 # VS Code extensions
 .vscode

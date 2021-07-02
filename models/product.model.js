@@ -64,21 +64,30 @@ const Product = sequelize.define('product', {
         defaultValue: 'images/products/default.jpg'
     }
 }, {
+    indexes: [
+        {
+            unique: true,
+            fields: [ 'name', 'brandId' ]
+        }
+    ],
     paranoid: true  
 });
 
 Brand.hasMany(Product, {
+    allowNull: false,
     onDelete: 'CASCADE'
 });
 Product.belongsTo(Brand);
 
 Category.hasMany(Product, {
-    onDelete: 'SET NULL'
+    allowNull: false,
+    onDelete: 'CASCADE'
 });
 Product.belongsTo(Category);
 
 Subcategory.hasMany(Product, {
-    onDelete: 'SET NULL'
+    allowNull: false,
+    onDelete: 'CASCADE'
 });
 Product.belongsTo(Subcategory);
 

@@ -16,6 +16,7 @@ const {
         ADD_BRAND_SUCCESS,
         DELETE_PRODUCT_SUCCESS,
         RESTORE_PRODUCT_SUCCESS,
+        ADD_PRODUCT_SUCCESS,
         DELETE_CATEGORY_SUCCESS,
         DELETE_SUB_CATEGORY_SUCCESS,
         RESTORE_CATEGORY_SUCCESS,
@@ -29,8 +30,10 @@ const {
         DEFAULT_ERROR
     },
     REQUEST_PROPERTIES: {
-        REQUEST_USERDATA
+        REQUEST_USERDATA,
+        REQUEST_FILENAME
     },
+    PRODUCTS_IMAGE_PATH,
     VIEW_PATH: {
         ADMIN_VIEWS_PATH
     },
@@ -41,7 +44,8 @@ const {
         DEFAULT_TITLE
     },
     DEFAULTS: {
-        DEFAULT_SUBCATEGORY
+        DEFAULT_SUBCATEGORY,
+        DEFAULT_PRODUCT_IMAGE_NAME
     }
 } = require('../constants/main.constant');
 
@@ -396,124 +400,6 @@ exports.addBrand = async (req, res, next) => {
 };
 
 /**
- * @description API interface to fetch all Products with pagination
- * @param {Request} req 
- * @param {Response} res 
- * @param {Function} next 
- * @method GET
- * @returns {Response} JSON
- */
- exports.getProducts = async (req, res, next) => {
-    try {
-        const { order, page, size } = req.query;
-        const { limit, offset } = pagination({ page, size });
-        const products = await Product.findAndCountAll({
-            logging: false,
-            attributes: ['id', 'name', 'quantity', 'price'],
-            limit,
-            offset,
-            order: order ? [order] : [['id', 'ASC']],
-            distinct: true
-        });
-        const data = paginationMetaData(products, page, limit);
-        return res.status(200).send(
-            responseObj(true, PRODUCTS_FETCH_SUCCESS, data)
-        );
-    } catch (error) {
-        next(error);
-    }
-};
-
-/**
- * @description API interface to soft delete Product
- * @param {Request} req 
- * @param {Response} res 
- * @param {Function} next 
- * @returns {Response} JSON
- */
- exports.destroyProduct = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        if (!parseInt(id)) {
-            throw new InternalServerError(DEFAULT_ERROR);
-        }
-        await Product.destroy({
-            logging: false,
-            where: {
-                id: parseInt(id)
-            }
-        });
-        return res.status(200).send(
-            responseObj(true, DELETE_PRODUCT_SUCCESS)
-        );
-    } catch (error) {
-        next(error);
-    }
-};
-
-/**
- * @description API interface to fetch deleted Products with pagination
- * @param {Request} req 
- * @param {Response} res 
- * @param {Function} next 
- * @method GET
- * @returns {Response} JSON
- */
- exports.getProductsTrash = async (req, res, next) => {
-    try {
-        const { order, page, size } = req.query;
-        const { limit, offset } = pagination({ page, size });
-        const products = await Product.findAndCountAll({
-            logging: false,
-            attributes: ['id', 'name', 'quantity', 'price'],
-            limit,
-            offset,
-            order: order ? [order] : [['id', 'ASC']],
-            where: {
-                deletedAt: {
-                    [Op.ne]: null
-                }
-            },
-            distinct: true,
-            paranoid: false
-        });
-        const data = paginationMetaData(products, page, limit);
-        return res.status(200).send(
-            responseObj(true, PRODUCTS_FETCH_SUCCESS, data)
-        );
-    } catch (error) {
-        next(error);
-    }
-};
-
-/**
- * @description API interface to restore deleted Product
- * @param {Request} req 
- * @param {Response} res 
- * @param {Function} next 
- * @returns {Response} JSON
- */
- exports.restoreProduct = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        if (!parseInt(id)) {
-            throw new InternalServerError(DEFAULT_ERROR);
-        }
-        await Product.restore({
-            logging: false,
-            where: {
-                id: parseInt(id)
-            }
-        });
-        return res.status(200).send(
-            responseObj(true, RESTORE_PRODUCT_SUCCESS)
-        );
-    } catch (error) {
-        next(error);
-    }
-};
-
-/**
  * @description API interface to fetch Categories with pagination
  * @param {Request} req 
  * @param {Response} res 
@@ -754,26 +640,18 @@ exports.addCategory = async (req, res, next) => {
     }
 };
 
-exports.getPreviousAddedCategory = async (req, res, next) => {
-    try {
-        await sequelize.transaction(async getTransaction => {
-            const subcategory = await Subcategory.findOne({
-                attributes: [ 'categoryId' ],
-                order: [
-                    ['id', 'DESC']
-                ],
-            });
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
+/**
+ * @description API interface to get Brand List for add subcategory / add product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - Category List
+ */
 exports.getCategoryList = async (req, res, next) => {
     try {
         const categories = await sequelize.transaction(async getTransaction => {
             const categories = await Category.findAll({
-                logging: console.log,
+                logging: false,
                 attributes: ['id', 'category'],
                 order: [
                     ['category', 'ASC']
@@ -790,8 +668,14 @@ exports.getCategoryList = async (req, res, next) => {
     }
 };
 
+/**
+ * @description API interface to add Sub Category
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
 exports.addSubCategory = async (req, res, next) => {
-    console.log('I\'m Here!');
     try {
         const { categoryId, subcategory } = req.body;
         await sequelize.transaction(async addTransaction => {
@@ -799,7 +683,7 @@ exports.addSubCategory = async (req, res, next) => {
                 subcategory,
                 categoryId
             }, {
-                logging: console.log,
+                logging: false,
                 transaction: addTransaction
             });
         });
@@ -807,6 +691,219 @@ exports.addSubCategory = async (req, res, next) => {
             responseObj(true, ADD_SUB_CATEGORY_SUCCESS)
         );
     } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to fetch all Products with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+ exports.getProducts = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({ page, size });
+        const products = await Product.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'name', 'quantity', 'price'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            distinct: true
+        });
+        const data = paginationMetaData(products, page, limit);
+        return res.status(200).send(
+            responseObj(true, PRODUCTS_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to soft delete Product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+ exports.destroyProduct = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (!parseInt(id)) {
+            throw new InternalServerError(DEFAULT_ERROR);
+        }
+        await Product.destroy({
+            logging: false,
+            where: {
+                id: parseInt(id)
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, DELETE_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to fetch deleted Products with pagination
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method GET
+ * @returns {Response} JSON
+ */
+ exports.getProductsTrash = async (req, res, next) => {
+    try {
+        const { order, page, size } = req.query;
+        const { limit, offset } = pagination({ page, size });
+        const products = await Product.findAndCountAll({
+            logging: false,
+            attributes: ['id', 'name', 'quantity', 'price'],
+            limit,
+            offset,
+            order: order ? [order] : [['id', 'ASC']],
+            where: {
+                deletedAt: {
+                    [Op.ne]: null
+                }
+            },
+            distinct: true,
+            paranoid: false
+        });
+        const data = paginationMetaData(products, page, limit);
+        return res.status(200).send(
+            responseObj(true, PRODUCTS_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to restore deleted Product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+ exports.restoreProduct = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (!parseInt(id)) {
+            throw new InternalServerError(DEFAULT_ERROR);
+        }
+        await Product.restore({
+            logging: false,
+            where: {
+                id: parseInt(id)
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, RESTORE_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to get Sub Category List for add product by categoryId
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - Sub Category List
+ */
+exports.getSubCategoryListByCategoryId = async (req, res, next) => {
+    try {
+        const { categoryId } = req.params;
+        const subcategories = await sequelize.transaction(async getTransaction => {
+            const subcategories = await Subcategory.findAll({
+                logging: false,
+                attributes: ['id', 'subcategory'],
+                order: [
+                    ['id', 'ASC']
+                ],
+                where: {
+                    categoryId
+                },
+                transaction: getTransaction
+            });
+            return subcategories;
+        });
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, subcategories)
+        );
+    } catch (error) {
+        next(error);
+    }
+}
+
+/**
+ * @description API interface to get Brand List for add product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - Brand List
+ */
+exports.getBrandList = async (req, res, next) => {
+    try {
+        const brands = await sequelize.transaction(async getTransaction => {
+            const brands = await Brand.findAll({
+                logging: false,
+                attributes: ['id', 'name'],
+                order: [
+                    ['name', 'ASC']
+                ],
+                transaction: getTransaction
+            });
+            return brands;
+        });
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, brands)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to Add Product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON
+ */
+exports.addProduct = async (req, res, next) => {
+    try {
+        const { name, description, quantity, price, brandId, categoryId, subcategoryId } = req.body;
+        const productData = {
+            name,
+            description,
+            quantity,
+            price,
+            brandId,
+            categoryId,
+            subcategoryId,
+            imagePath: PRODUCTS_IMAGE_PATH + (req[REQUEST_FILENAME] || DEFAULT_PRODUCT_IMAGE_NAME)
+        };
+        await sequelize.transaction(async addTransaction => {
+            await Product.create(productData, {
+                logging: false,
+                transaction: addTransaction
+            });
+        });
+        return res.status(200).send(
+            responseObj(true, ADD_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        console.log(typeof req.file);
         next(error);
     }
 };

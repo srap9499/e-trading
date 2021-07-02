@@ -49,6 +49,57 @@ const addSubCategorySchema = Joi.object({
         .required()
 });
 
+const addProductSchema = Joi.object({
+    name: Joi.string()
+        .trim()
+        .regex(/^[\w\s]*$/, 'Words')
+        .min(2)
+        .max(50)
+        .required(),
+    quantity: Joi.number()
+        .integer()
+        .min(1)
+        .required(),
+    price: Joi.number()
+        .precision(2)
+        .min(0)
+        .positive()
+        .required(),
+    brandId: Joi.number()
+        .required()
+        .integer()
+        .min(1)
+        .messages({
+          'number.base': `Please Select Brand!`,
+          'number.empty': `Please Select Brand!`,
+          'number.min': `Please Select Brand!`,
+          'any.required': `Please Select Brand!`
+        }),
+    categoryId: Joi.number()
+        .required()
+        .integer()
+        .min(1)
+        .messages({
+          'number.base': `Please Select Category!`,
+          'number.empty': `Please Select Category!`,
+          'number.min': `Please Select Category!`,
+          'any.required': `Please Select Category!`
+        }),
+    subcategoryId: Joi.number()
+        .required()
+        .integer()
+        .min(1)
+        .messages({
+          'number.base': `Please Select Sub Category!`,
+          'number.empty': `Please Select Sub Category!`,
+          'number.min': `Please Select Sub Category!`,
+          'any.required': `Please Select Sub Category!`
+        }),
+    description: Joi.string()
+        .min(0)
+        .max(128)
+});
+
 const signUpSchema = Joi.object({
     userName: Joi.string()
         .trim()
@@ -142,6 +193,7 @@ module.exports = {
     addBrandSchema,
     addCategorySchema,
     addSubCategorySchema,
+    addProductSchema,
     signUpSchema,
     verifySchema,
     signInSchema,

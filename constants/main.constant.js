@@ -17,6 +17,7 @@ module.exports = {
         ADD_BRAND_SUCCESS: "Brand Added Successfully!",
         DELETE_PRODUCT_SUCCESS: "Product Deleted Successfully!",
         RESTORE_PRODUCT_SUCCESS: "Product Restored Successfully!",
+        ADD_PRODUCT_SUCCESS: "Product Added Successfully!",
         DELETE_CATEGORY_SUCCESS: "Category Deleted Successfully!",
         DELETE_SUB_CATEGORY_SUCCESS: "Sub Category Deleted Successfully!",
         RESTORE_CATEGORY_SUCCESS: "Category Restored Successfully!",
@@ -66,6 +67,8 @@ module.exports = {
         ADD_TO_CART_OUT_OF_STOCK_ERROR: "Insufficient Stock to Add!",
         DEFAULT_ERROR: "Something went Wrong!"
     },
+    PUBLIC_FORDER_NAME: "public",
+    PRODUCTS_IMAGE_PATH: "/images/products/",
     VIEW_PATH: {
         ADMIN_VIEWS_PATH: "admin/",
         USER_VIEWS_PATH: "user/",
@@ -81,6 +84,7 @@ module.exports = {
         ADD_BRAND_VIEW: "add-brand",
         PRODUCTS_VIEW: "products",
         PRODUCTS_TRASH_VIEW: "products-trash",
+        ADD_PRODUCT_VIEW: "add-product",
         CATEGORIES_VIEW: "categories",
         CATEGORIES_TRASH_VIEW: "categories-trash",
         ADD_CATEGORY_VIEW: "add-category"
@@ -111,6 +115,7 @@ module.exports = {
             ADD_BRAND_TITLE: "E-trading - Add Brand",
             PRODUCTS_TITLE: "E-Trading - Products",
             PRODUCTS_TRASH_TITLE: "E-Trading - Products Trash",
+            ADD_PRODUCT_TITLE: "E-Trading - Add Product",
             CATEGORIES_TITLE: "E-Trading - Categories",
             CATEGORIES_TRASH_TITLE: "E-Trading - Categories Trash",
             ADD_CATEGORY_TITLE: "E-Trading - Add Category"
@@ -135,7 +140,9 @@ module.exports = {
         REQUEST_PARAMS: "params",
         REQUEST_QUERY: "query",
         REQUEST_COOKIES: "cookies",
-        REQUEST_USERDATA: "userData"
+        REQUEST_USERDATA: "userData",
+        REQUEST_FILENAME: "fileName",
+        REQUEST_CUSTOM: "customData"
     },
     COOKIE_NAMES: {
         AUTH_TOKEN: "auth_token"
@@ -163,6 +170,7 @@ module.exports = {
         ORDER_PLACED_SUCCESS: "Order Placed!"
     },
     DEFAULTS: {
-        DEFAULT_SUBCATEGORY: "General"
+        DEFAULT_SUBCATEGORY: "General",
+        DEFAULT_PRODUCT_IMAGE_NAME: "default.jpg"
     }
 };
