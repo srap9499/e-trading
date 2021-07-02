@@ -37,7 +37,7 @@ const {
         }
     },
     REQUEST_PROPERTIES: {
-        REQUEST_BODY
+        REQUEST_BODY,
     }
 } = require('../constants/main.constant');
 
@@ -52,6 +52,7 @@ const {
 } = require('../helpers/validate.helper');
 
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
+const { upload_product_image } = require('../middlewares/file-upload.middleware');
 const { validateRest } = require('../middlewares/validate.middleware');
 
 
@@ -417,6 +418,7 @@ router.get(
 router.post(
     '/product/add',
     [
+        upload_product_image.single('product_image'),
         validateRest(addProductSchema, REQUEST_BODY)
     ],
     Admin.addProduct
