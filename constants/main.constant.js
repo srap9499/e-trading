@@ -87,7 +87,8 @@ module.exports = {
         ADD_PRODUCT_VIEW: "add-product",
         CATEGORIES_VIEW: "categories",
         CATEGORIES_TRASH_VIEW: "categories-trash",
-        ADD_CATEGORY_VIEW: "add-category"
+        ADD_CATEGORY_VIEW: "add-category",
+        CHANGE_PASSWORD_VIEW: "change-password"
     },
     USER_VIEWS: {
         HOME_VIEW: "home",
@@ -118,7 +119,8 @@ module.exports = {
             ADD_PRODUCT_TITLE: "E-Trading - Add Product",
             CATEGORIES_TITLE: "E-Trading - Categories",
             CATEGORIES_TRASH_TITLE: "E-Trading - Categories Trash",
-            ADD_CATEGORY_TITLE: "E-Trading - Add Category"
+            ADD_CATEGORY_TITLE: "E-Trading - Add Category",
+            CHANGE_PASSWORD_TITLE: "E-Trading - Change Password"
         },
         USER_VIEW_TITLES: {
             HOME_TITLE: "E-Trading - Home",

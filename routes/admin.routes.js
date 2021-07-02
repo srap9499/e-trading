@@ -17,7 +17,8 @@ const {
         ADD_PRODUCT_VIEW,
         CATEGORIES_VIEW,
         CATEGORIES_TRASH_VIEW,
-        ADD_CATEGORY_VIEW
+        ADD_CATEGORY_VIEW,
+        CHANGE_PASSWORD_VIEW
     },
     VIEW_TITLES: {
         ADMIN_VIEW_TITLES: {
@@ -33,7 +34,8 @@ const {
             ADD_PRODUCT_TITLE,
             CATEGORIES_TITLE,
             CATEGORIES_TRASH_TITLE,
-            ADD_CATEGORY_TITLE
+            ADD_CATEGORY_TITLE,
+            CHANGE_PASSWORD_TITLE
         }
     },
     REQUEST_PROPERTIES: {
@@ -458,6 +460,15 @@ router.post(
         validateRest(addProductSchema, REQUEST_BODY)
     ],
     Admin.addProduct
+);
+
+/**
+ * @description Route to render Change Password view
+ * @method GET /admin/password/change
+ */
+router.get(
+    '/password/change',
+    Admin.renderView(CHANGE_PASSWORD_VIEW, CHANGE_PASSWORD_TITLE)
 );
 
 module.exports = router;
