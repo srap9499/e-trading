@@ -316,6 +316,15 @@ router.post(
 );
 
 /**
+ * @description Route to get Previous Selected Category for Add Sub Category
+ * @method GET /admin/subcategory/previous/category
+ */
+router.get(
+    '/subcategory/previous/category',
+    Admin.getSubcategory_previousSelectedCategory
+);
+
+/**
  * @description Route to get category list 
  * @method GET /admin/categories/list
  */

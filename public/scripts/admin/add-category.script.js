@@ -47,7 +47,7 @@ const postAddCategory = function (event) {
             const { message } = response;
             successAlert(message);
             $('#add-category-btn').removeAttr('disabled');
-            generateOptions();
+            generateCategoryOptions();
         },
         error: response => {
             const { responseJSON: {message, errors} } = response;
@@ -101,6 +101,23 @@ const errorSubAlert = (message={}, errors={}) => {
     }
 };
 
+const getSubcategory_previousSelectedCategory = async (categoryOption) => {
+    await $.ajax({
+        type: 'GET',
+        url: '/admin/subcategory/previous/category',
+        success: response => {
+            const {data: {id, category}} = response;
+            const optionRow = `<option value=${id} selected hidden>${category}</option>`;
+            categoryOption += optionRow;            
+        },
+        error: response => {
+            const { responseJSON: { message, errors } } = response;
+            errorSubAlert(message, errors);
+        }
+    });
+    return categoryOption;
+};
+
 const getCategoryList = async (categoryOption) => {;
     await $.ajax({
         type: 'GET',
@@ -109,7 +126,6 @@ const getCategoryList = async (categoryOption) => {;
             const {data: categories} = response;
             
             $.each(categories, (i, item) => {
-                console.log(item);
                 const { id, category } = item;
                 const optionRow = `<option value=${id}>${category}</option>`;
                 categoryOption += optionRow;
@@ -123,8 +139,10 @@ const getCategoryList = async (categoryOption) => {;
     return categoryOption;
 };
 
-const generateOptions = async () => {
+const generateCategoryOptions = async () => {
     let categoryOption = '<option>Select Category&mldr;</option>';
+
+    categoryOption = await getSubcategory_previousSelectedCategory(categoryOption);
 
     categoryOption = await getCategoryList(categoryOption);
 
@@ -142,7 +160,7 @@ const postAddSubCategory = function (event) {
         },
         success: response => {
             const { message } = response;
-            console.log(message);
+            generateCategoryOptions();
             successSubAlert(message);
             $('#add-sub-category-btn').removeAttr('disabled');
         },
@@ -159,7 +177,7 @@ const onReady = () => {
     $('form#category-form').on('submit', postAddCategory);
     $('#close-alert').on('click', clearAlert);
 
-    generateOptions();
+    generateCategoryOptions();
 
     $('form#sub-category-form').on('submit', postAddSubCategory);
     $('#close-sub-alert').on('click', clearSubAlert);
