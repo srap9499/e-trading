@@ -362,6 +362,15 @@ router.get(
 );
 
 /**
+ * @description Route to get Previous Selected Category for Add Product
+ * @method GET /admin/product/previous/category
+ */
+router.get(
+    '/product/previous/category',
+    Admin.getProduct_previousSelectedCategory
+);
+
+/**
  * @description Route to get brand list 
  * @method GET /admin/brands/list
  */

@@ -133,6 +133,23 @@ const getBrandList = async (brandOption) => {
     return brandOption;
 };
 
+const getProduct_previousSelectedCategory = async (categoryOption) => {
+    await $.ajax({
+        type: 'GET',
+        url: '/admin/product/previous/category',
+        success: response => {
+            const { data: {id, category} } = response;
+            const optionRow = `<option value=${id} selected hidden>${category}</option>`;
+            categoryOption += optionRow;
+        },
+        error: response => {
+            const { responseJSON: {message, errors} } = response;
+            errorAlert(message, errors);
+        }
+    });
+    return categoryOption;
+};
+
 const getCategoryList = async (categoryOption) => {;
     await $.ajax({
         type: 'GET',
@@ -191,6 +208,8 @@ const generateBrandOptions = async () => {
 
 const generateCategoryOptions = async () => {
     let categoryOption = '<option value="">Select Category&mldr;</option>';
+
+    categoryOption = await getProduct_previousSelectedCategory(categoryOption);
 
     categoryOption = await getCategoryList(categoryOption);
 

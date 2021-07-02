@@ -886,6 +886,42 @@ exports.getProduct_previousSelectedBrand = async (req, res, next) => {
 };
 
 /**
+ * @description API interface to previous selected Category for add Product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - Previous Category
+ */
+exports.getProduct_previousSelectedCategory = async (req, res, next) => {
+    try {
+        const previous_category = await sequelize.transaction(async getTransaction => {
+            const product = await Product.findOne({
+                logging: console.log,
+                attributes: [ 'categoryId' ],
+                order: [
+                    ['id', 'DESC']
+                ],
+                transaction: getTransaction
+            });
+            const category = await Category.findOne({
+                logging: console.log,
+                attributes: ['id', 'category'],
+                where: {
+                    id: product.categoryId
+                },
+                transaction: getTransaction
+            });
+            return category;
+        });
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, previous_category)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
  * @description API interface to get Sub Category List for add product by categoryId
  * @param {Request} req 
  * @param {Response} res 
