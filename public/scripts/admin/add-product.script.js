@@ -101,8 +101,10 @@ const getProduct_previousSelectedBrand = async (brandOption) => {
         url: '/admin/product/previous/brand',
         success: response => {
             const { data: {id, name} } = response;
-            const optionRow = `<option value=${id} selected hidden>${name}</option>`;
-            brandOption += optionRow;
+            if (id && name) {
+                const optionRow = `<option value=${id} selected hidden>${name}</option>`;
+                brandOption += optionRow;
+            }
         },
         error: response => {
             const { responseJSON: {message, errors} } = response;
@@ -139,8 +141,10 @@ const getProduct_previousSelectedCategory = async (categoryOption) => {
         url: '/admin/product/previous/category',
         success: response => {
             const { data: {id, category} } = response;
-            const optionRow = `<option value=${id} selected hidden>${category}</option>`;
-            categoryOption += optionRow;
+            if (id && category) {
+                const optionRow = `<option value=${id} selected hidden>${category}</option>`;
+                categoryOption += optionRow;
+            }
         },
         error: response => {
             const { responseJSON: {message, errors} } = response;
@@ -169,6 +173,29 @@ const getCategoryList = async (categoryOption) => {;
         }
     });
     return categoryOption;
+};
+
+const getProduct_previousSelectedSubcategory = async (subcategoryOption) => {
+    const categoryId = $('#categoryId').val();
+    if (!categoryId) {
+        return subcategoryOption;
+    }
+    await $.ajax({
+        type: 'GET',
+        url: `/admin/product/${categoryId}/previous/subcategory`,
+        success: response => {
+            const { data: {id, subcategory} } = response;
+            if (id && subcategory) {
+                const optionRow = `<option value=${id} selected hidden>${subcategory}</option>`;
+                subcategoryOption += optionRow;
+            }
+        },
+        error: response => {
+            const { responseJSON: {message, errors} } = response;
+            errorAlert(message, errors);
+        }
+    });
+    return subcategoryOption;
 };
 
 const getSubCategoryList = async (subcategoryOption) => {
@@ -218,6 +245,8 @@ const generateCategoryOptions = async () => {
 
 const generateSubcategoryOptions = async () => {
     let subcategoryOption = '<option value="">Select Sub Category&mldr;</option>';
+
+    subcategoryOption = await getProduct_previousSelectedSubcategory(subcategoryOption);
 
     subcategoryOption = await getSubCategoryList(subcategoryOption);
 

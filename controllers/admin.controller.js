@@ -867,6 +867,9 @@ exports.getProduct_previousSelectedBrand = async (req, res, next) => {
                 ],
                 transaction: getTransaction
             });
+            if (!product) {
+                return {};
+            }
             const brand = await Brand.findOne({
                 logging: console.log,
                 attributes: ['id', 'name'],
@@ -903,6 +906,9 @@ exports.getProduct_previousSelectedCategory = async (req, res, next) => {
                 ],
                 transaction: getTransaction
             });
+            if (!product) {
+                return {};
+            }
             const category = await Category.findOne({
                 logging: console.log,
                 attributes: ['id', 'category'],
@@ -915,6 +921,49 @@ exports.getProduct_previousSelectedCategory = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, DATA_FETCH_SUCCESS, previous_category)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to previous selected Sub Category by categoryId for add Product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - Previous Sub Category
+ */
+exports.getProduct_previousSelectedSubcategory = async (req, res, next) => {
+    try {
+        const { categoryId } = req.params;
+        const previous_subcategory = await sequelize.transaction(async getTransaction => {
+            const product = await Product.findOne({
+                logging: console.log,
+                attributes: [ 'subcategoryId' ],
+                order: [
+                    ['id', 'DESC']
+                ],
+                where: {
+                    categoryId
+                },
+                transaction: getTransaction
+            });
+            if (!product) {
+                return {};
+            }
+            const subcategory = await Subcategory.findOne({
+                logging: console.log,
+                attributes: ['id', 'subcategory'],
+                where: {
+                    id: product.subcategoryId
+                },
+                transaction: getTransaction
+            });
+            return subcategory;
+        });
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, previous_subcategory)
         );
     } catch (error) {
         next(error);

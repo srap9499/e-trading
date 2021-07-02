@@ -371,6 +371,15 @@ router.get(
 );
 
 /**
+ * @description Route to get Previous Selected Sub Category by categoryId for Add Product
+ * @method GET /admin/product/:categoryId/previous/subcategory
+ */
+router.get(
+    '/product/:categoryId/previous/subcategory',
+    Admin.getProduct_previousSelectedSubcategory
+);
+
+/**
  * @description Route to get brand list 
  * @method GET /admin/brands/list
  */
