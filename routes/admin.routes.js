@@ -12,6 +12,7 @@ const {
         BRANDS_VIEW,
         BRANDS_TRASH_VIEW,
         ADD_BRAND_VIEW,
+        EDIT_BRAND_VIEW,
         PRODUCTS_VIEW,
         PRODUCTS_TRASH_VIEW,
         ADD_PRODUCT_VIEW,
@@ -29,6 +30,7 @@ const {
             BRANDS_TITLE,
             BRANDS_TRASH_TITLE,
             ADD_BRAND_TITLE,
+            EDIT_BRAND_TITLE,
             PRODUCTS_TITLE,
             PRODUCTS_TRASH_TITLE,
             ADD_PRODUCT_TITLE,
@@ -50,10 +52,12 @@ const {
     addBrandSchema,
     addCategorySchema,
     addSubCategorySchema,
-    addProductSchema
+    addProductSchema,
+    editBrandSchema
 } = require('../helpers/validate.helper');
 
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
+const Edit = require('../middlewares/edit.middleware');
 const { upload_product_image } = require('../middlewares/file-upload.middleware');
 const { validateRest } = require('../middlewares/validate.middleware');
 
@@ -215,6 +219,36 @@ router.post(
     '/brand/add',
     validateRest(addBrandSchema, REQUEST_BODY),
     Admin.addBrand
+);
+
+/**
+ * @description Route to render Edit Brand View
+ * @method GET /admin/brand/:id/edit
+ */
+router.get(
+    '/brand/:id/edit',
+    Edit.createBrandCookie,
+    Admin.renderView(EDIT_BRAND_VIEW, EDIT_BRAND_TITLE)
+);
+
+/**
+ * @description Route to get edit brand details by brand Id (req.params = {id})
+ * @method GET /admin/brand/edit/getdetails
+ */
+router.get(
+    '/brand/edit/getdetails',
+    Edit.getBrandCookie,
+    Admin.getBrandById
+);
+
+/**
+ * @description Route to edit Brand
+ * @method PUT /admin/brand/:id/edit
+ */
+router.put(
+    '/brand/:id/edit',
+    validateRest(editBrandSchema, REQUEST_BODY),
+    Admin.editBrand
 );
 
 /**

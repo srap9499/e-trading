@@ -75,9 +75,9 @@ const tableArea = `
         <table id="brands-table" class="table table-light table-striped table-hover lead">
             <thead class="small border-1">
                 <tr>
-                    <th scope="col" class="align-middle">B.ID</th>
-                    <th scope="col" class="align-middle">Brand Name</th>
-                    <th scope="col" class="align-middle">Action</th>
+                    <th scope="col" class="align-middle small">B.ID</th>
+                    <th scope="col" class="align-middle small">Brand Name</th>
+                    <th scope="col" class="align-middle small">Action</th>
                 </tr>
             </thead>
             <tbody class="small border-1">
@@ -85,6 +85,12 @@ const tableArea = `
         </table>
     </div>
 </div>`;
+
+const editBrand = id => {
+    return () => {
+        window.location.href = `/admin/brand/${id}/edit`;
+    };
+};
 
 const deleteBrand = id => {
     return () => {
@@ -111,19 +117,27 @@ const createRow = (rowData) => {
     const { id, name } = rowData;
     const brandRow = `
     <tr>
-        <td>
+        <td class="small">
             ${id}
         </td>
-        <td>
+        <td class="small">
             ${name}
         </td>
-        <td>
-            <i id="delete${id}" class="fas fa-trash" title="Delete Brand"></i>
+        <td class="small">
+        <div class="row gx-4 gy-0">
+            <div class="col-3">
+                <i id="edit${id}" class="fas fa-pencil-alt" title="Edit ${name}"></i>
+            </div>
+            <div class="col-3">
+                <i id="delete${id}" class="fas fa-trash" title="Delete ${name}"></i>
+            </div>
+        </div>
         </td>
     </tr>`;
 
     $('#brands-table tbody').append(brandRow);
 
+    $(`#edit${id}`).on('click', editBrand(id));
     $(`#delete${id}`).on('click', deleteBrand(id));
 }
 

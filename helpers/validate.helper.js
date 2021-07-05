@@ -24,11 +24,13 @@ const addSubAdminSchema = Joi.object({
 
 const addBrandSchema = Joi.object({
     name: Joi.string()
-        .trim()
+        .regex(/^\S[\w\s]+\S$/, 'Words')
         .min(2)
         .max(40)
         .required()
 });
+
+const editBrandSchema = addBrandSchema;
 
 const addCategorySchema = Joi.object({
     category: Joi.string()
@@ -191,6 +193,7 @@ const verifyChangeUserDetailSchema = Joi.object({
 module.exports = {
     addSubAdminSchema,
     addBrandSchema,
+    editBrandSchema,
     addCategorySchema,
     addSubCategorySchema,
     addProductSchema,

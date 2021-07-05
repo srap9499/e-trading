@@ -14,6 +14,7 @@ const {
         DELETE_BRAND_SUCCESS,
         RESTORE_BRAND_SUCCESS,
         ADD_BRAND_SUCCESS,
+        EDIT_BRAND_SUCCESS,
         DELETE_PRODUCT_SUCCESS,
         RESTORE_PRODUCT_SUCCESS,
         ADD_PRODUCT_SUCCESS,
@@ -27,11 +28,13 @@ const {
         PRODUCTS_FETCH_SUCCESS,
     },
     ERROR_MESSAGES: {
+        EDIT_BRAND_CANNOT_BE_SAME_ERROR,
         DEFAULT_ERROR
     },
     REQUEST_PROPERTIES: {
         REQUEST_USERDATA,
-        REQUEST_FILENAME
+        REQUEST_FILENAME,
+        REQUEST_PARAMS
     },
     PRODUCTS_IMAGE_PATH,
     VIEW_PATH: {
@@ -57,7 +60,7 @@ const { Product } = require('../models/product.model');
 const { sequelize } = require('../config/db-connection.config');
 const { responseObj } = require('../helpers/response.helper');
 const { pagination, paginationMetaData } = require('../helpers/pagination.helper');
-const { InternalServerError } = require('http-errors');
+const { InternalServerError, BadRequest } = require('http-errors');
 const { Op } = require('sequelize');
 const { Category, Subcategory } = require('../models/categories.model');
 
@@ -399,6 +402,55 @@ exports.addBrand = async (req, res, next) => {
     }
 };
 
+exports.getBrandById = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_PARAMS];
+        const brand = await sequelize.transaction(async getTransaction => {
+            const brand = await Brand.findByPk(id, {
+                logging: false,
+                attributes: ['id', 'name'],
+                distinct: true,
+                transaction: getTransaction
+            });
+            return brand;
+        });
+        if (!brand) {
+            throw new BadRequest(DEFAULT_ERROR);
+        }
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, brand)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.editBrand = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+        await sequelize.transaction(async editTransaction => {
+            const brand = await Brand.update({
+                name
+            }, {
+                logging: false,
+                where: {
+                    id
+                },
+                transaction: editTransaction
+            });
+            if (brand[0] === 0) {
+                throw new BadRequest(EDIT_BRAND_CANNOT_BE_SAME_ERROR);
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, EDIT_BRAND_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
 /**
  * @description API interface to fetch Categories with pagination
  * @param {Request} req 
@@ -651,7 +703,7 @@ exports.getSubcategory_previousSelectedCategory = async (req, res, next) => {
     try {
         const previous_category = await sequelize.transaction(async getTransaction => {
             const subcategory = await Subcategory.findOne({
-                logging: console.log,
+                logging: false,
                 attributes: [ 'categoryId' ],
                 order: [
                     ['id', 'DESC']
@@ -659,7 +711,7 @@ exports.getSubcategory_previousSelectedCategory = async (req, res, next) => {
                 transaction: getTransaction
             });
             const category = await Category.findOne({
-                logging: console.log,
+                logging: false,
                 attributes: ['id', 'category'],
                 where: {
                     id: subcategory.categoryId
@@ -882,7 +934,7 @@ exports.getProduct_previousSelectedBrand = async (req, res, next) => {
     try {
         const previous_brand = await sequelize.transaction(async getTransaction => {
             const product = await Product.findOne({
-                logging: console.log,
+                logging: false,
                 attributes: [ 'brandId' ],
                 order: [
                     ['id', 'DESC']
@@ -893,7 +945,7 @@ exports.getProduct_previousSelectedBrand = async (req, res, next) => {
                 return {};
             }
             const brand = await Brand.findOne({
-                logging: console.log,
+                logging: false,
                 attributes: ['id', 'name'],
                 where: {
                     id: product.brandId
@@ -921,7 +973,7 @@ exports.getProduct_previousSelectedCategory = async (req, res, next) => {
     try {
         const previous_category = await sequelize.transaction(async getTransaction => {
             const product = await Product.findOne({
-                logging: console.log,
+                logging: false,
                 attributes: [ 'categoryId' ],
                 order: [
                     ['id', 'DESC']
@@ -932,7 +984,7 @@ exports.getProduct_previousSelectedCategory = async (req, res, next) => {
                 return {};
             }
             const category = await Category.findOne({
-                logging: console.log,
+                logging: false,
                 attributes: ['id', 'category'],
                 where: {
                     id: product.categoryId
@@ -961,7 +1013,7 @@ exports.getProduct_previousSelectedSubcategory = async (req, res, next) => {
         const { categoryId } = req.params;
         const previous_subcategory = await sequelize.transaction(async getTransaction => {
             const product = await Product.findOne({
-                logging: console.log,
+                logging: false,
                 attributes: [ 'subcategoryId' ],
                 order: [
                     ['id', 'DESC']
@@ -975,7 +1027,7 @@ exports.getProduct_previousSelectedSubcategory = async (req, res, next) => {
                 return {};
             }
             const subcategory = await Subcategory.findOne({
-                logging: console.log,
+                logging: false,
                 attributes: ['id', 'subcategory'],
                 where: {
                     id: product.subcategoryId

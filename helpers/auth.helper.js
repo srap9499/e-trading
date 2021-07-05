@@ -3,7 +3,8 @@
 const { hashSync } = require('bcryptjs');
 // import jwt for token
 const {
-    sign
+    sign,
+    verify
 } = require('jsonwebtoken');
 const { sequelize } = require('../config/db-connection.config');
 
@@ -19,10 +20,23 @@ const {
 const { UserRole } = require('../models/role.model');
 const { User } = require('../models/user.model');
 
-exports.generateToken = (user, interval) => {
-    const token = sign(user, jwt_secret, { expiresIn: interval });
+exports.generateToken = (data, interval) => {
+    const token = sign(data, jwt_secret, { expiresIn: interval });
     return token;
 };
+
+
+exports.verifyToken = token => {
+    return new Promise((resolve, reject) => {
+        verify(token, jwt_secret, (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+}
 
 /**
  * @description Helper function to create UserRoles and SuperAdmin User at first

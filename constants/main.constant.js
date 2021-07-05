@@ -15,6 +15,7 @@ module.exports = {
         DELETE_BRAND_SUCCESS: "Brand Deleted Successfully!",
         RESTORE_BRAND_SUCCESS: "Brand Restored Successfully!",
         ADD_BRAND_SUCCESS: "Brand Added Successfully!",
+        EDIT_BRAND_SUCCESS: "Brand Edited Successfully!",
         DELETE_PRODUCT_SUCCESS: "Product Deleted Successfully!",
         RESTORE_PRODUCT_SUCCESS: "Product Restored Successfully!",
         ADD_PRODUCT_SUCCESS: "Product Added Successfully!",
@@ -55,6 +56,7 @@ module.exports = {
         SUB_CATEGORY_NOTNULL_EMPTY_ERROR: "Sub Category should not be Null or Empty!",
         SUB_CATEGORY_IS_ALPHA_ERROR: "Sub Category Should be a Valid Alpha!",
         SUB_CATEGORY_LENGTH_ERROR: "Sub Category length should be less or equal to 25 chharacters",
+        EDIT_BRAND_CANNOT_BE_SAME_ERROR: "New Brand Name can not be same as Old!",
         WRONG_OTP: "Incorrect OTP!",
         WRONG_PASSWORD: "Incorrect Password!",
         VALIDATION_ERROR: "Validation Errors!",
@@ -82,6 +84,7 @@ module.exports = {
         BRANDS_VIEW: "brands",
         BRANDS_TRASH_VIEW: "brands-trash",
         ADD_BRAND_VIEW: "add-brand",
+        EDIT_BRAND_VIEW: "edit-brand",
         PRODUCTS_VIEW: "products",
         PRODUCTS_TRASH_VIEW: "products-trash",
         ADD_PRODUCT_VIEW: "add-product",
@@ -114,6 +117,7 @@ module.exports = {
             BRANDS_TITLE: "E-Trading - Brands",
             BRANDS_TRASH_TITLE: "E-Trading - Brands Trash",
             ADD_BRAND_TITLE: "E-trading - Add Brand",
+            EDIT_BRAND_TITLE: "E-Trading - Edit Brand",
             PRODUCTS_TITLE: "E-Trading - Products",
             PRODUCTS_TRASH_TITLE: "E-Trading - Products Trash",
             ADD_PRODUCT_TITLE: "E-Trading - Add Product",
@@ -147,13 +151,16 @@ module.exports = {
         REQUEST_CUSTOM: "customData"
     },
     COOKIE_NAMES: {
-        AUTH_TOKEN: "auth_token"
+        AUTH_TOKEN: "auth_token",
+        EDIT_BRAND_TOKEN: "brand_token",
     },
     TOKEN_MAX_AGE: {
-        AUTH_TOKEN_MAX_AGE: 60 * 60,    // 1 hour (IN SECONDS)
+        AUTH_TOKEN_MAX_AGE: 60 * 60,    // 1 hour (IN SECONDS),
+        EDIT_BRAND_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
     },
     COOKIE_MAX_AGE: {
-        AUTH_TOKEN_COOKIE_MAX: 60 * 60 * 1000,      // 1 hour  (IN MICRO SECONDS)
+        AUTH_TOKEN_COOKIE_MAX: 60 * 60 * 1000,      // 1 hour  (IN MICRO SECONDS),
+        EDIT_BRAND_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
     },
     MAIL_SUBJECTS: {
         VERIFY_ACCOUNT_MAIL_SUBJECT: "Please verify email to Activate your account!",
