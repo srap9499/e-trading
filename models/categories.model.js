@@ -32,7 +32,7 @@ const Category = sequelize.define('category', {
                 msg: CATEGORY_NOTNULL_EMPTY_ERROR
             },
             is: {
-                args: /^[\w\s]+$/,
+                args: /^\S[\w\s]+\S$/,
                 msg: CATEGORY_IS_ALPHA_ERROR
             },
             len: {
@@ -60,7 +60,7 @@ const Subcategory = sequelize.define('subcategory', {
                 msg: SUB_CATEGORY_NOTNULL_EMPTY_ERROR
             },
             is: {
-                args: /^[\w\s]+$/,
+                args: /^\S[\w\s]+\S$/,
                 msg: SUB_CATEGORY_IS_ALPHA_ERROR
             },
             len: {

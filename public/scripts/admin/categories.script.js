@@ -87,6 +87,12 @@ const tableArea = `
     </div>
 </div>`;
 
+const editCategory = id => {
+    return () => {
+        window.location.href = `/admin/category/${id}/edit`;
+    };
+};
+
 const deleteSubCategory = id => {
     return () => {
         $.ajax({
@@ -180,6 +186,7 @@ const createRow = (rowData) => {
 
     $('#categories-table tbody').append(categoryRow);
 
+    $(`#edit${id}`).on('click', editCategory(id));
     $(`#delete${id}`).on('click', deleteCategory(id));
 }
 

@@ -24,11 +24,13 @@ const {
         RESTORE_SUB_CATEGORY_SUCCESS,
         ADD_CATEGORY_SUCCESS,
         ADD_SUB_CATEGORY_SUCCESS,
+        EDIT_CATEGORY_SUCCESS,
         DATA_FETCH_SUCCESS,
         PRODUCTS_FETCH_SUCCESS,
     },
     ERROR_MESSAGES: {
         EDIT_BRAND_CANNOT_BE_SAME_ERROR,
+        EDIT_CATEGORY_CANNOT_BE_SAME_ERROR,
         DEFAULT_ERROR
     },
     REQUEST_PROPERTIES: {
@@ -402,6 +404,13 @@ exports.addBrand = async (req, res, next) => {
     }
 };
 
+/**
+ * @description API interface to get Brand By Id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - brand
+ */
 exports.getBrandById = async (req, res, next) => {
     try {
         const { id } = req[REQUEST_PARAMS];
@@ -425,6 +434,13 @@ exports.getBrandById = async (req, res, next) => {
     }
 };
 
+/**
+ * @description API interface to Edit Brand By Id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
 exports.editBrand = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -686,6 +702,69 @@ exports.addCategory = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, ADD_CATEGORY_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to get Category By Id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - category
+ */
+exports.getCategoryById = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_PARAMS];
+        const category = await sequelize.transaction(async getTransaction => {
+            const category = await Category.findByPk(id, {
+                logging: false,
+                attributes: ['id', 'category'],
+                distinct: true,
+                transaction: getTransaction
+            });
+            return category;
+        });
+        if (!category) {
+            throw new BadRequest(DEFAULT_ERROR);
+        }
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, category)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to Edit Category By Id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
+exports.editCategory = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { category } = req.body;
+        await sequelize.transaction(async editTransaction => {
+            const _category = await Category.update({
+                category,
+            }, {
+                logging: false,
+                where: {
+                    id
+                },
+                transaction: editTransaction
+            });
+            if (_category[0] === 0) {
+                throw new BadRequest(EDIT_CATEGORY_CANNOT_BE_SAME_ERROR);
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, EDIT_CATEGORY_SUCCESS)
         );
     } catch (error) {
         next(error);
