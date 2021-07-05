@@ -117,7 +117,19 @@ const restoreProduct = id => {
 };
 
 const createRow = (rowData) => {
-    const { id, name, brand={}, category={}, subcategory={}, quantity, price } = rowData;
+    const { id, name, brand, category, subcategory, quantity, price } = rowData;
+    let brandValue = '--',
+        categoryValue = '--',
+        subcategoryValue = '--';
+    if (brand && brand.name) {
+        brandValue = `${brand.name}`;
+    }
+    if (category && category.category) {
+        categoryValue = `${category.category}`;
+    }
+    if (subcategory && subcategory.subcategory) {
+        subcategoryValue = `${subcategory.subcategory}`;
+    }
     const productRow = `
     <tr>
         <td class="small">
@@ -127,13 +139,13 @@ const createRow = (rowData) => {
             ${name}
         </td>
         <td class="small">
-            ${brand.name||'--'}
+            ${brandValue}
         </td>
         <td class="small">
-            ${category.category||'--'}
+            ${categoryValue}
         </td>
         <td class="small">
-            ${subcategory.subcategory||'--'}
+            ${subcategoryValue}
         </td>
         <td class="small">
             ${quantity}
