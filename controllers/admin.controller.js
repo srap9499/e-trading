@@ -749,6 +749,17 @@ exports.addSubCategory = async (req, res, next) => {
             limit,
             offset,
             order: order ? [order] : [['id', 'ASC']],
+            include: [
+                {
+                    model: Brand,
+                },
+                {
+                    model: Category,
+                },
+                {
+                    model: Subcategory
+                }
+            ],
             distinct: true
         });
         const data = paginationMetaData(products, page, limit);
@@ -810,6 +821,17 @@ exports.addSubCategory = async (req, res, next) => {
                     [Op.ne]: null
                 }
             },
+            include: [
+                {
+                    model: Brand,
+                },
+                {
+                    model: Category,
+                },
+                {
+                    model: Subcategory
+                }
+            ],
             distinct: true,
             paranoid: false
         });

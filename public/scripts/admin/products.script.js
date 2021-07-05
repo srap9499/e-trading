@@ -79,11 +79,14 @@ const tableArea = `
         <table id="products-table" class="table table-sm table-md table-lg table-light table-striped table-hover lead">
             <thead class="small border-1">
                 <tr>
-                    <th scope="col" class="align-middle">P.ID</th>
-                    <th scope="col" class="align-middle">Name</th>
-                    <th scope="col" class="align-middle">Qty</th>
-                    <th scope="col" class="align-middle">Price</th>
-                    <th scope="col" class="align-middle">Action</th>
+                    <th scope="col" class="align-middle small">P.ID</th>
+                    <th scope="col" class="align-middle small">Name</th>
+                    <th scope="col" class="align-middle small">Brand</th>
+                    <th scope="col" class="align-middle small">Category</th>
+                    <th scope="col" class="align-middle small">Subcategory</th>
+                    <th scope="col" class="align-middle small">Qty</th>
+                    <th scope="col" class="align-middle small">Price</th>
+                    <th scope="col" class="align-middle small">Action</th>
                 </tr>
             </thead>
             <tbody class="small border-1">
@@ -135,22 +138,31 @@ const deleteProduct = id => {
 };
 
 const createRow = (rowData) => {
-    const { id, name, quantity, price } = rowData;
+    const { id, name, brand={}, category={}, subcategory={}, quantity, price } = rowData;
     const productRow = `
     <tr>
-        <td>
+        <td class="small">
             ${id}
         </td>
-        <td>
+        <td class="small">
             ${name}
         </td>
-        <td>
+        <td class="small">
+            ${brand.name||'--'}
+        </td>
+        <td class="small">
+            ${category.category||'--'}
+        </td>
+        <td class="small">
+            ${subcategory.subcategory||'--'}
+        </td>
+        <td class="small">
             ${quantity}
         </td>
-        <td>
+        <td class="small">
             &#8377;&nbsp;${price}
         </td>
-        <td>
+        <td class="small">
             <div class="row gx-4 gy-0 text-center">
                 <div class="col-3">
                     <i id="edit${id}" class="fas fa-pencil-alt" title="Edit Product"></i>
