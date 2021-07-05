@@ -206,6 +206,9 @@ exports.postSignIn = async (req, res, next) => {
     user.accessToken = token;
     await user.save();
     // res.status(200).send({ Message: "OK! Sign In successful!", "Token": token });
+    if (user.userroleId == roles.SuperAdmin || user.userroleId == roles.SubAdmin) {
+        return res.redirect('/admin');
+    }
     res.redirect('/home');
 };
 
