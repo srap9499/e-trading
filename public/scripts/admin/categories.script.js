@@ -93,6 +93,12 @@ const editCategory = id => {
     };
 };
 
+const editSubCategory = id => {
+    return () => {
+        window.location.href = `/admin/subcategory/${id}/edit`;
+    }
+};
+
 const deleteSubCategory = id => {
     return () => {
         $.ajax({
@@ -159,6 +165,7 @@ const createRow = (rowData) => {
             </div>
         </div>`;
         subcategory += subcategoryRow;
+        $(document).on('click', `#edit-sub${item.id}`, editSubCategory(item.id));
         $(document).on('click', `#delete-sub${item.id}`, deleteSubCategory(item.id));
     });
     const categoryRow = `
@@ -186,7 +193,7 @@ const createRow = (rowData) => {
 
     $('#categories-table tbody').append(categoryRow);
 
-    $(`#edit${id}`).on('click', editCategory(id));
+    $(`#edit${id}`).on('click', editSubCategory(id));
     $(`#delete${id}`).on('click', deleteCategory(id));
 }
 
@@ -215,7 +222,6 @@ const getCategories = () => {
         data: queryData,
         success: response => {
             const { data: { rows, totalPages } } = response;
-            console.log(rows);
             $('#categories-area').empty();
             if (!rows || !rows.length) {
                 currentEntries = rows.length??0;

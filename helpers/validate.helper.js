@@ -53,6 +53,8 @@ const addSubCategorySchema = Joi.object({
         .required()
 });
 
+const editSubCategorySchema = addSubCategorySchema;
+
 const addProductSchema = Joi.object({
     name: Joi.string()
         .trim()
@@ -199,6 +201,7 @@ module.exports = {
     addCategorySchema,
     editCategorySchema,
     addSubCategorySchema,
+    editSubCategorySchema,
     addProductSchema,
     signUpSchema,
     verifySchema,

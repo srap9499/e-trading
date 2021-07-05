@@ -20,6 +20,7 @@ const {
         CATEGORIES_TRASH_VIEW,
         ADD_CATEGORY_VIEW,
         EDIT_CATEGORY_VIEW,
+        EDIT_SUB_CATEGORY_VIEW,
         CHANGE_PASSWORD_VIEW
     },
     VIEW_TITLES: {
@@ -39,6 +40,7 @@ const {
             CATEGORIES_TRASH_TITLE,
             ADD_CATEGORY_TITLE,
             EDIT_CATEGORY_TITLE,
+            EDIT_SUB_CATEGORY_TITLE,
             CHANGE_PASSWORD_TITLE
         }
     },
@@ -56,7 +58,8 @@ const {
     addSubCategorySchema,
     addProductSchema,
     editBrandSchema,
-    editCategorySchema
+    editCategorySchema,
+    editSubCategorySchema
 } = require('../helpers/validate.helper');
 
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
@@ -375,7 +378,7 @@ router.get(
 );
 
 /**
- * @description Route to edit Brand
+ * @description Route to edit Category
  * @method PUT /admin/category/:id/edit
  */
 router.put(
@@ -410,6 +413,36 @@ router.post(
     '/subcategory/add',
     validateRest(addSubCategorySchema, REQUEST_BODY),
     Admin.addSubCategory
+);
+
+/**
+ * @description Route to render Edit Sub Category View
+ * @method GET /admin/subcategory/:id/edit
+ */
+router.get(
+    '/subcategory/:id/edit',
+    Edit.createSubCategoryCookie,
+    Admin.renderView(EDIT_SUB_CATEGORY_VIEW, EDIT_SUB_CATEGORY_TITLE)
+);
+
+/**
+ * @description Route to get edit subcategory details by subcategory Id (req.params = {id})
+ * @method GET /admin/subcategory/edit/getdetails
+ */
+router.get(
+    '/subcategory/edit/getdetails',
+    Edit.getSubCategoryCookie,
+    Admin.getSubCategoryById
+);
+
+/**
+ * @description Route to edit Sub Category
+ * @method PUT /admin/category/:id/edit
+ */
+router.put(
+    '/subcategory/:id/edit',
+    validateRest(editSubCategorySchema, REQUEST_BODY),
+    Admin.editSubCategory
 );
 
 /**

@@ -25,12 +25,14 @@ const {
         ADD_CATEGORY_SUCCESS,
         ADD_SUB_CATEGORY_SUCCESS,
         EDIT_CATEGORY_SUCCESS,
+        EDIT_SUB_CATEGORY_SUCCESS,
         DATA_FETCH_SUCCESS,
         PRODUCTS_FETCH_SUCCESS,
     },
     ERROR_MESSAGES: {
         EDIT_BRAND_CANNOT_BE_SAME_ERROR,
         EDIT_CATEGORY_CANNOT_BE_SAME_ERROR,
+        EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR,
         DEFAULT_ERROR
     },
     REQUEST_PROPERTIES: {
@@ -856,6 +858,74 @@ exports.addSubCategory = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, ADD_SUB_CATEGORY_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to get Sub Category By Id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - subcategory
+ */
+exports.getSubCategoryById = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_PARAMS];
+        const subcategory = await sequelize.transaction(async getTransaction => {
+            const subcategory = await Subcategory.findByPk(id, {
+                logging: false,
+                attributes: ['id', 'subcategory'],
+                include: {
+                    model: Category,
+                    attributes: ['id', 'category']
+                },
+                distinct: true,
+                transaction: getTransaction
+            });
+            return subcategory;
+        });
+        if (!subcategory) {
+            throw new BadRequest(DEFAULT_ERROR);
+        }
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, subcategory)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to Edit Sub Category By Id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
+exports.editSubCategory = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { categoryId, subcategory } = req.body;
+        await sequelize.transaction(async editTransaction => {
+            const _subcategory = await Subcategory.update({
+                categoryId,
+                subcategory
+            }, {
+                logging: false,
+                where: {
+                    id
+                },
+                transaction: editTransaction
+            });
+            if (_subcategory[0] === 0) {
+                throw new BadRequest(EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR);
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, EDIT_SUB_CATEGORY_SUCCESS)
         );
     } catch (error) {
         next(error);

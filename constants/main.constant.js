@@ -26,6 +26,7 @@ module.exports = {
         ADD_CATEGORY_SUCCESS: "Category Added Successfully!",
         ADD_SUB_CATEGORY_SUCCESS: "Sub Category Added Successfully!",
         EDIT_CATEGORY_SUCCESS: "Category Edited Successfully!",
+        EDIT_SUB_CATEGORY_SUCCESS: "Sub Category Edited Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
         PRODUCTS_FETCH_SUCCESS: "Products Fetched Successfully!",
         CART_FETCH_SUCCESS: "Cart Items Fetched Successfully!",
@@ -59,6 +60,7 @@ module.exports = {
         SUB_CATEGORY_LENGTH_ERROR: "Sub Category length should be less or equal to 25 chharacters",
         EDIT_BRAND_CANNOT_BE_SAME_ERROR: "New Brand Name can not be same as Old!",
         EDIT_CATEGORY_CANNOT_BE_SAME_ERROR: "New Category can not be same as Old!",
+        EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR: "New Sub Category can not be same as Old!",
         WRONG_OTP: "Incorrect OTP!",
         WRONG_PASSWORD: "Incorrect Password!",
         VALIDATION_ERROR: "Validation Errors!",
@@ -94,6 +96,7 @@ module.exports = {
         CATEGORIES_TRASH_VIEW: "categories-trash",
         ADD_CATEGORY_VIEW: "add-category",
         EDIT_CATEGORY_VIEW: "edit-category",
+        EDIT_SUB_CATEGORY_VIEW: "edit-subcategory",
         CHANGE_PASSWORD_VIEW: "change-password"
     },
     USER_VIEWS: {
@@ -128,6 +131,7 @@ module.exports = {
             CATEGORIES_TRASH_TITLE: "E-Trading - Categories Trash",
             ADD_CATEGORY_TITLE: "E-Trading - Add Category",
             EDIT_CATEGORY_TITLE: "e-Trading - Edit Category",
+            EDIT_SUB_CATEGORY_TITLE: "e-Trading - Edit Sub Category",
             CHANGE_PASSWORD_TITLE: "E-Trading - Change Password"
         },
         USER_VIEW_TITLES: {
@@ -158,16 +162,19 @@ module.exports = {
         AUTH_TOKEN: "auth_token",
         EDIT_BRAND_TOKEN: "brand_token",
         EDIT_CATEGORY_TOKEN: "category_token",
+        EDIT_SUB_CATEGORY_TOKEN: "subcategory_token",
     },
     TOKEN_MAX_AGE: {
         AUTH_TOKEN_MAX_AGE: 60 * 60,    // 1 hour (IN SECONDS),
         EDIT_BRAND_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
         EDIT_CATEGORY_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
+        EDIT_SUB_CATEGORY_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
     },
     COOKIE_MAX_AGE: {
         AUTH_TOKEN_COOKIE_MAX: 60 * 60 * 1000,      // 1 hour  (IN MICRO SECONDS),
         EDIT_BRAND_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
         EDIT_CATEGORY_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
+        EDIT_SUB_CATEGORY_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
     },
     MAIL_SUBJECTS: {
         VERIFY_ACCOUNT_MAIL_SUBJECT: "Please verify email to Activate your account!",
