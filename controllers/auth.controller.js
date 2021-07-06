@@ -3,7 +3,8 @@
 const {
     INITIAL_WALLET_BONUS_AMOUNT,
     saltValue,
-    roles
+    roles,
+    userStatus
 } = require('../config/main.config');
 
 const {
@@ -43,6 +44,9 @@ const {
     },
     COOKIE_MAX_AGE: {
         AUTH_TOKEN_COOKIE_MAX,
+    },
+    COUPON_TYPES: {
+        COUPON_DYNAMIC
     }
 } = require('../constants/main.constant');
 
@@ -56,7 +60,6 @@ const { generateToken } = require('../helpers/auth.helper');
 const cryptoRandomString = require('crypto-random-string');
 const { sendVerifyEmail, sendSignUpNotificationMail } = require('../helpers/mail.helper');
 const { sequelize } = require('../config/db-connection.config');
-const { UserRole } = require('../models/role.model');
 const { User } = require('../models/user.model');
 const { Code } = require('../models/code.model');
 const { Wallet } = require('../models/wallet.model');
@@ -130,12 +133,12 @@ exports.postVerify = async (req, res, next) => {
         const user = await User.findOne({ logging: false, where: { id }, include: Wallet });
         const verified = await Code.findOne({ logging: false, where: { email: user.email, otp } });
         if (verified) {
-            user.status = 'active';
+            user.status = userStatus.Active;
             user.wallet.amount = INITIAL_WALLET_BONUS_AMOUNT;
             const coupon = await Coupon.create({
                 name: "Buy One Get One Free",
                 code: cryptoRandomString(6),
-                type: "dynamic",
+                type: COUPON_DYNAMIC,
                 value: 50,
                 notAfter: dateAfterWeeks(2)
             }, { logging: false, transaction: verifyTransaction });
@@ -180,7 +183,7 @@ exports.postSignIn = async (req, res, next) => {
             title: SIGN_IN_TITLE
         });
     }
-    if (user.status == 'pending') {
+    if (user.status == userStatus.Pending) {
         return res.redirect('/auth/verify/' + user.id);
     }
     const isMatch = compareSync(password, user.password);

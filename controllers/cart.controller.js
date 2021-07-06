@@ -24,6 +24,11 @@ const {
     REQUEST_PROPERTIES: {
         REQUEST_USERDATA
     },
+    ORDER_STATUS: {
+        ORDER_STATUS_PENDING,
+        ORDER_STATUS_FAILED,
+        ORDER_STATUS_SUCCESS
+    },
     ORDER_REMARKS: {
         PRODUCT_OUT_OF_STOCK,
         PAYMENT_PENDING,
@@ -31,6 +36,9 @@ const {
         INSUFFICIENT_WALLET_AMOUNT,
         ORDER_CANCELED,
         ORDER_PLACED_SUCCESS
+    },
+    COUPON_TYPES: {
+        COUPON_DYNAMIC
     }
 } = require('../constants/main.constant');
 
@@ -221,7 +229,7 @@ exports.checkOut = async (req, res, next) => {
                 totalAmount: sum,
                 discountedAmount: sum,
                 orderdetails: cartDetail,
-                status: outOfStock ? "failed" : undefined,
+                status: outOfStock ? ORDER_STATUS_FAILED : ORDER_STATUS_PENDING,
                 remark: outOfStock ? PRODUCT_OUT_OF_STOCK : PAYMENT_PENDING
             };
         
@@ -341,7 +349,7 @@ exports.payment = async (req, res, next) => {
             }
             let amount = order.discountedAmount;
             if (!failedFlag && coupon) {
-                amount = coupon.type === "dynamic" ? ( amount - (amount * coupon.value / 100) ) : (amount - coupon.value);
+                amount = coupon.type === COUPON_DYNAMIC ? ( amount - (amount * coupon.value / 100) ) : (amount - coupon.value);
             }
             if (!failedFlag && (user.wallet.amount - amount) < 0) {
                 failedFlag = true;
@@ -350,7 +358,7 @@ exports.payment = async (req, res, next) => {
             const updateOrder = await Order.update({
                 discountedAmount: !failedFlag ? amount : undefined,
                 couponId: !failedFlag && coupon ? coupon.id : undefined,
-                status: !failedFlag ? 'success' : 'failed',
+                status: !failedFlag ? ORDER_STATUS_SUCCESS : ORDER_STATUS_FAILED,
                 remark
             }, {
                 logging: false,
@@ -414,7 +422,7 @@ exports.retryOrder = async (req, res, next) => {
                 }
             }
             const retryOrderResult = await Order.update({
-                status: !failedFlag ? 'pending' : 'failed',
+                status: !failedFlag ? ORDER_STATUS_PENDING : ORDER_STATUS_FAILED,
                 remark
             }, {
                 logging: false,
@@ -438,7 +446,7 @@ exports.cancelOrder = async (req, res, next) => {
     try {
         await sequelize.transaction(async cancelTransaction => {
             await Order.update({
-                status: 'failed',
+                status: ORDER_STATUS_FAILED,
                 remark: ORDER_CANCELED
             }, {
                 logging: false,

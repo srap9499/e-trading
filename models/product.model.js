@@ -8,6 +8,10 @@ const {
         QUANTITY_IS_INT_ERROR,
         PRICE_NOTNULL_ERROR,
         PRICE_ISDECIMAL_ERROR
+    },
+    PRODUCTS_IMAGE_PATH,
+    DEFAULTS: {
+        DEFAULT_PRODUCT_IMAGE_NAME
     }
 } = require('../constants/main.constant');
 
@@ -31,6 +35,10 @@ const Product = sequelize.define('product', {
                 msg: PRODUCT_NAME_LENGTH_ERROR
             },
         }
+    },
+    description: {
+        type: Sequelize.TEXT('medium'),
+        allowNull: true,
     },
     quantity: {
         type: Sequelize.INTEGER,
@@ -61,7 +69,7 @@ const Product = sequelize.define('product', {
     imagePath: {
         type: Sequelize.STRING(128),
         allowNull: false,
-        defaultValue: 'images/products/default.jpg'
+        defaultValue: PRODUCTS_IMAGE_PATH + DEFAULT_PRODUCT_IMAGE_NAME
     }
 }, {
     indexes: [

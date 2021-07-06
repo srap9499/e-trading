@@ -16,6 +16,7 @@ const Sequelize = require('sequelize');
 // Sequelize connection
 const { sequelize } = require('../config/db-connection.config');
 const { UserRole } = require('./role.model');
+const { userStatus } = require('../config/main.config');
 
 const User = sequelize.define("user", {
     userName: {
@@ -59,9 +60,9 @@ const User = sequelize.define("user", {
         }
     },
     status: {
-        type: Sequelize.ENUM('active', 'pending'),
+        type: Sequelize.STRING(15),
         allowNull: false,
-        defaultValue: 'pending'
+        defaultValue: userStatus.Pending
     },
     accessToken: {
         type: Sequelize.STRING,

@@ -6,6 +6,12 @@ const {
         AMOUNT_ISDECIMAL_ERROR,
         QUANTITY_NOTNULL_ERROR,
         QUANTITY_IS_INT_ERROR
+    },
+    ORDER_STATUS: {
+        ORDER_STATUS_PENDING
+    },
+    ORDER_REMARKS: {
+        PAYMENT_PENDING
     }
 } = require('../constants/main.constant');
 
@@ -43,14 +49,14 @@ const Order = sequelize.define('order', {
         }
     },
     status: {
-        type: Sequelize.ENUM("pending", "success", "failed"),
+        type: Sequelize.STRING(15),
         allowNull: false,
-        defaultValue: "pending"
+        defaultValue: ORDER_STATUS_PENDING
     },
     remark: {
         type: Sequelize.STRING(64),
         allowNull: true,
-        defaultValue: "Payment pending"
+        defaultValue: PAYMENT_PENDING
     }
 }, {
     timestamps: true,

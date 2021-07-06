@@ -3,6 +3,13 @@
 const { NOW } = require("sequelize");
 const Sequelize = require("sequelize");
 const { sequelize } = require("../config/db-connection.config");
+
+const {
+    COUPON_TYPES: {
+        DEFAULT_COUPON_TYPE
+    }
+} = require("../constants/main.constant");
+
 const { User } = require("./user.model");
 
 const Coupon = sequelize.define('coupon', {
@@ -15,9 +22,9 @@ const Coupon = sequelize.define('coupon', {
         allowNull: false
     },
     type: {
-        type: Sequelize.ENUM("dynamic", "static"),
+        type: Sequelize.STRING(15),
         allowNull: false,
-        defaultValue: "static"
+        defaultValue: DEFAULT_COUPON_TYPE
     },
     value: {
         type: Sequelize.DECIMAL(10, 2),

@@ -9,6 +9,9 @@ const {
         SUB_CATEGORY_NOTNULL_EMPTY_ERROR,
         SUB_CATEGORY_IS_ALPHA_ERROR,
         SUB_CATEGORY_LENGTH_ERROR
+    },
+    DEFAULTS: {
+        DEFAULT_SUBCATEGORY
     }
 } = require('../constants/main.constant');
 
@@ -23,7 +26,7 @@ const Category = sequelize.define('category', {
             msg: CATEGORY_UNIQUE_ERROR
         },
         allowNull: false,
-        defaultValue: "General",
+        defaultValue: DEFAULT_SUBCATEGORY,
         validate: {
             notNull: {
                 msg: CATEGORY_NOTNULL_EMPTY_ERROR

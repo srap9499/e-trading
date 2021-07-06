@@ -184,6 +184,11 @@ module.exports = {
         GET_PRODUCT_PURCHASE_NOTIFICATION_MAIL_SUBJECT: "E-Trading: Notification!",
         PURCHASE_INVOICE_MAIL_SUBJECT: "Purchase Invoice!"
     },
+    ORDER_STATUS: {
+        ORDER_STATUS_PENDING: "pending",
+        ORDER_STATUS_FAILED: "failed",
+        ORDER_STATUS_SUCCESS: "success"
+    },
     ORDER_REMARKS: {
         PRODUCT_OUT_OF_STOCK: "Insufficient Product Quantity!",
         PAYMENT_PENDING: "Payment Pending!",
@@ -191,6 +196,11 @@ module.exports = {
         INSUFFICIENT_WALLET_AMOUNT: "Insufficient Wallet Amount!",
         ORDER_CANCELED: "Order Canceled!",
         ORDER_PLACED_SUCCESS: "Order Placed!"
+    },
+    COUPON_TYPES: {
+        COUPON_DYNAMIC: "dynamic",
+        COUPON_STATIC: "static",
+        DEFAULT_COUPON_TYPE: "static"
     },
     DEFAULTS: {
         DEFAULT_SUBCATEGORY: "General",
