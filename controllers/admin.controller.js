@@ -14,6 +14,7 @@ const {
         DELETE_BRAND_SUCCESS,
         RESTORE_BRAND_SUCCESS,
         ADD_BRAND_SUCCESS,
+        ADD_BULK_BRAND_SUCCESS,
         EDIT_BRAND_SUCCESS,
         DELETE_PRODUCT_SUCCESS,
         RESTORE_PRODUCT_SUCCESS,
@@ -33,6 +34,7 @@ const {
         EDIT_BRAND_CANNOT_BE_SAME_ERROR,
         EDIT_CATEGORY_CANNOT_BE_SAME_ERROR,
         EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR,
+        CSV_FILE_REQUIRED_ERROR,
         DEFAULT_ERROR
     },
     REQUEST_PROPERTIES: {
@@ -67,6 +69,10 @@ const { pagination, paginationMetaData } = require('../helpers/pagination.helper
 const { InternalServerError, BadRequest } = require('http-errors');
 const { Op } = require('sequelize');
 const { Category, Subcategory } = require('../models/categories.model');
+const {
+    removeFile,
+    readCsvFile
+} = require('../helpers/file.helper');
 
 
 const getUserById = async (id) => {
@@ -400,6 +406,37 @@ exports.addBrand = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, ADD_BRAND_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to add Bulk Brand by csv file
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @method POST
+ * @returns {Response} JSON
+ */
+exports.addBulkBrandByCSV = async (req, res, next) => {
+    try {
+        const file = req.file;
+        if (!file) {
+            throw new BadRequest(CSV_FILE_REQUIRED_ERROR);
+        }
+        let brands = await readCsvFile(file.path);
+        await sequelize.transaction(async addTransaction => {
+            await Brand.bulkCreate(brands, {
+                logging: false,
+                validate: true,
+                transaction: addTransaction
+            });
+        });
+        await removeFile(file.path);
+        return res.status(200).send(
+            responseObj(true, ADD_BULK_BRAND_SUCCESS)
         );
     } catch (error) {
         next(error);

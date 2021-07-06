@@ -11,5 +11,8 @@ Invoices
 public/images/products/*
 !public/images/products/default.jpg
 
+# Bulk add CSV files
+public/bulk_add_files/
+
 # VS Code extensions
 .vscode

@@ -64,7 +64,10 @@ const {
 
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
 const Edit = require('../middlewares/edit.middleware');
-const { upload_product_image } = require('../middlewares/file-upload.middleware');
+const {
+    upload_product_image,
+    upload_add_bulk_file
+} = require('../middlewares/file-upload.middleware');
 const { validateRest } = require('../middlewares/validate.middleware');
 
 
@@ -225,6 +228,19 @@ router.post(
     '/brand/add',
     validateRest(addBrandSchema, REQUEST_BODY),
     Admin.addBrand
+);
+
+/**
+ * @description Route to Add Bulk Brand By JSON file
+ * @method POST /admin/brand/add/bulk
+ */
+router.post(
+    '/brand/add/bulk',
+    [
+        upload_add_bulk_file.single('bulk_brand'),
+    ],
+    // validateRest(addBrandSchema, REQUEST_BODY),
+    Admin.addBulkBrandByCSV
 );
 
 /**

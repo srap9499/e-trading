@@ -8,9 +8,9 @@
         <!-- Header Ends -->
 
         <!-- Add Brand -->
-        <section id="add-brand">
+        <section id="add-brand" class="mb-2">
             <div class="jumbotron bg-light">
-                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                <div class="container-md pt-2 pt-sm-2 pt-md-3 pt-lg-4 pt-xl-5 pb-2 pb-lg-3">
                     <div class="row gutters">
                         <div class="col-12 col-sm-12 col-md-5">
                             <h2 class="h2 display-6">
@@ -26,19 +26,25 @@
                     </div>
                     <hr class="my-sm-2 my-md-3 my-lg-4">
                     <div id="add-brand-area">
-                        <form id="brand-form" enctype="multipart/form-data">
-                            <div class="row gx-5 gy-4">
-                                <div class="col-12 col-sm-12 col-md-6">
-                                    <div class="form-group">
-                                        <label for="name" class="text-muted">Brand Name</label>
-                                        <input type="text" name="name" id="name" class="form-control py-1" placeholder="Enter Brand Name&mldr;">
+                        <div class="row gx-4 gy-3">
+                            <div class="col-12 col-md-6">
+                                <form id="brand-form" enctype="multipart/form-data">
+                                    <div class="row gx-5 gy-4">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="name" class="text-muted">Brand Name</label>
+                                                <input type="text" name="name" id="name" class="form-control py-1" placeholder="Enter Brand Name&mldr;">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <button type="submit" id="add-brand-btn" class="btn btn-primary py-1">Add</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <button type="submit" id="add-brand-btn" class="btn btn-primary py-1">Add</button>
-                                </div>
+                                </form>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,6 +53,54 @@
 
         <!-- Add Brand Custom JS -->
         <script src="/scripts/admin/add-brand.script.js"></script>
+
+
+        <!-- Add Bulk Brand -->
+        <section id="add-bulk-brand">
+            <div class="jumbotron bg-light">
+                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                    <div class="row gutters">
+                        <div class="col-12 col-sm-12 col-md-5">
+                            <h2 class="h2 display-6">
+                                Add Bulk Brand
+                            </h2>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-7">
+                            <div id="bulk-alert" class="alert alert-success py-1 py-sm-1" role="alert" hidden>
+                                <div class="text-muted"></div>
+                                <i id="close-bulk-alert" class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <div id="add-bulk-brand-area">
+                        <div class="row gx-4 gy-3">
+                            <div class="col-12 col-md-6">
+                                <form id="bulk-brand-form" enctype="multipart/form-data">
+                                    <div class="row gx-5 gy-4">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bulk_brand" class="text-muted">Brand Name</label>
+                                                <input type="file" name="bulk_brand" id="bulk_brand" class="form-control py-1" accept=".csv, application/vnd.ms-excel">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <button type="submit" id="add-bulk-brand-btn" class="btn btn-primary py-1">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Add Bulk Brand Ends -->
+
+        <!-- Add Bulk Brand Custom JS -->
+        <script src="/scripts/admin/add-bulk-brand.script.js"></script>
 
         <!-- Footer -->
         <%- include('./includes/footer.ejs') %>
