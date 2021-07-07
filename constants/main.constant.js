@@ -30,6 +30,7 @@ module.exports = {
         ADD_BULK_CATEGORY_SUCCESS: "Bulk Categories Added Successfully!",
         EDIT_CATEGORY_SUCCESS: "Category Edited Successfully!",
         EDIT_SUB_CATEGORY_SUCCESS: "Sub Category Edited Successfully!",
+        EDIT_PROFILE_SUCCESS: "Profile Edited Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
         PRODUCTS_FETCH_SUCCESS: "Products Fetched Successfully!",
         CART_FETCH_SUCCESS: "Cart Items Fetched Successfully!",
@@ -64,6 +65,7 @@ module.exports = {
         EDIT_BRAND_CANNOT_BE_SAME_ERROR: "New Brand Name can not be same as Old!",
         EDIT_CATEGORY_CANNOT_BE_SAME_ERROR: "New Category can not be same as Old!",
         EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR: "New Sub Category can not be same as Old!",
+        EDIT_PROFILE_FAILED_ERROR: "Profile can not be Edited!",
         FILE_IS_CSV_ERROR: "File must be a valid CSV",
         CSV_FILE_REQUIRED_ERROR: "Please Upload a CSV File!",
         WRONG_OTP: "Incorrect OTP!",
@@ -104,6 +106,7 @@ module.exports = {
         ADD_CATEGORY_VIEW: "add-category",
         EDIT_CATEGORY_VIEW: "edit-category",
         EDIT_SUB_CATEGORY_VIEW: "edit-subcategory",
+        EDIT_PROFILE_VIEW: "edit-profile",
         CHANGE_PASSWORD_VIEW: "change-password"
     },
     USER_VIEWS: {
@@ -138,8 +141,9 @@ module.exports = {
             CATEGORIES_TITLE: "E-Trading - Categories",
             CATEGORIES_TRASH_TITLE: "E-Trading - Categories Trash",
             ADD_CATEGORY_TITLE: "E-Trading - Add Category",
-            EDIT_CATEGORY_TITLE: "e-Trading - Edit Category",
-            EDIT_SUB_CATEGORY_TITLE: "e-Trading - Edit Sub Category",
+            EDIT_CATEGORY_TITLE: "E-Trading - Edit Category",
+            EDIT_SUB_CATEGORY_TITLE: "E-Trading - Edit Sub Category",
+            EDIT_PROFILE_TITLE: "E-Trading - Edit Profile Category",
             CHANGE_PASSWORD_TITLE: "E-Trading - Change Password"
         },
         USER_VIEW_TITLES: {

@@ -176,6 +176,19 @@ const changeUserDetailSchema = Joi.object({
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'in'] } })
 });
 
+const editProfileSchema = Joi.object({
+    userName: Joi.string()
+        .trim()
+        .min(2)
+        .max(64)
+        .required(),
+
+    email: Joi.string()
+        .trim()
+        .lowercase()
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'in'] } })
+});;
+
 const verifyChangeUserDetailSchema = Joi.object({
     name: Joi.string()
         .trim()
@@ -203,6 +216,7 @@ module.exports = {
     addSubCategorySchema,
     editSubCategorySchema,
     addProductSchema,
+    editProfileSchema,
     signUpSchema,
     verifySchema,
     signInSchema,

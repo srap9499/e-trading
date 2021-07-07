@@ -22,6 +22,7 @@ const {
         ADD_CATEGORY_VIEW,
         EDIT_CATEGORY_VIEW,
         EDIT_SUB_CATEGORY_VIEW,
+        EDIT_PROFILE_VIEW,
         CHANGE_PASSWORD_VIEW
     },
     VIEW_TITLES: {
@@ -43,6 +44,7 @@ const {
             ADD_CATEGORY_TITLE,
             EDIT_CATEGORY_TITLE,
             EDIT_SUB_CATEGORY_TITLE,
+            EDIT_PROFILE_TITLE,
             CHANGE_PASSWORD_TITLE
         }
     },
@@ -61,7 +63,8 @@ const {
     addProductSchema,
     editBrandSchema,
     editCategorySchema,
-    editSubCategorySchema
+    editSubCategorySchema,
+    editProfileSchema
 } = require('../helpers/validate.helper');
 
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
@@ -614,6 +617,36 @@ router.post(
         upload_add_bulk_file.single('bulk_product'),
     ],
     Admin.addBulkProductByCSV
+);
+
+/**
+ * @description Route to render Edit Profile view
+ * @method GET /admin/profile/edit
+ */
+router.get(
+    '/profile/edit',
+    Admin.renderView(EDIT_PROFILE_VIEW, EDIT_PROFILE_TITLE)
+);
+
+/**
+ * @description Route to get Profile Details
+ * @method GET /admin/profile/get
+ */
+router.get(
+    '/profile/get',
+    Admin.getProfileDetails
+);
+
+/**
+ * @description Route to Edit Profile
+ * @method PUT /admin/profile/edit
+ */
+router.put(
+    '/profile/edit',
+    [
+        validateRest(editProfileSchema, REQUEST_BODY),
+    ],
+    Admin.editProfile
 );
 
 /**

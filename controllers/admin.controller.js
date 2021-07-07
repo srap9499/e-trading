@@ -29,6 +29,7 @@ const {
         ADD_SUB_CATEGORY_SUCCESS,
         EDIT_CATEGORY_SUCCESS,
         EDIT_SUB_CATEGORY_SUCCESS,
+        EDIT_PROFILE_SUCCESS,
         DATA_FETCH_SUCCESS,
         PRODUCTS_FETCH_SUCCESS,
     },
@@ -36,7 +37,9 @@ const {
         EDIT_BRAND_CANNOT_BE_SAME_ERROR,
         EDIT_CATEGORY_CANNOT_BE_SAME_ERROR,
         EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR,
+        EDIT_PROFILE_FAILED_ERROR,
         CSV_FILE_REQUIRED_ERROR,
+        USER_NOT_FOUND,
         DEFAULT_ERROR
     },
     REQUEST_PROPERTIES: {
@@ -68,7 +71,7 @@ const { Product } = require('../models/product.model');
 const { sequelize } = require('../config/db-connection.config');
 const { responseObj } = require('../helpers/response.helper');
 const { pagination, paginationMetaData } = require('../helpers/pagination.helper');
-const { InternalServerError, BadRequest } = require('http-errors');
+const { InternalServerError, BadRequest, NotFound } = require('http-errors');
 const { Op } = require('sequelize');
 const { Category, Subcategory } = require('../models/categories.model');
 const {
@@ -1394,6 +1397,62 @@ exports.addBulkProductByCSV = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, number_of_products_created +' '+ ADD_BULK_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to get User Profile Details
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - user
+ */
+exports.getProfileDetails = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_USERDATA];
+        const user = await getUserById(id);
+        if (!user) {
+            throw new NotFound(USER_NOT_FOUND);
+        }
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, user)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to Edit User Profile
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
+exports.editProfile = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_USERDATA];
+        const { userName, email } = req.body;
+        await sequelize.transaction(async editTransaction => {
+            const user = await User.update({
+                userName,
+                email
+            }, {
+                logging: false,
+                where: {
+                    id
+                },
+                transaction: editTransaction
+            });
+            if (user[0] === 0) {
+                throw new BadRequest(EDIT_PROFILE_FAILED_ERROR);
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, EDIT_PROFILE_SUCCESS)
         );
     } catch (error) {
         next(error);
