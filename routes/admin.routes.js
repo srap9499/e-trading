@@ -231,7 +231,7 @@ router.post(
 );
 
 /**
- * @description Route to Add Bulk Brand By JSON file
+ * @description Route to Add Bulk Brand By CSV file
  * @method POST /admin/brand/add/bulk
  */
 router.post(
@@ -239,7 +239,6 @@ router.post(
     [
         upload_add_bulk_file.single('bulk_brand'),
     ],
-    // validateRest(addBrandSchema, REQUEST_BODY),
     Admin.addBulkBrandByCSV
 );
 

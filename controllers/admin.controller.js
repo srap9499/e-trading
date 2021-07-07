@@ -427,16 +427,17 @@ exports.addBulkBrandByCSV = async (req, res, next) => {
             throw new BadRequest(CSV_FILE_REQUIRED_ERROR);
         }
         let brands = await readCsvFile(file.path);
-        await sequelize.transaction(async addTransaction => {
-            await Brand.bulkCreate(brands, {
+        const number_of_brands_created = await sequelize.transaction(async addTransaction => {
+            const created_brands = await Brand.bulkCreate(brands, {
                 logging: false,
                 validate: true,
                 transaction: addTransaction
             });
+            return created_brands.length;
         });
         await removeFile(file.path);
         return res.status(200).send(
-            responseObj(true, ADD_BULK_BRAND_SUCCESS)
+            responseObj(true, number_of_brands_created +' '+ ADD_BULK_BRAND_SUCCESS)
         );
     } catch (error) {
         next(error);
