@@ -16,6 +16,7 @@ const {
         PRODUCTS_VIEW,
         PRODUCTS_TRASH_VIEW,
         ADD_PRODUCT_VIEW,
+        ADD_BULK_PRODUCT_VIEW,
         CATEGORIES_VIEW,
         CATEGORIES_TRASH_VIEW,
         ADD_CATEGORY_VIEW,
@@ -36,6 +37,7 @@ const {
             PRODUCTS_TITLE,
             PRODUCTS_TRASH_TITLE,
             ADD_PRODUCT_TITLE,
+            ADD_BULK_PRODUCT_TITLE,
             CATEGORIES_TITLE,
             CATEGORIES_TRASH_TITLE,
             ADD_CATEGORY_TITLE,
@@ -580,6 +582,10 @@ router.get(
     Admin.renderView(ADD_PRODUCT_VIEW, ADD_PRODUCT_TITLE)
 );
 
+/**
+ * @description Route to Add Product
+ * @method POST /admin/product/add
+ */
 router.post(
     '/product/add',
     [
@@ -587,6 +593,27 @@ router.post(
         validateRest(addProductSchema, REQUEST_BODY)
     ],
     Admin.addProduct
+);
+
+/**
+ * @description Route to render Add Bulk Product using CSV view
+ * @method GET /admin/product/add/bulk
+ */
+router.get(
+    '/product/add/bulk',
+    Admin.renderView(ADD_BULK_PRODUCT_VIEW, ADD_BULK_PRODUCT_TITLE)
+);
+
+/**
+ * @description Route to Add Bulk Product using CSV file
+ * @method POST /admin/product/add/bulk
+ */
+router.post(
+    '/product/add/bulk',
+    [
+        upload_add_bulk_file.single('bulk_product'),
+    ],
+    Admin.addBulkProductByCSV
 );
 
 /**

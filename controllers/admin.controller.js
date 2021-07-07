@@ -19,6 +19,7 @@ const {
         DELETE_PRODUCT_SUCCESS,
         RESTORE_PRODUCT_SUCCESS,
         ADD_PRODUCT_SUCCESS,
+        ADD_BULK_PRODUCT_SUCCESS,
         DELETE_CATEGORY_SUCCESS,
         DELETE_SUB_CATEGORY_SUCCESS,
         RESTORE_CATEGORY_SUCCESS,
@@ -1365,6 +1366,36 @@ exports.addProduct = async (req, res, next) => {
         );
     } catch (error) {
         console.log(typeof req.file);
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to Add Bulk Product using CSV file
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
+exports.addBulkProductByCSV = async (req, res, next) => {
+    try {
+        const file = req.file;
+        if (!file) {
+            throw new BadRequest(CSV_FILE_REQUIRED_ERROR);
+        }
+        const products = await readCsvFile(file.path);
+        const number_of_products_created = await sequelize.transaction(async addTransaction => {
+            const created_products = await Product.bulkCreate(products, {
+                logging: false,
+                validate: true,
+                transaction: addTransaction
+            });
+            return created_products.length;
+        });
+        return res.status(200).send(
+            responseObj(true, number_of_products_created +' '+ ADD_BULK_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
         next(error);
     }
 };
