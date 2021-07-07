@@ -107,8 +107,10 @@ const getSubcategory_previousSelectedCategory = async (categoryOption) => {
         url: '/admin/subcategory/previous/category',
         success: response => {
             const {data: {id, category}} = response;
-            const optionRow = `<option value=${id} selected hidden>${category}</option>`;
-            categoryOption += optionRow;            
+            if (id && category) {
+                const optionRow = `<option value=${id} selected hidden>${category}</option>`;
+                categoryOption += optionRow;
+            }
         },
         error: response => {
             const { responseJSON: { message, errors } } = response;

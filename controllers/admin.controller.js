@@ -828,6 +828,9 @@ exports.getSubcategory_previousSelectedCategory = async (req, res, next) => {
                 ],
                 transaction: getTransaction
             });
+            if (!subcategory) {
+                return {};
+            }
             const category = await Category.findOne({
                 logging: false,
                 attributes: ['id', 'category'],
