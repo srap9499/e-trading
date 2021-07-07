@@ -354,6 +354,18 @@ router.put(
 );
 
 /**
+ * @description Route to Add Bulk Category By CSV file
+ * @method POST /admin/category/add/bulk
+ */
+router.post(
+    '/category/add/bulk',
+    [
+        upload_add_bulk_file.single('bulk_category')
+    ],
+    Admin.addBulkCategoryByCSV
+);
+
+/**
  * @description Route to render Add Category view
  * @method GET /admin/category/add
  */

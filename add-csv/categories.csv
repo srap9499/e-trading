@@ -1,0 +1,7 @@
+category,subcategories
+Food and Drinks,"[{},{"subcategory": "Snanks"},{"subcategory": "Cold Drinks"},{"subcategory": "Fast Food"},{"subcategory": "Breakfast"}]"
+Clothes,"[{},{"subcategory": "Formals"},{"subcategory": "Casuals"},{"subcategory": "Jeans"},{"subcategory": "Sarees"}]"
+Footwear,"[{},{"subcategory": "Sneakers"},{"subcategory": "Sandals"},{"subcategory": "Shoes"}]"
+Home Appliance,"[{},{"subcategory": "TV"},{"subcategory": "Washing Machine"},{"subcategory": "AC"},{"subcategory": "Air Coolers"}]"
+Essential Commodity,"[{},{"subcategory": "Air Masks"},{"subcategory": "Sanitizer"}]"
+Electronics,"[{},{"subcategory": "Mobiles"}]"

@@ -23,6 +23,7 @@ const {
         DELETE_SUB_CATEGORY_SUCCESS,
         RESTORE_CATEGORY_SUCCESS,
         RESTORE_SUB_CATEGORY_SUCCESS,
+        ADD_BULK_CATEGORY_SUCCESS,
         ADD_CATEGORY_SUCCESS,
         ADD_SUB_CATEGORY_SUCCESS,
         EDIT_CATEGORY_SUCCESS,
@@ -715,6 +716,45 @@ exports.restoreSubCategory = async (req, res, next) => {
         next(error);
     }
 };
+
+/**
+ * @description API interface to Add Bulk Category using CSV file
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
+exports.addBulkCategoryByCSV = async (req, res, next) =>{
+    try {
+        const file = req.file;
+        if (!file) {
+            throw new BadRequest(CSV_FILE_REQUIRED_ERROR);
+        }
+        let categories = await readCsvFile(file.path);
+        categories.forEach(c => {
+            if (c.subcategories) {
+                c.subcategories = JSON.parse(c.subcategories);
+            }
+        });
+        const number_of_categories_created = await sequelize.transaction(async addTransaction => {
+            const created_categories = await Category.bulkCreate(categories, {
+                logging: false,
+                include: {
+                    model: Subcategory
+                },
+                validate: true,
+                transaction: addTransaction
+            });
+            return created_categories.length;
+        });
+        await removeFile(file.path);
+        return res.status(200).send(
+            responseObj(true, number_of_categories_created +' '+ ADD_BULK_CATEGORY_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+}
 
 /**
  * @description API interface to Add Category

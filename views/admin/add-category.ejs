@@ -7,6 +7,51 @@
         <%- include('./includes/nav.ejs') %>
         <!-- Header Ends -->
 
+        <!-- Add Bulk Category -->
+        <section id="add-bulk-category" class="mb-2">
+            <div class="jumbotron bg-light">
+                <div class="container-md pt-2 pt-sm-2 pt-md-3 pt-lg-4 pt-xl-5 pb-2 pb-lg-3">
+                    <div class="row gutters">
+                        <div class="col-12 col-md-5">
+                            <h2 class="h2 display-6">Add Bulk Category</h2>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <div id="bulk-alert" class="alert py-1 py-sm-1" role="alert" hidden>
+                                <div class="text-muted"></div>
+                                <i id="close-bulk-alert" class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <div id="add-bulk-brand-area">
+                        <div class="row gx-4 gy-3">
+                            <div class="col-12 col-md-6">
+                                <form id="bulk-category-form" enctype="multipart/form-data">
+                                    <div class="row gx-4 gy-3">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="bulk_category" class="text-muted">Bulk Category CSV File</label>
+                                                <input type="file" name="bulk_category" id="bulk_category" class="form-control py-1" accept=".csv, application/vnd.ms-excel">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <button type="submit" id="add-bulk-category-btn" class="btn btn-primary py-1">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Add Bulk Category Ends -->
+
+        <!-- Add Bulk Category Custom JS -->
+        <script src="/scripts/admin/add-bulk-category.script.js"></script>
+
         <!-- Add Category -->
         <section id="add-category" class="mb-2">
             <div class="jumbotron bg-light">
@@ -19,7 +64,7 @@
                         </div>
                         <div class="col-12 col-sm-12 col-md-7">
                             <div id="alert" class="alert alert-success py-1 py-sm-1" role="alert" hidden>
-                                <div class="muted-text"></div>
+                                <div class="text-muted"></div>
                                 <i id="close-alert" class="far fa-times-circle"></i>
                             </div>
                         </div>
@@ -31,8 +76,8 @@
                                 <form id="category-form" enctype="multipart/form-data">
                                     <div class="row gx-4 gy-3">
                                         <div class="col-12">
-                                            <div class="form-group">
-                                                <lable for="category" class="muted-text">Category</lable>
+                                            <div class="form-group" class="text-muted">
+                                                <lable for="category" class="text-muted">Category</lable>
                                                 <input type="text" name="category" id="category" class="form-control py-1" placeholder="Enter Category&mldr;">
                                             </div>
                                         </div>
@@ -63,7 +108,7 @@
                         </div>
                         <div class="col-12 col-sm-12 col-md-7">
                             <div id="sub-alert" class="alert alert-success py-1 py-sm-1" role="alert" hidden="hidden">
-                                <div class="muted-text"></div>
+                                <div class="text-muted"></div>
                                 <i id="close-sub-alert" class="far fa-times-circle"></i>
                             </div>
                         </div>
@@ -75,7 +120,7 @@
                                 <div class="row gx-4 gy-3">
                                     <div class="col-12">
                                         <div class="from-group">
-                                            <label for="categoryId">Category</label>
+                                            <label for="categoryId" class="text-muted">Category</label>
                                             <select name="categoryId" id="categoryId" class="form-select py-1" placeholder="Select Category&mldr;">
                                                 <option value="">Select Category&mldr;</option>
                                             </select>
@@ -83,7 +128,7 @@
                                     </div>
                                     <div class="col-12">
                                         <div class="from-group">
-                                            <label for="subcategory">Sub Category</label>
+                                            <label for="subcategory" class="text-muted">Sub Category</label>
                                             <input type="text" name="subcategory" id="subcategory" class="form-control py-1" placeholder="Enter Sub Category&mldr;">
                                         </div>
                                     </div>

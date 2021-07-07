@@ -26,6 +26,7 @@ module.exports = {
         RESTORE_SUB_CATEGORY_SUCCESS: "Sub Category Restored Successfully!",
         ADD_CATEGORY_SUCCESS: "Category Added Successfully!",
         ADD_SUB_CATEGORY_SUCCESS: "Sub Category Added Successfully!",
+        ADD_BULK_CATEGORY_SUCCESS: "Bulk Categories Added Successfully!",
         EDIT_CATEGORY_SUCCESS: "Category Edited Successfully!",
         EDIT_SUB_CATEGORY_SUCCESS: "Sub Category Edited Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
