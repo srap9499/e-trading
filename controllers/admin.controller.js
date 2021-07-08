@@ -20,6 +20,7 @@ const {
         RESTORE_PRODUCT_SUCCESS,
         ADD_PRODUCT_SUCCESS,
         ADD_BULK_PRODUCT_SUCCESS,
+        EDIT_PRODUCT_SUCCESS,
         DELETE_CATEGORY_SUCCESS,
         DELETE_SUB_CATEGORY_SUCCESS,
         RESTORE_CATEGORY_SUCCESS,
@@ -37,6 +38,7 @@ const {
         EDIT_BRAND_CANNOT_BE_SAME_ERROR,
         EDIT_CATEGORY_CANNOT_BE_SAME_ERROR,
         EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR,
+        EDIT_PRODUCT_CANNOT_BE_SAME_ERROR,
         EDIT_PROFILE_FAILED_ERROR,
         CSV_FILE_REQUIRED_ERROR,
         USER_NOT_FOUND,
@@ -1368,7 +1370,6 @@ exports.addProduct = async (req, res, next) => {
             responseObj(true, ADD_PRODUCT_SUCCESS)
         );
     } catch (error) {
-        console.log(typeof req.file);
         next(error);
     }
 };
@@ -1397,6 +1398,89 @@ exports.addBulkProductByCSV = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, number_of_products_created +' '+ ADD_BULK_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to get Product By Id
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - product
+ */
+exports.getProductById = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_PARAMS];
+        const product = await sequelize.transaction(async getTransaction => {
+            const product = await Product.findByPk(id, {
+                logging: false,
+                attributes: ['id', 'name', 'description', 'quantity', 'price', 'imagePath'],
+                include: [
+                    {
+                        model: Brand,
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: Category,
+                        attributes: ['id', 'category']
+                    },
+                    {
+                        model: Subcategory,
+                        attributes: ['id', 'subcategory']
+                    }
+                ],
+                transaction: getTransaction
+            });
+            return product;
+        });
+        if (!product) {
+            throw new BadRequest(DEFAULT_ERROR);
+        }
+        return res.status(200).send(
+            responseObj(true, PRODUCTS_FETCH_SUCCESS, product)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API to edit Product
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
+exports.editProduct = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const FILE_NAME = req[REQUEST_FILENAME];
+        const imagePath = FILE_NAME ? PRODUCTS_IMAGE_PATH + FILE_NAME : undefined;
+        const {
+            name, description, quantity, price,
+            brandId, categoryId, subcategoryId
+        } = req.body;
+        const product_data = {
+            name, description, imagePath, quantity,
+            price, brandId, categoryId, subcategoryId
+        };
+        await sequelize.transaction(async editTransaction => {
+            const _product = await Product.update(product_data, {
+                logging: false,
+                where: {
+                    id
+                },
+                transaction: editTransaction
+            });
+            if (_product[0]==0) {
+                throw new BadRequest(EDIT_PRODUCT_CANNOT_BE_SAME_ERROR);
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, EDIT_PRODUCT_SUCCESS)
         );
     } catch (error) {
         next(error);

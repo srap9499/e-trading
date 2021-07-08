@@ -1,0 +1,122 @@
+    <%- include('./includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <!-- Header -->
+        <%- include('./includes/nav.ejs') %>
+        <!-- Header Ends -->
+
+        <!-- Edit Product -->
+        <section id="edit-product">
+            <div class="jumbotron bg-light">
+                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                    <div class="row gutters">
+                        <div class="col-12 col-md-5">
+                            <h2 class="h2 display-6">Edit Product</h2>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <div id="alert" class="alert py-1 py-sm-1" role="alert" hidden>
+                                <div class="text-muted"></div>
+                                <i id="close-alert" class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <div id="edit-product-area">
+                        <div class="row">
+                            <div class="col-12">
+                                <form id="product-form" method="POST" enctype="multipart/form-data">
+                                    <div class="row gx-4 gy-3">
+                                        <div class="col-12 col-md-6">
+                                            <div class="row gx-4 gy-3">
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="name">Product Name</label>
+                                                        <input type="text" name="name" id="name" class="form-control py-1" placeholder="Enter Product Name&mldr;">
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="description">Product Description</label>
+                                                        <textarea rows="4" name="description" id="description" class="form-control small py-1" placeholder="Enter Product Description&mldr;"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-9 col-md-10">
+                                                    <div class="form-group">
+                                                        <label for="product_image">Product Image</label>
+                                                        <input type="file" ref="file" name="product_image" id="product_image" class="form-control py-1">
+                                                    </div>
+                                                </div>
+                                                <div class="col-3 col-md-2">
+                                                    <div class="form-group small">
+                                                        <label for="current_image" class="text-muted small">Current</label>
+                                                        <input type="image" src="" id="current_image" class="form-control small p-0" alt="Current">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="row gx-4 gy-3">
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label for="quantity">Product Quantity</label>
+                                                        <input type="number" name="quantity" id="quantity" class="form-control py-1">
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="form-group">
+                                                        <label for="price">Product Price (&#8377;)</label>
+                                                        <input type="number" name="price" id="price" class="form-control py-1" step="0.01">
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="brandId">Brand</label>
+                                                        <select name="brandId" id="brandId" class="form-select py-1">
+                                                            <option>Select Brand&mldr;</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="categoryId">Product Category&mldr;</label>
+                                                        <select name="categoryId" id="categoryId" class="form-select py-1">
+                                                            <option>Select Category&mldr;</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="subcategoryId">Product Sub Category</label>
+                                                        <select name="subcategoryId" id="subcategoryId" class="form-select py-1">
+                                                            <option>Select Sub Category&mldr;</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <button type="submit" id="edit-product-btn" class="btn btn-primary py-1">Add</button>
+                                                <button type="button" id="cancel-edit-btn" class="btn btn-primary py-1">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Edit Product Ends -->
+
+        <!-- Edit Product Custom JS -->
+        <script src="/scripts/admin/edit-product.script.js"></script>
+
+        <!-- Footer -->
+        <%- include('./includes/footer.ejs') %>
+        <!-- Footer Ends -->
+    </body>
+</html>

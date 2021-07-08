@@ -106,6 +106,8 @@ const addProductSchema = Joi.object({
         .max(128)
 });
 
+const editProductSchema = addProductSchema;
+
 const signUpSchema = Joi.object({
     userName: Joi.string()
         .trim()
@@ -216,6 +218,7 @@ module.exports = {
     addSubCategorySchema,
     editSubCategorySchema,
     addProductSchema,
+    editProductSchema,
     editProfileSchema,
     signUpSchema,
     verifySchema,

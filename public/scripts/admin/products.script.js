@@ -97,22 +97,7 @@ const tableArea = `
 
 const editProduct = id => {
     return () => {
-        $.ajax({
-            type: 'PUT',
-            url: `/admin/product/${id}/edit`,
-            success: response => {
-                const { message } = response;
-                successAlert(message);
-                if (currentEntries <=1 && queryData.page > 1) {
-                    queryData.page -= 1;
-                }
-                getProducts();
-            },
-            error: response => {
-                const { responseJSON: { message } } = response;
-                errorAlert(message);
-            }
-        });
+        window.location.href = `/admin/product/${id}/edit`;
     };
 };
 

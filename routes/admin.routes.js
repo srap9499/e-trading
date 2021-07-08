@@ -17,6 +17,7 @@ const {
         PRODUCTS_TRASH_VIEW,
         ADD_PRODUCT_VIEW,
         ADD_BULK_PRODUCT_VIEW,
+        EDIT_PRODUCT_VIEW,
         CATEGORIES_VIEW,
         CATEGORIES_TRASH_VIEW,
         ADD_CATEGORY_VIEW,
@@ -39,6 +40,7 @@ const {
             PRODUCTS_TRASH_TITLE,
             ADD_PRODUCT_TITLE,
             ADD_BULK_PRODUCT_TITLE,
+            EDIT_PRODUCT_TITLE,
             CATEGORIES_TITLE,
             CATEGORIES_TRASH_TITLE,
             ADD_CATEGORY_TITLE,
@@ -61,6 +63,7 @@ const {
     addCategorySchema,
     addSubCategorySchema,
     addProductSchema,
+    editProductSchema,
     editBrandSchema,
     editCategorySchema,
     editSubCategorySchema,
@@ -469,7 +472,7 @@ router.get(
 
 /**
  * @description Route to edit Sub Category
- * @method PUT /admin/category/:id/edit
+ * @method PUT /admin/subcategory/:id/edit
  */
 router.put(
     '/subcategory/:id/edit',
@@ -617,6 +620,39 @@ router.post(
         upload_add_bulk_file.single('bulk_product'),
     ],
     Admin.addBulkProductByCSV
+);
+
+/**
+ * @description Route to render Edit Product View
+ * @method GET /admin/product/:id/edit
+ */
+router.get(
+    '/product/:id/edit',
+    Edit.createProductCookie,
+    Admin.renderView(EDIT_PRODUCT_VIEW, EDIT_PRODUCT_TITLE)
+);
+
+/**
+ * @description Route to get edit product details by product Id (req.params = {id})
+ * @method GET /admin/product/edit/getdetails
+ */
+router.get(
+    '/product/edit/getdetails',
+    Edit.getProductCookie,
+    Admin.getProductById
+);
+
+/**
+ * @description Route to edit Product
+ * @method PUT /admin/product/:id/edit
+ */
+router.put(
+    '/product/:id/edit',
+    [
+        upload_product_image.single('product_image'),
+        validateRest(editProductSchema, REQUEST_BODY),
+    ],
+    Admin.editProduct
 );
 
 /**
