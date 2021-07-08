@@ -189,7 +189,18 @@ const editProfileSchema = Joi.object({
         .trim()
         .lowercase()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'in'] } })
-});;
+});
+
+const editSubAdminProfileSchema = editProfileSchema;
+
+const editSubAdminPasswordSchema = Joi.object({
+    new_password: Joi.string()
+        .min(5)
+        .max(15)
+        .required(),
+    confirm_password: Joi.ref('new_password')
+})
+    .with('new_password', 'confirm_password');
 
 const verifyChangeUserDetailSchema = Joi.object({
     name: Joi.string()
@@ -211,6 +222,8 @@ const verifyChangeUserDetailSchema = Joi.object({
 
 module.exports = {
     addSubAdminSchema,
+    editSubAdminProfileSchema,
+    editSubAdminPasswordSchema,
     addBrandSchema,
     editBrandSchema,
     addCategorySchema,

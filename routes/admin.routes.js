@@ -7,6 +7,7 @@ const {
     ADMIN_VIEWS: {
         DASHBOARD_VIEW,
         ADD_SUB_ADMIN_VIEW,
+        EDIT_SUB_ADMIN_VIEW,
         SUB_ADMINS_VIEW,
         SUB_ADMINS_TRASH_VIEW,
         BRANDS_VIEW,
@@ -30,6 +31,7 @@ const {
         ADMIN_VIEW_TITLES: {
             DASHBOARD_TITLE,
             ADD_SUB_ADMIN_TITLE,
+            EDIT_SUB_ADMIN_TITLE,
             SUB_ADMINS_TITLE,
             SUB_ADMINS_TRASH_TITLE,
             BRANDS_TITLE,
@@ -67,7 +69,9 @@ const {
     editBrandSchema,
     editCategorySchema,
     editSubCategorySchema,
-    editProfileSchema
+    editProfileSchema,
+    editSubAdminProfileSchema,
+    editSubAdminPasswordSchema
 } = require('../helpers/validate.helper');
 
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
@@ -132,6 +136,58 @@ router.post(
     [isSuperAdmin],
     validateRest(addSubAdminSchema, REQUEST_BODY),
     Admin.addSubAdmin
+);
+
+/**
+ * @description Route to render Edit Sub Admin view
+ * @method GET /admin/subadmin/:id/edit
+ */
+router.get(
+    '/subadmin/:id/edit',
+    [
+        isSuperAdmin,
+        Edit.createSubadminCookie,
+    ],
+    Admin.renderView(EDIT_SUB_ADMIN_VIEW, EDIT_SUB_ADMIN_TITLE)
+);
+
+/**
+ * @description Route to get Sub Admin details by Id
+ * @method GET /admin/subadmin/edit/getdetails
+ */
+router.get(
+    '/subadmin/edit/getdetails',
+    [
+        isSuperAdmin,
+        Edit.getSubadminCookie,
+    ],
+    Admin.getSubAdminById
+);
+
+/**
+ * @description Router to edit Sub Admin Profile
+ * @method PUT /admin/subadmin/:id/edit/profile
+ */
+router.put(
+    '/subadmin/:id/edit/profile',
+    [
+        isSuperAdmin,
+        validateRest(editSubAdminProfileSchema, REQUEST_BODY),
+    ],
+    Admin.editSubAdminProfile
+);
+
+/**
+ * @description Route to edit Sub Admin Password
+ * @method PUT /admin/subadmin/:id/edit/password
+ */
+router.put(
+    '/subadmin/:id/edit/password',
+    [
+        isSuperAdmin,
+        validateRest(editSubAdminPasswordSchema, REQUEST_BODY),
+    ],
+    Admin.editSubAdminPassword
 );
 
 /**

@@ -79,10 +79,10 @@ const tableArea = `
         <table id="sub-admins-table" class="table table-light table-striped table-hover lead">
             <thead class="small border-1">
                 <tr>
-                    <th scope="col" class="align-middle">U.ID</th>
-                    <th scope="col" class="align-middle">User Name</th>
-                    <th scope="col" class="align-middle">Email Address</th>
-                    <th scope="col" class="align-middle">Action</th>
+                    <th scope="col" class="align-middle small">U.ID</th>
+                    <th scope="col" class="align-middle small">User Name</th>
+                    <th scope="col" class="align-middle small">Email Address</th>
+                    <th scope="col" class="align-middle small">Action</th>
                 </tr>
             </thead>
             <tbody class="small border-1">
@@ -90,6 +90,12 @@ const tableArea = `
         </table>
     </div>
 </div>`;
+
+const editSubAdmin = id => {
+    return () => {
+        window.location.href = `/admin/subadmin/${id}/edit`;
+    };
+};
 
 const deleteSubAdmin = id => {
     return () => {
@@ -116,22 +122,30 @@ const createRow = (rowData) => {
     const { id, userName, email } = rowData;
     const subAdminRow = `
     <tr>
-        <td>
+        <td class="small">
             ${id}
         </td>
-        <td>
+        <td class="small">
             ${userName}
         </td>
-        <td>
+        <td class="small">
             ${email}
         </td>
-        <td>
-            <i id="delete${id}" class="fas fa-trash" title="Delete Sub Admin"></i>
+        <td class="small">
+            <div class="row gx-4 gy-0 text-center">
+                <div class="col-3">
+                    <i id="edit${id}" class="fas fa-pencil-alt" title="Edit ${userName}"></i>
+                </div>
+                <div class="col-3">
+                    <i id="delete${id}" class="fas fa-trash" title="Delete ${userName}"></i>
+                </div>
+            </div>
         </td>
     </tr>`;
 
     $('#sub-admins-table tbody').append(subAdminRow);
 
+    $(`#edit${id}`).on('click', editSubAdmin(id));
     $(`#delete${id}`).on('click', deleteSubAdmin(id));
 }
 

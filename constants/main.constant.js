@@ -10,6 +10,7 @@ module.exports = {
         PASSWORD_CHANGE_SUCCESS: "Password Changed Successfully!",
         UPDATE_PROFILE_SUCCESS: "Profile Updated Successfully!",
         ADD_SUB_ADMIN_SUCCESS: "Sub Admin Added Successfully!",
+        EDIT_SUB_ADMIN_PROFILE_SUCCESS: "Sub Admin Profile Edited Successfully!",
         DELETE_SUB_ADMIN_SUCCESS: "Sub Admin Deleted Succefully!",
         RESTORE_SUB_ADMIN_SUCCESS: "Sub Admin Restored Successfully!",
         DELETE_BRAND_SUCCESS: "Brand Deleted Successfully!",
@@ -68,6 +69,7 @@ module.exports = {
         EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR: "New Sub Category can not be same as Old!",
         EDIT_PRODUCT_CANNOT_BE_SAME_ERROR: "New Product Details can not be same as Old!",
         EDIT_PROFILE_FAILED_ERROR: "Profile can not be Edited!",
+        EDIT_SUB_ADMIN_PROFILE_FAILED_ERROR: "Sub Admin Profile can not be Edited!",
         FILE_IS_CSV_ERROR: "File must be a valid CSV",
         CSV_FILE_REQUIRED_ERROR: "Please Upload a CSV File!",
         WRONG_OTP: "Incorrect OTP!",
@@ -93,6 +95,7 @@ module.exports = {
     ADMIN_VIEWS: {
         DASHBOARD_VIEW: "dashboard",
         ADD_SUB_ADMIN_VIEW: "add-sub-admin",
+        EDIT_SUB_ADMIN_VIEW: "edit-subadmin",
         SUB_ADMINS_VIEW: "sub-admins",
         SUB_ADMINS_TRASH_VIEW: "sub-admins-trash",
         BRANDS_VIEW: "brands",
@@ -131,6 +134,7 @@ module.exports = {
         ADMIN_VIEW_TITLES: {
             DASHBOARD_TITLE: "E-Trading - Admin Dashboard",
             ADD_SUB_ADMIN_TITLE: "E-Trading - Add Sub Admin",
+            EDIT_SUB_ADMIN_TITLE: "E-Trading - Edit Sub Admin",
             SUB_ADMINS_TITLE: "E-Trading - Sub Admins",
             SUB_ADMINS_TRASH_TITLE: "E-Trading - Sub Admins Trash",
             BRANDS_TITLE: "E-Trading - Brands",
@@ -176,6 +180,7 @@ module.exports = {
     },
     COOKIE_NAMES: {
         AUTH_TOKEN: "auth_token",
+        EDIT_SUB_ADMIN_TOKEN: "subadmin_token",
         EDIT_BRAND_TOKEN: "brand_token",
         EDIT_CATEGORY_TOKEN: "category_token",
         EDIT_SUB_CATEGORY_TOKEN: "subcategory_token",
@@ -183,6 +188,7 @@ module.exports = {
     },
     TOKEN_MAX_AGE: {
         AUTH_TOKEN_MAX_AGE: 60 * 60,    // 1 hour (IN SECONDS),
+        EDIT_SUB_ADMIN_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
         EDIT_BRAND_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
         EDIT_CATEGORY_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
         EDIT_SUB_CATEGORY_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
@@ -190,6 +196,7 @@ module.exports = {
     },
     COOKIE_MAX_AGE: {
         AUTH_TOKEN_COOKIE_MAX: 60 * 60 * 1000,      // 1 hour  (IN MICRO SECONDS),
+        EDIT_SUB_ADMIN_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
         EDIT_BRAND_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
         EDIT_CATEGORY_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
         EDIT_SUB_CATEGORY_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),

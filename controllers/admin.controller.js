@@ -8,7 +8,9 @@ const {
 
 const {
     SUCCESS_MESSAGES: {
+        PASSWORD_CHANGE_SUCCESS,
         ADD_SUB_ADMIN_SUCCESS,
+        EDIT_SUB_ADMIN_PROFILE_SUCCESS,
         DELETE_SUB_ADMIN_SUCCESS,
         RESTORE_SUB_ADMIN_SUCCESS,
         DELETE_BRAND_SUCCESS,
@@ -40,6 +42,7 @@ const {
         EDIT_SUB_CATEGORY_CANNOT_BE_SAME_ERROR,
         EDIT_PRODUCT_CANNOT_BE_SAME_ERROR,
         EDIT_PROFILE_FAILED_ERROR,
+        EDIT_SUB_ADMIN_PROFILE_FAILED_ERROR,
         CSV_FILE_REQUIRED_ERROR,
         USER_NOT_FOUND,
         DEFAULT_ERROR
@@ -148,7 +151,93 @@ exports.addSubAdmin = async (req, res, next) => {
         console.log("API catch", error.name);
         next(error);
     }
-}
+};
+
+/**
+ * @description API interface to get Sub Admin Profile Details by user Id (params = {id})
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - user
+ */
+exports.getSubAdminById = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_PARAMS];
+        const user = await getUserById(id);
+        if (!user) {
+            throw new NotFound(USER_NOT_FOUND);
+        }
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, user)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to edit Sub Admin Profile
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
+exports.editSubAdminProfile = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { userName, email } = req.body;
+        await sequelize.transaction(async editTransaction => {
+            const _subadmin = await User.update({
+                userName,
+                email
+            }, {
+                logging: false,
+                where: {
+                    id
+                },
+                transaction: editTransaction
+            });
+            if (_subadmin[0] === 0) {
+                throw new BadRequest(EDIT_SUB_ADMIN_PROFILE_FAILED_ERROR);
+            }
+        });
+        return res.status(200).send(
+            responseObj(true, EDIT_SUB_ADMIN_PROFILE_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * @description API interface to edit Sub Admin Password
+ * @param {Request} req 
+ * @param {Response} res 
+ * @param {Function} next 
+ * @returns {Response} JSON - message
+ */
+exports.editSubAdminPassword = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { new_password } = req.body;
+        await sequelize.transaction(async editTransaction => {
+            await User.update({
+                password: hashSync(new_password, saltValue)
+            }, {
+                logging: false,
+                where: {
+                    id
+                },
+                transaction: editTransaction
+            });
+        });
+        return res.status(200).send(
+            responseObj(true, PASSWORD_CHANGE_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
 
 /**
  * @description API interface to fetch all Sub Admins with pagination
