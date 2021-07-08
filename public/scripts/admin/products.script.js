@@ -162,10 +162,10 @@ const createRow = (rowData) => {
         <td class="small">
             <div class="row gx-4 gy-0 text-center">
                 <div class="col-3">
-                    <i id="edit${id}" class="fas fa-pencil-alt" title="Edit Product"></i>
+                    <i id="edit${id}" class="fas fa-pencil-alt" title="Edit ${name}"></i>
                 </div>
                 <div class="col-3">
-                    <i id="delete${id}" class="fas fa-trash" title="Delete Product"></i>
+                    <i id="delete${id}" class="fas fa-trash" title="Delete ${name}"></i>
                 </div>
             </div>
         </td>
