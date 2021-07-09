@@ -13,21 +13,23 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/admin">Home</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="subAdminDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Sub Admin
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="subAdminDropdown">
-                            <li><a class="dropdown-item" href="/admin/subadmins">Sub Admins</a></li>
-                            <li><a class="dropdown-item" href="/admin/subadmin/add">Add Sub Admin</a></li>
-                            <li><a class="dropdown-item" href="/admin/subadmins/trash">Sub Admins Trash</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
+                    <% if (user.userrole.role === 'SuperAdmin') { %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="subAdminDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Sub Admin
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="subAdminDropdown">
+                                <li><a class="dropdown-item" href="/admin/subadmins">Sub Admins</a></li>
+                                <li><a class="dropdown-item" href="/admin/subadmin/add">Add Sub Admin</a></li>
+                                <li><a class="dropdown-item" href="/admin/subadmins/trash">Sub Admins Trash</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            </ul>
+                        </li>
+                    <% } %>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -80,7 +82,7 @@
                             Orders
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
-                            <li><a class="dropdown-item" href="#">All Orders</a></li>
+                            <li><a class="dropdown-item" href="/admin/orders/indelivery">In Delivery Orders</a></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li>
                                 <hr class="dropdown-divider">

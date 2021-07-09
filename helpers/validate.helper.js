@@ -108,6 +108,13 @@ const addProductSchema = Joi.object({
 
 const editProductSchema = addProductSchema;
 
+const verifyMarkDeliverySchema = Joi.object({
+    otp: Joi.string()
+        .alphanum()
+        .length(6)
+        .required()
+});
+
 const signUpSchema = Joi.object({
     userName: Joi.string()
         .trim()
@@ -233,6 +240,7 @@ module.exports = {
     addProductSchema,
     editProductSchema,
     editProfileSchema,
+    verifyMarkDeliverySchema,
     signUpSchema,
     verifySchema,
     signInSchema,

@@ -1,0 +1,72 @@
+    <%- include('./includes/head.ejs') %>
+
+    </head>
+
+    <body>
+        <!-- Header -->
+        <%- include('./includes/nav.ejs') %>
+        <!-- Header Ends -->
+
+        <!-- Verify Mark Delivery -->
+        <section id="verify-mark-delivery">
+            <div class="jumbotron bg-light">
+                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                    <div class="row gutters">
+                        <div class="col-12 col-md-5">
+                            <h2 class="h2 display-6">Verify Mark Delivery</h2>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <div id="alert" class="alert py-1 py-sm-1" role="alert" hidden>
+                                <div class="text-muted"></div>
+                                <i id="close-alert" class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-d-3 my-lg-4">
+                    <div id="verify-area">
+                        <div class="row gx-4 gy-3">
+                            <col-12 class="col-md-6">
+                                <form id="mark-delivery-form">
+                                    <div class="row gx-4 gy-3">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="orderId" class="text-muted">Order ID</label>
+                                                <input type="text" id="orderId" class="form-control py-1" Placeholder="Order ID&mldr;">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="email" class="text-muted">Buyer's Email</label>
+                                                <input type="email" id="email" class="form-control py-1" Placeholder="Buyer's Email Address&mldr;">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="otp" class="text-muted">OTP</label>
+                                                <input type="text" name="otp" id="otp" class="form-control py-1" Placeholder="Enter OTP&mldr;">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <button type="submit" id="verify-mark-delivery-btn" class="btn btn-primary py-1">Verify</button>
+                                                <button type="button" id="back-to-orders-btn" class="btn btn-primary py-1">Back to Orders</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </col-12>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Verify Mark Delivery Ends -->
+
+        <!-- Verify Mark Delivery Custom JS -->
+        <script src="/scripts/admin/verify-mark-delivery.script.js"></script>
+
+        <!-- Footer -->
+        <%- include('./includes/footer.ejs') %>
+        <!-- Footer Ends -->
+    </body>
+</html>

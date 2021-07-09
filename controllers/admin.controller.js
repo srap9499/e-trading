@@ -32,9 +32,11 @@ const {
         ADD_SUB_CATEGORY_SUCCESS,
         EDIT_CATEGORY_SUCCESS,
         EDIT_SUB_CATEGORY_SUCCESS,
+        MARK_DELIVERY_SUCCESS,
         EDIT_PROFILE_SUCCESS,
         DATA_FETCH_SUCCESS,
         PRODUCTS_FETCH_SUCCESS,
+        ORDERS_FETCH_SUCCESS,
     },
     ERROR_MESSAGES: {
         EDIT_BRAND_CANNOT_BE_SAME_ERROR,
@@ -44,6 +46,7 @@ const {
         EDIT_PROFILE_FAILED_ERROR,
         EDIT_SUB_ADMIN_PROFILE_FAILED_ERROR,
         CSV_FILE_REQUIRED_ERROR,
+        WRONG_OTP,
         USER_NOT_FOUND,
         DEFAULT_ERROR
     },
@@ -61,6 +64,17 @@ const {
     },
     VIEW_TITLES: {
         DEFAULT_TITLE
+    },
+    ORDER_STATUS: {
+        ORDER_STATUS_IN_DELIVERY,
+        ORDER_STATUS_DELIVERED
+    },
+    ORDER_REMARKS: {
+        ORDER_IN_DELIVERY,
+        ORDER_DELIVERED
+    },
+    OTP_FOR: {
+        OTP_FOR_MARK_DELIVERY,
     },
     DEFAULTS: {
         DEFAULT_SUBCATEGORY,
@@ -83,6 +97,11 @@ const {
     removeFile,
     readCsvFile
 } = require('../helpers/file.helper');
+const { Order, OrderDetail } = require('../models/order.model');
+const { formatDateTime, dateAfterMinutes } = require('../helpers/date.helper');
+const cryptoRandomString = require('crypto-random-string');
+const { VerifyCode } = require('../models/code.model');
+const { sendMarkDeliveryEmail } = require('../helpers/mail.helper');
 
 
 const getUserById = async (id) => {
@@ -1570,6 +1589,193 @@ exports.editProduct = async (req, res, next) => {
         });
         return res.status(200).send(
             responseObj(true, EDIT_PRODUCT_SUCCESS)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getOrders = async (req, res, next) => {
+    try {
+        const { id, roleId } = req[REQUEST_USERDATA];
+        const { status, order, page, size } = req.query;
+        let userId;
+        let where = status ? { status } : undefined;
+        if ( roleId !== roles.SuperAdmin && roleId !== roles.SubAdmin ) {
+            userId = id;
+            where = status ? { status, userId } : { userId };
+        }
+        const { limit, offset } = pagination({ page, size });
+        let orders = await Order.findAndCountAll({
+            logging: false,
+            limit,
+            offset,
+            where,
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'userName', 'email']
+                },
+                {
+                    model: OrderDetail,
+                    order: [
+                        ['id', 'ASC']
+                    ],
+                    include: {
+                        model: Product,
+                        attributes: ['id', 'name', 'price'],
+                        include: [
+                            {
+                                model: Brand,
+                                attributes: ['id', 'name'],
+                            },
+                            {
+                                model: Category,
+                                attributes: ['id', 'category']
+                            },
+                            {
+                                model: Subcategory,
+                                attributes: ['id', 'subcategory']
+                            }
+                        ]
+                    }
+                }
+            ],
+            order: order ? [ order ] : [['date', 'ASC']],
+            distinct: true
+        });
+        await orders.rows.forEach(order => {
+            order.dataValues.date = formatDateTime(order.date)??'';
+            order.dataValues.email = order.user.email??'';
+            order.orderdetails.forEach(detail => {
+                const { product: { brand={}, category={}, subcategory={} } } = detail;
+                detail.product.dataValues.brand = brand.name??'';
+                detail.product.dataValues.category = category.category??'';
+                detail.product.dataValues.subcategory = subcategory.subcategory??'';
+            });
+        });
+        const data = paginationMetaData(orders, page, limit);
+        return res.status(200).send(
+            responseObj(true, ORDERS_FETCH_SUCCESS, data)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.processMarkDelivery = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        await sequelize.transaction(async markTransaction => {
+            const order = await Order.findByPk(id, {
+                logging: false,
+                attributes: [],
+                include: {
+                    model: User,
+                    attributes: ['id', 'userName', 'email']
+                },
+                transaction: markTransaction
+            });
+            if (!order) {
+                throw new BadRequest(DEFAULT_ERROR);
+            }
+            const {userName, email} = order.user;
+            const otp = cryptoRandomString(6);
+            const notAfter = dateAfterMinutes(30);
+            const validity = formatDateTime(notAfter);
+            await VerifyCode.create({
+                email,
+                otp,
+                for: OTP_FOR_MARK_DELIVERY,
+                notAfter
+            }, {
+                logging: false,
+                transaction: markTransaction
+            });
+            await sendMarkDeliveryEmail({email, userName, orderId: id, otp, validity });
+        });
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getMarkDeliveryDetailsById = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_PARAMS];
+        const order = await sequelize.transaction(async getTransaction => {
+            const order = await Order.findByPk(id, {
+                logging: false,
+                attributes: ['id'],
+                include: {
+                    model: User,
+                    attributes: ['email']
+                },
+                transaction: getTransaction
+            });
+            if (!order) {
+                throw new BadRequest(DEFAULT_ERROR);
+            }
+            order.dataValues.email = await order.user.email;
+            return order;
+        });
+        return res.status(200).send(
+            responseObj(true, DATA_FETCH_SUCCESS, order)
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.verifyMarkDelivery = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { otp } = req.body;
+        await sequelize.transaction(async verifyTransaction => {
+            const order = await Order.findByPk(id, {
+                logging: false,
+                attributes: ['id', 'status', 'remark'],
+                include: {
+                    model: User,
+                    attributes: ['email']
+                },
+                transaction: verifyTransaction
+            });
+            if (!order) {
+                throw new BadRequest(DEFAULT_ERROR);
+            }
+            const email = await order.user.email;
+            const code = await VerifyCode.findOne({
+                logging: false,
+                attributes: ['otp'],
+                order: [
+                    ['id', 'DESC']
+                ],
+                where: {
+                    email,
+                    for: OTP_FOR_MARK_DELIVERY,
+                    status: 'unused',
+                    notAfter: {
+                        [Op.gte]: new Date()
+                    }
+                },
+                transaction: verifyTransaction
+            });
+            if (code.otp !== otp) {
+                throw new BadRequest(WRONG_OTP);
+            }
+            await Order.update({
+                status: ORDER_STATUS_DELIVERED,
+                remark: ORDER_DELIVERED
+            }, {
+                logging: false,
+                where: {
+                    id
+                }
+            });
+        });
+        return res.status(200).send(
+            responseObj(true, MARK_DELIVERY_SUCCESS)
         );
     } catch (error) {
         next(error);

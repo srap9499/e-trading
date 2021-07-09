@@ -1,0 +1,114 @@
+    <%- include('./includes/head.ejs') %>
+    
+    </head>
+
+    <body>
+        <!-- Header -->
+        <%- include('./includes/nav.ejs') %>
+        <!-- Header Ends -->
+
+        <!-- In Delivery Orders -->
+        <section id="in-delivery-orders">
+            <div class="jumbotron bg-light">
+                <div class="container-md py-2 py-sm-2 py-md-3 py-lg-4 py-xl-5">
+                    <div class="row gutters">
+                        <div class="col-12 col-md-5">
+                            <h2 class="h2 display-6">In Delivery Orders</h2>
+                        </div>
+                        <div class="col-12 col-md-7">
+                            <div id="alert" class="alert py-1 py-sm-1" role="alert" hidden>
+                                <div class="text-muted"></div>
+                                <i id="close-alert" class="far fa-times-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <div id="options-area">
+                        <div class="row gx-2 gy-3">
+                            <div class="col-5 col-md-2">
+                                <select name="page-size" id="page-size" class="form-select py-0 py-sm-1">
+                                    <option value="5" selected="selected">Page Size</option>
+                                </select>
+                            </div>
+                            <div class="col-7 col-md-3">
+                                <select name="sort-by" id="sort-by" class="form-select py-0 py-sm-1">
+                                    <option value="1" selected="selected">Sort By</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr class="my-sm-2 my-md-3 my-lg-4">
+                    </div>
+                    <div id="orders-area">
+                        <div class="row gy-3 table-responsive-parent">
+                            <div class="col-xs-12 col-12">
+                                <table id="orders-table" class="table table-light table-striped table-hover lead">
+                                    <thead class="small border-1">
+                                        <tr>
+                                            <th scope="col" class="align-middle small">O.ID</th>
+                                            <th scope="col" class="align-middle small">Date</th>
+                                            <th scope="col" class="align-middle small">Product Details</th>
+                                            <th scope="col" class="align-middle small">Total</th>
+                                            <th scope="col" class="align-middle small">Payable Amount</th>
+                                            <th scope="col" class="align-middle small"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="small border-1">
+                                        <tr>
+                                            <td class="small">1</td>
+                                            <td class="small">date</td>
+                                            <td class="small table-responsive-parent">
+                                                <table class="table table-light table-striped table-hover table-sm my-0">
+                                                    <thead class="small border-1">
+                                                        <tr>
+                                                            <th scope="col" class="align-middle small text-muted">P.ID</th>
+                                                            <th scope="col" class="align-middle small text-muted">Name</th>
+                                                            <th scope="col" class="align-middle small text-muted">Brand</th>
+                                                            <th scope="col" class="align-middle small text-muted">Qty</th>
+                                                            <th scope="col" class="align-middle small text-muted">Price</th>
+                                                            <th scope="col" class="align-middle small text-muted">Sub Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="small border-1">
+                                                        <tr>
+                                                            <td class="small text-muted">1</td>
+                                                            <td class="small text-muted">Product Name</td>
+                                                            <td class="small text-muted">Brand Name</td>
+                                                            <td class="small text-muted">qty</td>
+                                                            <td class="small text-muted">price</td>
+                                                            <td class="small text-muted">subtotal</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                            <td class="small">total</td>
+                                            <td class="small">payable</td>
+                                            <td class="small">
+                                                <div class="row gx-2 gy-0 text-center">
+                                                    <div class="col-12">
+                                                        <i id="mark1" class="far fa-check-square" title="Mark Delivered!"></i>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-sm-2 my-md-3 my-lg-4">
+                    <nav>
+                        <ul class="pagination"></ul>
+                    </nav>
+                </div>
+            </div>
+        </section>
+        <!-- In Delivery Orders Ends -->
+
+        <!-- In Delivery Orders Custom JS -->
+        <script src="/scripts/admin/in-delivery-orders.script.js"></script>
+
+        <!-- Footer -->
+        <%- include('./includes/footer.ejs') %>
+        <!-- Footer Ends -->
+    </body>
+</html>

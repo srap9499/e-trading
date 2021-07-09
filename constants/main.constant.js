@@ -32,12 +32,14 @@ module.exports = {
         ADD_BULK_CATEGORY_SUCCESS: "Bulk Categories Added Successfully!",
         EDIT_CATEGORY_SUCCESS: "Category Edited Successfully!",
         EDIT_SUB_CATEGORY_SUCCESS: "Sub Category Edited Successfully!",
+        MARK_DELIVERY_SUCCESS: "Order marked as Deliverd Successfully!",
         EDIT_PROFILE_SUCCESS: "Profile Edited Successfully!",
         DATA_FETCH_SUCCESS: "Data Fetched Successfully!",
         PRODUCTS_FETCH_SUCCESS: "Products Fetched Successfully!",
         CART_FETCH_SUCCESS: "Cart Items Fetched Successfully!",
         WALLET_AMOUNT_FETCH_SUCCESSFULL: "Wallet Amount Fetched Successfully!",
         ORDER_HISTORY_FETCH_SUCCESS: "Order History Fetched Successfully",
+        ORDERS_FETCH_SUCCESS: "Orders Fetched Successfully",
     },
     ERROR_MESSAGES: {
         AMOUNT_ISDECIMAL_ERROR: "Amount should be a Valid decimal number!",
@@ -112,6 +114,8 @@ module.exports = {
         ADD_CATEGORY_VIEW: "add-category",
         EDIT_CATEGORY_VIEW: "edit-category",
         EDIT_SUB_CATEGORY_VIEW: "edit-subcategory",
+        IN_DELIVERY_ORDERS_VIEW: "in-delivery-orders",
+        VERIFY_MARK_DELIVERY_VIEW: "verify-mark-delivery",
         EDIT_PROFILE_VIEW: "edit-profile",
         CHANGE_PASSWORD_VIEW: "change-password"
     },
@@ -151,6 +155,8 @@ module.exports = {
             ADD_CATEGORY_TITLE: "E-Trading - Add Category",
             EDIT_CATEGORY_TITLE: "E-Trading - Edit Category",
             EDIT_SUB_CATEGORY_TITLE: "E-Trading - Edit Sub Category",
+            IN_DELIVERY_ORDERS_TITLE: "E-Trading - In Delivery Orders",
+            VERIFY_MARK_DELIVERY_TITLE: "E-Trading - Verify Mark Delivery",
             EDIT_PROFILE_TITLE: "E-Trading - Edit Profile Category",
             CHANGE_PASSWORD_TITLE: "E-Trading - Change Password"
         },
@@ -185,6 +191,7 @@ module.exports = {
         EDIT_CATEGORY_TOKEN: "category_token",
         EDIT_SUB_CATEGORY_TOKEN: "subcategory_token",
         EDIT_PRODUCT_TOKEN: "product_token",
+        ORDER_TOKEN: "order_token",
     },
     TOKEN_MAX_AGE: {
         AUTH_TOKEN_MAX_AGE: 60 * 60,    // 1 hour (IN SECONDS),
@@ -193,6 +200,7 @@ module.exports = {
         EDIT_CATEGORY_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
         EDIT_SUB_CATEGORY_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
         EDIT_PRODUCT_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
+        ORDER_TOKEN_MAX_AGE: 10 * 60,      // 10 minute (IN SECONDS),
     },
     COOKIE_MAX_AGE: {
         AUTH_TOKEN_COOKIE_MAX: 60 * 60 * 1000,      // 1 hour  (IN MICRO SECONDS),
@@ -201,6 +209,7 @@ module.exports = {
         EDIT_CATEGORY_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
         EDIT_SUB_CATEGORY_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
         EDIT_PRODUCT_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
+        ORDER_COOKIE_MAX_AGE: 10 * 60 * 1000,      // 10 minute (IN MICRO SECONDS),
     },
     MAIL_SUBJECTS: {
         VERIFY_ACCOUNT_MAIL_SUBJECT: "Please verify email to Activate your account!",
@@ -208,12 +217,15 @@ module.exports = {
         GET_BONUS_AMOUNT_NOTIFICATION_MAIL_SUBJECT: "E-Trading: Notification!",
         GET_DISCOUNT_COUPON_NOTIFICATION_MAIL_SUBJECT: "E-Trading: Notification!",
         GET_PRODUCT_PURCHASE_NOTIFICATION_MAIL_SUBJECT: "E-Trading: Notification!",
-        PURCHASE_INVOICE_MAIL_SUBJECT: "Purchase Invoice!"
+        PURCHASE_INVOICE_MAIL_SUBJECT: "Purchase Invoice!",
+        MARK_DELIVERY_MAIL_SUBJECT: "Confirm Your Order Delivery!"
     },
     ORDER_STATUS: {
         ORDER_STATUS_PENDING: "pending",
         ORDER_STATUS_FAILED: "failed",
-        ORDER_STATUS_SUCCESS: "success"
+        ORDER_STATUS_SUCCESS: "success",
+        ORDER_STATUS_IN_DELIVERY: "success",
+        ORDER_STATUS_DELIVERED: "delivered"
     },
     ORDER_REMARKS: {
         PRODUCT_OUT_OF_STOCK: "Insufficient Product Quantity!",
@@ -221,12 +233,17 @@ module.exports = {
         INVALID_COUPON: "Invalid Coupon Code!",
         INSUFFICIENT_WALLET_AMOUNT: "Insufficient Wallet Amount!",
         ORDER_CANCELED: "Order Canceled!",
-        ORDER_PLACED_SUCCESS: "Order Placed!"
+        ORDER_PLACED_SUCCESS: "Order Placed!",
+        ORDER_IN_DELIVERY: "Order in Delivery!",
+        ORDER_DELIVERED: "Order Delivered!"
     },
     COUPON_TYPES: {
         COUPON_DYNAMIC: "dynamic",
         COUPON_STATIC: "static",
         DEFAULT_COUPON_TYPE: "static"
+    },
+    OTP_FOR: {
+        OTP_FOR_MARK_DELIVERY: "mark_delivery",
     },
     DEFAULTS: {
         DEFAULT_SUBCATEGORY: "General",

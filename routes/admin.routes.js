@@ -24,6 +24,8 @@ const {
         ADD_CATEGORY_VIEW,
         EDIT_CATEGORY_VIEW,
         EDIT_SUB_CATEGORY_VIEW,
+        IN_DELIVERY_ORDERS_VIEW,
+        VERIFY_MARK_DELIVERY_VIEW,
         EDIT_PROFILE_VIEW,
         CHANGE_PASSWORD_VIEW
     },
@@ -48,6 +50,8 @@ const {
             ADD_CATEGORY_TITLE,
             EDIT_CATEGORY_TITLE,
             EDIT_SUB_CATEGORY_TITLE,
+            IN_DELIVERY_ORDERS_TITLE,
+            VERIFY_MARK_DELIVERY_TITLE,
             EDIT_PROFILE_TITLE,
             CHANGE_PASSWORD_TITLE
         }
@@ -71,7 +75,8 @@ const {
     editSubCategorySchema,
     editProfileSchema,
     editSubAdminProfileSchema,
-    editSubAdminPasswordSchema
+    editSubAdminPasswordSchema,
+    verifyMarkDeliverySchema
 } = require('../helpers/validate.helper');
 
 const { isSuperAdmin } = require('../middlewares/auth.middleware');
@@ -709,6 +714,53 @@ router.put(
         validateRest(editProductSchema, REQUEST_BODY),
     ],
     Admin.editProduct
+);
+
+/**
+ * @description Route to render In Delivery Orders view
+ * @method GET /admin/orders/indelivery
+ */
+router.get(
+    '/orders/indelivery',
+    Admin.renderView(IN_DELIVERY_ORDERS_VIEW, IN_DELIVERY_ORDERS_TITLE)
+);
+
+/**
+ * @description Route to get Orders
+ * @method GET /admin/orders/get
+ */
+router.get(
+    '/orders/get',
+    Admin.getOrders
+);
+
+/**
+ * @description Route to process for mark order delivery
+ * @method GET /admin/order/:id/markdelivery
+ */
+router.get(
+    '/order/:id/markdelivery',
+    [
+        Edit.createOrderCookie
+    ],
+    Admin.processMarkDelivery,
+    Admin.renderView(VERIFY_MARK_DELIVERY_VIEW, VERIFY_MARK_DELIVERY_TITLE)
+);
+
+router.get(
+    '/order/markdelivery/getdetails',
+    [
+        Edit.getOrderCookie,
+    ],
+    Admin.getMarkDeliveryDetailsById
+);
+
+router.put(
+    '/order/:id/markdelivery',
+    [
+        validateRest(verifyMarkDeliverySchema, REQUEST_BODY)
+    ],
+    Admin.verifyMarkDelivery
 );
 
 /**

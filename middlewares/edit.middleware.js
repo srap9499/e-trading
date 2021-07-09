@@ -13,21 +13,24 @@ const {
         EDIT_BRAND_TOKEN,
         EDIT_CATEGORY_TOKEN,
         EDIT_SUB_CATEGORY_TOKEN,
-        EDIT_PRODUCT_TOKEN
+        EDIT_PRODUCT_TOKEN,
+        ORDER_TOKEN
     },
     TOKEN_MAX_AGE: {
         EDIT_SUB_ADMIN_TOKEN_MAX_AGE,
         EDIT_BRAND_TOKEN_MAX_AGE,
         EDIT_CATEGORY_TOKEN_MAX_AGE,
         EDIT_SUB_CATEGORY_TOKEN_MAX_AGE,
-        EDIT_PRODUCT_TOKEN_MAX_AGE
+        EDIT_PRODUCT_TOKEN_MAX_AGE,
+        ORDER_TOKEN_MAX_AGE
     },
     COOKIE_MAX_AGE: {
         EDIT_SUB_ADMIN_COOKIE_MAX_AGE,
         EDIT_BRAND_COOKIE_MAX_AGE,
         EDIT_CATEGORY_COOKIE_MAX_AGE,
         EDIT_SUB_CATEGORY_COOKIE_MAX_AGE,
-        EDIT_PRODUCT_COOKIE_MAX_AGE
+        EDIT_PRODUCT_COOKIE_MAX_AGE,
+        ORDER_COOKIE_MAX_AGE
     }
 } = require("../constants/main.constant");
 const { generateToken, verifyToken } = require("../helpers/auth.helper");
@@ -166,6 +169,36 @@ exports.createProductCookie = async (req, res, next) => {
 exports.getProductCookie = async (req, res, next) => {
     try {
         const token = req.cookies[EDIT_PRODUCT_TOKEN];
+        if (!token) {
+            throw new BadRequest(DEFAULT_ERROR);
+        }
+        verifyToken(token)
+        .then(data => {
+            req[REQUEST_PARAMS] = data;
+            next();
+        })
+        .catch(error => {
+            throw new BadRequest(DEFAULT_ERROR);
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.createOrderCookie = async (req, res, next) => {
+    try {
+        const { id } = req[REQUEST_PARAMS];
+        const token = generateToken({id}, ORDER_TOKEN_MAX_AGE);
+        await res.cookie(ORDER_TOKEN, token, {maxAge: ORDER_COOKIE_MAX_AGE, httpOnly: true});
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.getOrderCookie = async (req, res, next) => {
+    try {
+        const token = req.cookies[ORDER_TOKEN];
         if (!token) {
             throw new BadRequest(DEFAULT_ERROR);
         }

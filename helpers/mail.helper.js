@@ -16,7 +16,8 @@ const {
         GET_BONUS_AMOUNT_NOTIFICATION_MAIL_SUBJECT,
         GET_DISCOUNT_COUPON_NOTIFICATION_MAIL_SUBJECT,
         GET_PRODUCT_PURCHASE_NOTIFICATION_MAIL_SUBJECT,
-        PURCHASE_INVOICE_MAIL_SUBJECT
+        PURCHASE_INVOICE_MAIL_SUBJECT,
+        MARK_DELIVERY_MAIL_SUBJECT
     }
 } = require('../constants/main.constant');
 
@@ -44,6 +45,27 @@ exports.sendVerifyEmail = async (user, otp) => {
         };
 
         const info = await transporter.sendMail(verifyMail);
+        console.log("Email sent:", info.response);
+    } catch (error) {
+        console.log("Email not sent:", error.message);
+        throw error;
+    }
+};
+
+exports.sendMarkDeliveryEmail = async (details={}) => {
+    try {
+        const markDeliveryMail = {
+            from: MAIL_SENDER,
+            to: details.email,
+            subject: MARK_DELIVERY_MAIL_SUBJECT,
+            html: `<h1>Welcome ${details.userName}</h1>
+            <p>We are glad to see you as a valueable customer on E-Trading. Please verify your Order delivery (<span style="color: blue;">Order ID: ${details.orderId}</span>) by providing below otp to our delivery person!</p>
+            <br><br>
+            <p>Your OTP for verification: <span style="color: blue;">${details.otp}</span></p>
+            <p>OTP Valid till: ${details.validity}</p>`
+        };
+
+        const info = await transporter.sendMail(markDeliveryMail);
         console.log("Email sent:", info.response);
     } catch (error) {
         console.log("Email not sent:", error.message);
